@@ -1,0 +1,2897 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mortgage Calculator</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Exo+2:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #f8f7ff;
+    --surface: #ffffff;
+    --border: #e0d8f0;
+    --border-focus: #c044ff;
+    --text: #1a0838;
+    --text-secondary: #4a3070;
+    --text-muted: #9080b8;
+    --accent: #ff2d9b;
+    --accent-light: #f5f0ff;
+    --green: #0a8060;
+    --green-bg: #f0faf6;
+    --red: #c0206a;
+    --red-bg: #fff0f6;
+    --tab-active-bg: #2a1050;
+    --tab-active-text: #ffffff;
+    --radius: 4px;
+    --shadow: 0 1px 3px rgba(80,40,140,0.10);
+    --shadow-md: 0 4px 16px rgba(80,40,140,0.14);
+    --tab-bg: #2a1050;
+    --tab-bg-hover: #3a1870;
+    --tab-bg-active: #1a0838;
+    --tab-text: rgba(220,200,255,0.75);
+    --tab-text-active: #ffffff;
+    --tab-border: rgba(150,80,220,0.3);
+    --num-font: 'Exo 2', sans-serif;
+  }
+
+  body {
+    background: #f8f7ff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 32px 20px 60px;
+    line-height: 1.5;
+  }
+
+  .app {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  /* ── PNG HEADER (optional) ── */
+  .header {
+    text-align: center;
+    margin-bottom: 28px;
+  }
+  .header img {
+    max-width: 380px;
+    width: 90%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ── PNG FOOTER (optional) ── */
+  .site-footer {
+    text-align: center;
+    margin-top: 28px;
+  }
+  .site-footer img {
+    max-width: 380px;
+    width: 90%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
+
+  /* ── OUTER CONTAINER ── */
+  .container {
+    background: var(--surface);
+    border: 1px solid #c8b0e8;
+    border-radius: 6px;
+    box-shadow: 0 0 20px rgba(120,60,200,0.12), var(--shadow-md);
+    overflow: hidden;
+  }
+
+  /* ── MODE SELECTOR ── */
+  .mode-selector {
+    display: flex;
+    border-bottom: 1px solid #2a0a50;
+    background: #1a0838;
+  }
+  .mode-btn {
+    flex: 1;
+    padding: 14px 8px;
+    background: transparent;
+    border: none;
+    border-right: 1px solid rgba(150,80,220,0.25);
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(220,200,255,0.65);
+    line-height: 1.5;
+    text-align: center;
+    transition: background 0.15s, color 0.15s;
+  }
+  .mode-btn:last-child { border-right: none; }
+  .mode-btn:hover { background: rgba(160,80,220,0.15); color: rgba(240,220,255,0.9); }
+  .mode-btn.active {
+    background: rgba(192,68,255,0.12);
+    color: #ffffff;
+    font-weight: 700;
+    box-shadow: inset 0 -2px 0 #c044ff;
+  }
+  .mode-btn .mode-icon { font-size: 16px; display: block; margin-bottom: 4px; }
+
+  /* ── SCREEN (content area) ── */
+  .screen { padding: 28px; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  /* ── CONTAINER FOOTER ── */
+  .container-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 12px 20px;
+    border-top: 1px solid var(--border);
+    background: var(--bg);
+  }
+
+  /* ── CARD ── */
+  .card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  /* ── FORM ── */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  @media (max-width: 520px) { .form-grid { grid-template-columns: 1fr; } }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .field.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-secondary);
+  }
+
+  .input-wrap {
+    position: relative;
+  }
+  .input-prefix {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text-muted);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  input[type="text"],
+  input[type="number"],
+  select {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    -webkit-appearance: none;
+  }
+  input[type="text"].has-prefix,
+  input[type="number"].has-prefix { padding-left: 26px; }
+  input:focus, select:focus { border-color: #c044ff; box-shadow: 0 0 0 2px rgba(192,68,255,0.15); }
+  input::placeholder { color: var(--text-muted); font-family: 'DM Mono', monospace; }
+  select { cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%238060a8'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 30px; }
+  select option { background: #ffffff; color: var(--text); }
+
+  /* ── OPTIONAL FIELDS ── */
+  .optional-fields {
+    display: none;
+    grid-column: 1 / -1;
+  }
+  .optional-fields.visible { display: contents; }
+
+  /* ── CALCULATE BUTTON ── */
+  .calc-btn {
+    display: block;
+    width: 100%;
+    margin-top: 20px;
+    padding: 13px 24px;
+    background: linear-gradient(135deg, #8020c0 0%, #c044ff 50%, #ff2d9b 100%);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: opacity 0.15s, box-shadow 0.15s;
+    box-shadow: 0 0 16px rgba(192,68,255,0.4);
+  }
+  .calc-btn:hover { opacity: 0.9; box-shadow: 0 0 24px rgba(192,68,255,0.6); }
+  .calc-btn:active { opacity: 0.8; }
+
+  /* ── RESULTS ── */
+  .results-panel { display: none; }
+  .results-panel.show { display: block; }
+
+  /* Total payment hero */
+  .total-block {
+    padding: 24px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    margin-bottom: 16px;
+  }
+  .total-label {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+  .total-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(36px, 7vw, 56px);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .total-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+  .total-apr {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+  }
+
+  /* Line items */
+  .line-items {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+  .line-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+  .line-item:last-child { border-bottom: none; }
+  .line-item-label {
+    font-size: 14px;
+    color: var(--text-secondary);
+  }
+  .line-item-value {
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--text);
+  }
+  .line-item.pmi .line-item-label { color: var(--red); }
+  .line-item.pmi .line-item-value { color: var(--red); }
+
+  /* PMI disclaimer */
+  .pmi-disclaimer {
+    display: none;
+    padding: 14px 20px;
+    background: rgba(255,45,155,0.08);
+    border: 1px solid rgba(255,45,155,0.3);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+  }
+  .pmi-disclaimer.show { display: block; }
+  .pmi-disclaimer p {
+    font-size: 13px;
+    color: #ff80c0;
+    line-height: 1.7;
+  }
+
+  /* ── COMPARE LAYOUT ── */
+  .compare-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 520px) { .compare-cols { grid-template-columns: 1fr; } }
+
+  .compare-col-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .compare-col-header {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: var(--bg);
+  }
+  .compare-col-header.h-15 { color: #0080b0; }
+  .compare-col-header.h-30 { color: #ff2d9b; }
+
+  .compare-total-block {
+    padding: 16px 16px 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-total-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .compare-total-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .compare-total-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+  .compare-apr {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-top: 6px;
+  }
+
+  .compare-line-items { display: flex; flex-direction: column; }
+  .compare-line-item {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-line-item:last-child { border-bottom: none; }
+  .compare-line-label { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+  .compare-line-value { font-family: 'DM Mono', monospace; font-size: 15px; font-weight: 500; color: var(--text); }
+  .compare-line-item.pmi-item .compare-line-label { color: var(--red); }
+  .compare-line-item.pmi-item .compare-line-value { color: var(--red); }
+
+  /* Compare input columns */
+  .compare-input-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 520px) { .compare-input-cols { grid-template-columns: 1fr; } }
+
+  .compare-input-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .compare-input-col-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-input-col-title.t-15 { color: #0080b0; }
+  .compare-input-col-title.t-30 { color: #ff2d9b; }
+  .compare-input-col .field { margin-bottom: 12px; }
+  .compare-input-col .field:last-child { margin-bottom: 0; }
+
+  /* Diff callout */
+  .diff-callout {
+    display: none;
+    padding: 16px 20px;
+    background: rgba(192,68,255,0.08);
+    border: 1px solid rgba(192,68,255,0.3);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+  }
+  .diff-callout.show { display: block; }
+  .diff-callout p {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.7;
+  }
+  .diff-callout .diff-amount {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+
+  /* Pros / Cons */
+  .pros-cons-grid {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .pros-cons-grid.show { display: grid; }
+  @media (max-width: 520px) { .pros-cons-grid { grid-template-columns: 1fr; } }
+
+  .pc-col { display: flex; flex-direction: column; gap: 12px; }
+  .pc-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+  }
+  .pc-card-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .pc-card-title.pros { color: var(--green); }
+  .pc-card-title.cons { color: var(--red); }
+  .pc-list { list-style: none; display: flex; flex-direction: column; gap: 7px; }
+  .pc-list li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    padding-left: 16px;
+    position: relative;
+  }
+  .pc-list li::before { position: absolute; left: 0; top: 0; }
+  .pros .pc-list li::before { content: '✓'; color: var(--green); }
+  .cons .pc-list li::before { content: '✗'; color: var(--red); }
+  .pc-list li em { font-style: normal; font-weight: 500; color: var(--text); }
+
+  /* ── BUY VS RENT ── */
+  .bvr-input-cols {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 560px) { .bvr-input-cols { grid-template-columns: 1fr; } }
+
+  .bvr-input-col {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .bvr-col-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bvr-col-title.t-rent { color: #ff2d9b; }
+  .bvr-col-title.t-buy  { color: #0080b0; }
+  .bvr-input-col .field { margin-bottom: 12px; }
+  .bvr-input-col .field:last-child { margin-bottom: 0; }
+
+  .bvr-opt-fields { display: none; }
+  .bvr-opt-fields.visible { display: block; }
+  .bvr-opt-fields .field { margin-top: 12px; }
+
+  /* Down payment question */
+  .dp-question {
+    display: none;
+    margin-top: 8px;
+    padding: 12px 14px;
+    background: rgba(192,68,255,0.08);
+    border: 1px solid rgba(192,68,255,0.3);
+    border-radius: var(--radius);
+  }
+  .dp-question.visible { display: block; }
+  .dp-question p {
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #7040c0;
+    margin-bottom: 8px;
+  }
+  .dp-btns { display: flex; gap: 8px; }
+  .dp-btn {
+    flex: 1;
+    padding: 8px 4px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .dp-btn:hover { border-color: var(--text); color: var(--text); }
+  .dp-btn.selected { background: #c044ff; color: #fff; border-color: #c044ff; }
+
+  /* BVR results */
+  .bvr-results { display: none; }
+  .bvr-results.show { display: block; }
+
+  .bvr-current-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  @media (max-width: 560px) { .bvr-current-grid { grid-template-columns: 1fr; } }
+
+  .bvr-result-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .bvr-result-header {
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    background: var(--bg);
+  }
+  .bvr-result-header.h-rent { color: #ff2d9b; }
+  .bvr-result-header.h-buy  { color: #0080b0; }
+
+  .bvr-metric {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bvr-metric:last-child { border-bottom: none; }
+  .bvr-metric-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+  }
+  .bvr-metric-value {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(20px, 4vw, 28px);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1;
+    letter-spacing: -0.5px;
+  }
+  .bvr-metric-sub { font-size: 12px; color: var(--text-muted); margin-top: 3px; }
+
+  .bvr-sub-lines { margin-top: 10px; display: flex; flex-direction: column; gap: 0; }
+  .bvr-sub-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    gap: 8px;
+  }
+  .bvr-sub-line:last-child { border-bottom: none; }
+  .bvr-sub-label { font-size: 13px; color: var(--text-muted); }
+  .bvr-sub-value { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; }
+  .bvr-sub-value.dash { color: var(--text-muted); }
+  .bvr-sub-value.green { color: var(--green); }
+  .bvr-sub-line.dp-note .bvr-sub-label,
+  .bvr-sub-line.dp-note .bvr-sub-value { color: #5a4a00; }
+
+  .bvr-years-divider {
+    text-align: center;
+    padding: 16px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #8020c0;
+    border-top: 1px dashed rgba(128,32,192,0.3);
+    border-bottom: 1px dashed rgba(128,32,192,0.3);
+    margin: 16px 0;
+    background: rgba(192,68,255,0.04);
+  }
+
+  .bvr-rent-exceeds {
+    padding: 12px 16px;
+    background: rgba(0,232,160,0.08);
+    border: 1px solid rgba(0,232,160,0.25);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: var(--green);
+  }
+  .bvr-rent-exceeds em { font-style: normal; font-weight: 600; }
+
+  .verdict-card {
+    display: none;
+    padding: 20px 24px;
+    background: rgba(192,68,255,0.08);
+    border: 1px solid rgba(192,68,255,0.35);
+    border-radius: var(--radius);
+    margin-top: 16px;
+  }
+  .verdict-card.show { display: block; }
+  .verdict-text {
+    font-size: 15px;
+    color: var(--text);
+    line-height: 1.7;
+  }
+  .verdict-text .v-amount {
+    font-family: 'DM Mono', monospace;
+    font-weight: 500;
+  }
+
+  /* ── PIXEL NUMBERS ── */
+  .total-amount,
+  .total-apr,
+  .compare-total-amount,
+  .compare-apr,
+  .line-item-value,
+  .compare-line-value,
+  .bvr-metric-value,
+  .bvr-current-value,
+  .bvr-sub-value,
+  .bvr-apr-line,
+  .bvr-summary-amount,
+  .result-value,
+  .fin-sv {
+    font-family: var(--num-font) !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  /* Exo 2 sizing — clean and legible at natural scale */
+  .total-amount { font-size: clamp(38px, 7.5vw, 62px) !important; font-weight: 700 !important; }
+  .compare-total-amount { font-size: clamp(26px, 4.5vw, 38px) !important; font-weight: 700 !important; }
+  .bvr-metric-value { font-size: clamp(24px, 4.5vw, 34px) !important; font-weight: 700 !important; }
+  .bvr-summary-amount { font-size: clamp(20px, 3.5vw, 28px) !important; font-weight: 600 !important; }
+  .result-value { font-size: clamp(16px, 2.5vw, 22px) !important; }
+  .line-item-value, .compare-line-value { font-size: 18px !important; font-weight: 600 !important; }
+  .bvr-sub-value { font-size: 15px !important; }
+  .total-apr, .compare-apr, .bvr-apr-line { font-size: 17px !important; font-weight: 600 !important; }
+  .fin-sv { font-size: 16px !important; font-weight: 600 !important; }
+  .bvr-summary-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px 24px 16px;
+    margin-bottom: 24px;
+  }
+  .bvr-summary-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+  .bvr-summary-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 4px 0;
+  }
+  .bvr-summary-col {
+    flex: 1;
+  }
+  .bvr-summary-vs {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+  }
+  .bvr-summary-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 3px;
+    line-height: 1.4;
+  }
+  .bvr-summary-period {
+    font-size: 11px;
+    color: var(--text-muted);
+    font-weight: 400;
+  }
+  .bvr-summary-amount {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(18px, 3.5vw, 26px);
+    font-weight: 500;
+    color: var(--text);
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .bvr-summary-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 14px 0;
+  }
+  .bvr-summary-note {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 14px;
+    text-align: center;
+    letter-spacing: 0.2px;
+  }
+
+  /* ── ALERT MODAL ── */
+  .alert-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,8,56,0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .alert-overlay.show { display: flex; }
+  .alert-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: 0 0 30px rgba(160,60,220,0.15), var(--shadow-md);
+    padding: 28px 28px 22px;
+    max-width: 440px;
+    width: 100%;
+  }
+  .alert-icon {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: #c0206a;
+    margin-bottom: 10px;
+  }
+  .alert-icon.warn { color: #7040c0; }
+  .alert-msg {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+  .alert-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    background: linear-gradient(135deg, #8020c0, #c044ff);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .alert-btn:hover { opacity: 0.85; }
+
+  /* ── RESET BUTTON ── */
+  .reset-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .reset-btn:hover { border-color: #c044ff; color: var(--text); }
+
+  /* ── DISCLAIMER ── */
+  .disclaimer {
+    margin-top: 28px;
+    padding: 0 4px;
+  }
+  .disclaimer p {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.8;
+    margin-bottom: 8px;
+  }
+  .disclaimer p:first-child {
+    font-weight: 500;
+    color: var(--text-secondary);
+  }
+
+  .bvr-apr-line {
+    font-family: var(--num-font);
+    font-size: 13px;
+    color: #5a00c0;
+    margin-top: 4px;
+  }
+  /* ── MODE SELECTOR ROW 2 (financial tools) ── */
+  .mode-selector-row2 {
+    display: flex;
+    border-bottom: 1px solid #1a0838;
+    background: #150630;
+  }
+  .mode-selector-row2 .mode-btn {
+    font-size: 12px;
+    font-weight: 700;
+    padding: 11px 6px;
+    background: transparent;
+    color: rgba(200,175,240,0.55);
+    border-right-color: rgba(120,60,180,0.2);
+  }
+  .mode-selector-row2 .mode-btn:hover { background: rgba(160,80,220,0.1); color: rgba(230,210,255,0.9); }
+  .mode-selector-row2 .mode-btn.active {
+    background: rgba(192,68,255,0.08);
+    color: #ffffff;
+    box-shadow: inset 0 -2px 0 #9030d0;
+  }
+
+  /* ── FINANCIAL RESULTS ── */
+  .fin-results { display: none; margin-top: 20px; }
+  .fin-results.show { display: block; }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .result-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 14px;
+  }
+  .result-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .result-value {
+    font-family: 'DM Mono', monospace;
+    font-size: clamp(15px, 2.5vw, 20px);
+    font-weight: 500;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .result-value.highlight { color: #0070a0; }
+  .result-value.positive  { color: var(--green); }
+  .result-value.negative  { color: var(--red); }
+  .result-sub {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    line-height: 1.5;
+  }
+
+  .fin-section-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--text-secondary);
+    margin: 20px 0 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .explain-box {
+    background: var(--bg);
+    border-left: 3px solid var(--border);
+    border-radius: 0 4px 4px 0;
+    padding: 12px 16px;
+    margin-bottom: 14px;
+  }
+  .explain-box p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+  }
+  .explain-box p strong { color: var(--text); }
+  .explain-box.info { border-left-color: #0080b0; }
+
+  .cta-box, .encourage-box {
+    margin-top: 16px;
+    padding: 14px 18px;
+    background: rgba(0,212,255,0.06);
+    border: 1px solid rgba(0,212,255,0.25);
+    border-radius: 4px;
+  }
+  .cta-box p, .encourage-box p {
+    font-size: 13px;
+    color: #0070a0;
+    line-height: 1.75;
+    text-align: center;
+  }
+
+  /* Amortization table */
+  .table-wrap {
+    margin-top: 12px;
+    overflow-x: auto;
+    max-height: 280px;
+    overflow-y: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .amort-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+  }
+  .amort-table th {
+    background: var(--bg);
+    color: var(--text-secondary);
+    padding: 8px 12px;
+    text-align: right;
+    font-weight: 500;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    border-bottom: 1px solid var(--border);
+  }
+  .amort-table th:first-child { text-align: center; }
+  .amort-table td {
+    padding: 7px 12px;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+    color: var(--text-secondary);
+    font-family: var(--num-font);
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .amort-table td:first-child { text-align: center; color: var(--text-muted); }
+  .amort-table tr:last-child td { border-bottom: none; }
+  .amort-table tr:hover td { background: var(--bg); }
+
+  /* Compound interest chart */
+  .ci-chart {
+    position: relative;
+    height: 180px;
+    border-left: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 4px;
+  }
+  .ci-chart-inner {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+    gap: 2px;
+    padding: 0 4px;
+  }
+  .ci-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-end;
+    height: 100%;
+  }
+  .ci-bar-contrib { background: #7b2fff; min-height: 1px; }
+  .ci-bar-gains   { background: #0080b0; min-height: 1px; }
+  .ci-x-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 4px;
+    padding: 0 4px;
+  }
+  .chart-legend {
+    display: flex;
+    gap: 20px;
+    margin-top: 10px;
+    font-size: 11px;
+    color: var(--text-secondary);
+  }
+  .legend-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    margin-right: 5px;
+    vertical-align: middle;
+  }
+
+  /* Key takeaway summary box (replaces arcade bullet-summary) */
+  .fin-summary {
+    display: none;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-top: 16px;
+  }
+  .fin-summary.show { display: block; }
+  .fin-summary-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .fin-summary-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fin-summary-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .fin-summary-list li::before { content: '→'; color: var(--text-muted); flex-shrink: 0; }
+  .fin-sl { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; white-space: nowrap; }
+  .fin-sv { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--text); }
+  .fin-sv.neg { color: #c0206a; }
+  .fin-sv.pos { color: #0a8060; }
+
+
+
+  /* ── QUALIFY BANNER (inside results) ── */
+  .qualify-banner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    background: #00c2d4;
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: opacity 0.15s, box-shadow 0.15s;
+    box-shadow: 0 2px 12px rgba(0,194,212,0.3);
+    border: none;
+    width: 100%;
+    text-align: left;
+  }
+  .qualify-banner:hover {
+    opacity: 0.92;
+    box-shadow: 0 4px 20px rgba(0,194,212,0.45);
+  }
+  .qualify-banner:active { opacity: 0.82; }
+  .qualify-banner-text {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    color: #8b2fc9;
+    line-height: 1.3;
+    text-shadow: 0 0 12px rgba(139,47,201,0.5), 0 0 24px rgba(139,47,201,0.25);
+  }
+  .qualify-banner-sub {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.85);
+    margin-top: 2px;
+  }
+  .qualify-banner-arrow {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+    flex-shrink: 0;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-shadow: 0 0 10px rgba(255,255,255,0.7), 0 0 20px rgba(255,255,255,0.3);
+    transition: transform 0.15s;
+  }
+  .qualify-banner:hover .qualify-banner-arrow { transform: translateX(4px); }
+
+  /* ── QUALIFY MODAL ── */
+  .qualify-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,8,56,0.65);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .qualify-overlay.show { display: flex; }
+
+  .qualify-modal {
+    background: var(--surface);
+    border: 1px solid #c8b0e8;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(160,60,220,0.2), 0 8px 32px rgba(0,0,0,0.15);
+    padding: 32px 28px 26px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+  }
+  .qualify-modal-icon {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 14px;
+  }
+  .qualify-modal-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .qualify-modal-body {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 22px;
+    text-align: center;
+  }
+  .qualify-modal-body strong { color: var(--text); }
+  .qualify-modal-btns {
+    display: flex;
+    gap: 10px;
+  }
+  .qualify-modal-btns .btn-yes {
+    flex: 1;
+    padding: 12px;
+    background: linear-gradient(135deg, #8020c0, #c044ff);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    box-shadow: 0 0 12px rgba(192,68,255,0.3);
+  }
+  .qualify-modal-btns .btn-yes:hover { opacity: 0.88; }
+  .qualify-modal-btns .btn-no {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .qualify-modal-btns .btn-no:hover { border-color: #c044ff; color: var(--text); }
+
+  /* ── CONTACT MODAL (shown on "No") ── */
+  .contact-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,8,56,0.65);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .contact-overlay.show { display: flex; }
+
+  .contact-modal {
+    background: var(--surface);
+    border: 1px solid #c8b0e8;
+    border-radius: 8px;
+    box-shadow: 0 0 40px rgba(160,60,220,0.2), 0 8px 32px rgba(0,0,0,0.15);
+    padding: 32px 28px 26px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+  }
+  .contact-modal-icon { font-size: 32px; margin-bottom: 14px; }
+  .contact-modal-title {
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+  .contact-modal-body {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.75;
+    margin-bottom: 20px;
+  }
+  .contact-detail {
+    display: inline-block;
+    margin: 4px 0;
+    font-weight: 600;
+    color: #8020c0;
+  }
+  .contact-detail a {
+    color: inherit;
+    text-decoration: none;
+  }
+  .contact-detail a:hover { text-decoration: underline; }
+  .contact-close-btn {
+    padding: 11px 28px;
+    background: linear-gradient(135deg, #8020c0, #c044ff);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .contact-close-btn:hover { opacity: 0.88; }
+
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!--
+    ══════════════════════════════════════════════
+    PNG HEADER & FOOTER — to add your images:
+    1. Upload "header.png" and "footer.png" to GitHub
+       in the same folder as this index.html file
+    2. Both images will display automatically
+    3. If an image is not found, that area stays hidden
+    ══════════════════════════════════════════════
+  -->
+  <header class="header" id="site-header" style="display:none">
+    <img src="header.png" alt="" onload="document.getElementById('site-header').style.display='block'" onerror="document.getElementById('site-header').style.display='none'">
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <div class="container">
+
+    <!-- MODE SELECTOR ROW 1: MORTGAGE TOOLS -->
+    <div class="mode-selector">
+      <button class="mode-btn active" onclick="switchMode('mortgage', this)">
+        <span class="mode-icon">🏠</span>Mortgage<br>Calculator
+      </button>
+      <button class="mode-btn" onclick="switchMode('investment', this)">
+        <span class="mode-icon">📊</span>15 Year<br>vs 30 Year
+      </button>
+      <button class="mode-btn" onclick="switchMode('debt', this)">
+        <span class="mode-icon">⚖️</span>Buy<br>vs Rent
+      </button>
+    </div>
+
+    <!-- MODE SELECTOR ROW 2: FINANCIAL TOOLS -->
+    <div class="mode-selector mode-selector-row2">
+      <button class="mode-btn" onclick="switchMode('fi-interest', this)">
+        <span class="mode-icon">💸</span>How Interest<br>Works
+      </button>
+      <button class="mode-btn" onclick="switchMode('fi-debtpay', this)">
+        <span class="mode-icon">🔥</span>How Loan<br>Amortization Works
+      </button>
+      <button class="mode-btn" onclick="switchMode('fi-compound', this)">
+        <span class="mode-icon">📈</span>How Compound<br>Interest Works
+      </button>
+    </div>
+
+
+    <!-- SCREEN -->
+    <div class="screen">
+
+  <!-- ══════════════════════
+       PANEL 1 — MORTGAGE CALCULATOR
+  ══════════════════════ -->
+  <div id="panel-mortgage" class="panel active">
+
+    <div class="card">
+      <div class="card-title">Loan Details</div>
+      <div class="form-grid">
+
+        <div class="field">
+          <label>Loan Amount</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="mc-loan" placeholder="350,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Interest Rate (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="mc-rate" placeholder="6.5" step="0.01" class="has-prefix">
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Loan Term</label>
+          <div class="input-wrap">
+            <select id="mc-term">
+              <option value="30">30 Years</option>
+              <option value="20">20 Years</option>
+              <option value="15">15 Years</option>
+              <option value="10">10 Years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Home Purchase Price</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="mc-price" placeholder="400,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+
+        <div class="field full">
+          <label>Include Taxes &amp; Insurance?</label>
+          <div class="input-wrap">
+            <select id="mc-tai" onchange="toggleTaxInsFields()">
+              <option value="no">No — use estimates</option>
+              <option value="yes">Yes — enter my own</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="optional-fields" id="mc-optional">
+          <div class="field">
+            <label>Annual Property Taxes</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="mc-tax" placeholder="4,800" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Annual Homeowners Insurance</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="mc-ins" placeholder="1,200" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <button class="calc-btn" onclick="calcMortgage()">Calculate</button>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="mc-results" class="results-panel">
+      <button class="qualify-banner" onclick="window.open('https://mtgxps.mymortgage-online.com/GavinHamilton.html','_blank')">
+        <div>
+          <div class="qualify-banner-text">Find Out What You Qualify For</div>
+          <div class="qualify-banner-sub">Free soft-pull analysis</div>
+        </div>
+        <span class="qualify-banner-arrow">click here</span>
+      </button>
+      <div class="total-block">
+        <div class="total-label">Approximate Monthly Payment</div>
+        <div class="total-amount" id="mc-total">—</div>
+        <div class="total-sub">/ month</div>
+        <div class="total-apr" id="mc-apr">—</div>
+      </div>
+
+      <div class="line-items">
+        <div class="line-item">
+          <span class="line-item-label">Principal &amp; Interest</span>
+          <span class="line-item-value" id="mc-pi">—</span>
+        </div>
+        <div class="line-item">
+          <span class="line-item-label">Monthly Property Tax</span>
+          <span class="line-item-value" id="mc-tax-mo">—</span>
+        </div>
+        <div class="line-item">
+          <span class="line-item-label">Monthly Homeowners Insurance</span>
+          <span class="line-item-value" id="mc-ins-mo">—</span>
+        </div>
+        <div class="line-item pmi" id="mc-pmi-row" style="display:none">
+          <span class="line-item-label">Monthly Mortgage Insurance (PMI)</span>
+          <span class="line-item-value" id="mc-pmi-mo">—</span>
+        </div>
+      </div>
+
+      <div class="pmi-disclaimer" id="mc-pmi-disclaimer">
+        <p><strong>Monthly mortgage insurance is required on loans with less than 20% down payment.</strong> This estimate is for informational purposes only. Contact a lending professional for an accurate quote.</p>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════
+       PANEL 2 — 15 vs 30 YEAR
+  ══════════════════════ -->
+  <div id="panel-investment" class="panel">
+
+    <div class="compare-input-cols">
+      <div class="compare-input-col">
+        <div class="compare-input-col-title t-15">15 Year Loan</div>
+        <div class="field">
+          <label>Loan Amount</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="c15-loan" placeholder="350,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Interest Rate (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="c15-rate" placeholder="6.0" step="0.01" class="has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Home Purchase Price</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="c15-price" placeholder="400,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <input type="hidden" id="c15-term" value="15">
+      </div>
+
+      <div class="compare-input-col">
+        <div class="compare-input-col-title t-30">30 Year Loan</div>
+        <div class="field">
+          <label>Loan Amount</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="c30-loan" placeholder="350,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Interest Rate (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="c30-rate" placeholder="6.5" step="0.01" class="has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Home Purchase Price</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="c30-price" placeholder="400,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <input type="hidden" id="c30-term" value="30">
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Taxes &amp; Insurance</div>
+      <div class="form-grid">
+        <div class="field full">
+          <label>Include Taxes &amp; Insurance?</label>
+          <div class="input-wrap">
+            <select id="c-tai" onchange="toggleCompareTaiFields()">
+              <option value="no">No — use estimates</option>
+              <option value="yes">Yes — enter my own</option>
+            </select>
+          </div>
+        </div>
+        <div class="optional-fields" id="c-optional">
+          <div class="field">
+            <label>Annual Property Taxes</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="c-tax" placeholder="4,800" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Annual Homeowners Insurance</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="c-ins" placeholder="1,200" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcCompare()">Compare</button>
+    </div>
+
+    <!-- COMPARE RESULTS -->
+    <div id="c-results" class="compare-results results-panel">
+      <button class="qualify-banner" onclick="window.open('https://mtgxps.mymortgage-online.com/GavinHamilton.html','_blank')">
+        <div>
+          <div class="qualify-banner-text">Find Out What You Qualify For</div>
+          <div class="qualify-banner-sub">Free soft-pull analysis</div>
+        </div>
+        <span class="qualify-banner-arrow">click here</span>
+      </button>
+
+      <div class="compare-cols">
+        <div class="compare-col-card">
+          <div class="compare-col-header h-15">15 Year Loan</div>
+          <div class="compare-total-block">
+            <div class="compare-total-label">Approx. Monthly Payment</div>
+            <div class="compare-total-amount" id="c15-total">—</div>
+            <div class="compare-total-sub">/ month</div>
+            <div class="compare-apr" id="c15-apr">—</div>
+          </div>
+          <div class="compare-line-items" id="c15-lines"></div>
+        </div>
+
+        <div class="compare-col-card">
+          <div class="compare-col-header h-30">30 Year Loan</div>
+          <div class="compare-total-block">
+            <div class="compare-total-label">Approx. Monthly Payment</div>
+            <div class="compare-total-amount" id="c30-total">—</div>
+            <div class="compare-total-sub">/ month</div>
+            <div class="compare-apr" id="c30-apr">—</div>
+          </div>
+          <div class="compare-line-items" id="c30-lines"></div>
+        </div>
+      </div>
+
+      <div class="pmi-disclaimer" id="c-pmi-disclaimer">
+        <p><strong>Monthly mortgage insurance is required on loans with less than 20% down payment.</strong> This estimate is for informational purposes only. Contact a lending professional for an accurate quote.</p>
+      </div>
+
+      <div class="diff-callout" id="c-diff-block">
+        <p id="c-diff-text"></p>
+      </div>
+
+      <div class="pros-cons-grid" id="c-pros-cons">
+        <div class="pc-col col-15">
+          <div class="pc-card">
+            <div class="pc-card-title pros">15 Year — Pros</div>
+            <ul class="pc-list pros">
+              <li>Pay significantly less interest over the life of the loan</li>
+              <li>Every extra dollar above interest goes directly toward principal</li>
+              <li>Own your home free and clear in 15 years</li>
+            </ul>
+          </div>
+          <div class="pc-card">
+            <div class="pc-card-title cons">15 Year — Cons</div>
+            <ul class="pc-list cons">
+              <li>Higher monthly payment — not ideal if budget is tight</li>
+              <li>Fixed payment with no option to pay less</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="pc-col col-30">
+          <div class="pc-card">
+            <div class="pc-card-title pros">30 Year — Pros</div>
+            <ul class="pc-list pros">
+              <li>Lower required monthly payment gives more breathing room</li>
+              <li id="c-30-extra-pro">Option to pay extra toward principal — <em id="c-payoff-note">enter both scenarios to see your accelerated payoff estimate</em></li>
+            </ul>
+          </div>
+          <div class="pc-card">
+            <div class="pc-card-title cons">30 Year — Cons</div>
+            <ul class="pc-list cons">
+              <li>More of each payment goes toward interest, especially early on</li>
+              <li>30 years before the loan is paid off on standard schedule</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════
+       PANEL 3 — BUY VS RENT
+  ══════════════════════ -->
+  <div id="panel-debt" class="panel">
+
+    <div class="bvr-input-cols">
+
+      <!-- RENT column -->
+      <div class="bvr-input-col">
+        <div class="bvr-col-title t-rent">Rent</div>
+        <div class="field">
+          <label>Estimated Monthly Rent</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="bvr-rent" placeholder="2,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Annual Rent Increases (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="bvr-rent-inc" placeholder="3" step="0.1" class="has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Amount Invested / Month</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="bvr-invest" placeholder="500" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Estimated Investment Return (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="bvr-inv-rate" placeholder="7" step="0.1" class="has-prefix">
+          </div>
+        </div>
+      </div>
+
+      <!-- BUY column -->
+      <div class="bvr-input-col">
+        <div class="bvr-col-title t-buy">Buy</div>
+        <div class="field">
+          <label>Purchase Price</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="bvr-price" placeholder="400,000" inputmode="numeric" class="comma-input has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Down Payment</label>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="text" id="bvr-down" placeholder="80,000" inputmode="numeric" class="comma-input has-prefix" oninput="showDpPopup(this)">
+          </div>
+          <div class="dp-question" id="bvr-dp-popup">
+            <p>Will you invest this if you continue renting?</p>
+            <div class="dp-btns">
+              <button class="dp-btn" id="dp-btn-yes" onclick="selectDpInvest('yes')">Yes — invest it</button>
+              <button class="dp-btn" id="dp-btn-no"  onclick="selectDpInvest('no')">No — keep as cash</button>
+            </div>
+          </div>
+        </div>
+        <div class="field">
+          <label>Interest Rate (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="bvr-rate" placeholder="6.5" step="0.01" class="has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Loan Term</label>
+          <div class="input-wrap">
+            <select id="bvr-term">
+              <option value="30">30 Years</option>
+              <option value="20">20 Years</option>
+              <option value="15">15 Years</option>
+              <option value="10">10 Years</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>Annual Home Appreciation (%)</label>
+          <div class="input-wrap">
+            <span class="input-prefix">%</span>
+            <input type="number" id="bvr-appr" placeholder="3" step="0.1" class="has-prefix">
+          </div>
+        </div>
+        <div class="field">
+          <label>Include Taxes &amp; Insurance?</label>
+          <div class="input-wrap">
+            <select id="bvr-tai" onchange="toggleBvrTai()">
+              <option value="no">No — use estimates</option>
+              <option value="yes">Yes — enter my own</option>
+            </select>
+          </div>
+        </div>
+        <div class="bvr-opt-fields" id="bvr-optional">
+          <div class="field">
+            <label>Annual Property Taxes</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="bvr-tax" placeholder="4,800" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Annual Homeowners Insurance</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="bvr-ins" placeholder="1,200" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="form-grid">
+        <div class="field full">
+          <label>Timeframe (Years)</label>
+          <div class="input-wrap">
+            <input type="number" id="bvr-years" placeholder="10" min="1" max="50">
+          </div>
+        </div>
+      </div>
+      <button class="calc-btn" onclick="calcBuyVsRent()">Compare</button>
+    </div>
+
+    <!-- BVR RESULTS -->
+    <div id="bvr-results" class="bvr-results">
+      <button class="qualify-banner" onclick="window.open('https://mtgxps.mymortgage-online.com/GavinHamilton.html','_blank')">
+        <div>
+          <div class="qualify-banner-text">Find Out What You Qualify For</div>
+          <div class="qualify-banner-sub">Free soft-pull analysis</div>
+        </div>
+        <span class="qualify-banner-arrow">click here</span>
+      </button>
+
+      <!-- ── SUMMARY CARD ── -->
+      <div class="bvr-summary-card">
+        <div class="bvr-summary-title">At a Glance</div>
+
+        <div class="bvr-summary-row">
+          <div class="bvr-summary-col">
+            <div class="bvr-summary-label">Monthly Rent <span class="bvr-summary-period">(today)</span></div>
+            <div class="bvr-summary-amount" id="sum-rent-now">—</div>
+          </div>
+          <div class="bvr-summary-vs">vs</div>
+          <div class="bvr-summary-col">
+            <div class="bvr-summary-label">Est. Mortgage PITI <span class="bvr-summary-period">(today)</span></div>
+            <div class="bvr-summary-amount" id="sum-mortgage-now">—</div>
+          </div>
+        </div>
+
+        <div class="bvr-summary-divider"></div>
+
+        <div class="bvr-summary-row">
+          <div class="bvr-summary-col">
+            <div class="bvr-summary-label">Est. Rent <span class="bvr-summary-period" id="sum-label-fut-rent">(in 10 years)</span></div>
+            <div class="bvr-summary-amount" id="sum-rent-future">—</div>
+          </div>
+          <div class="bvr-summary-vs">vs</div>
+          <div class="bvr-summary-col">
+            <div class="bvr-summary-label">Est. Mortgage PITI <span class="bvr-summary-period" id="sum-label-fut-mort">(in 10 years)</span></div>
+            <div class="bvr-summary-amount" id="sum-mortgage-future">—</div>
+          </div>
+        </div>
+
+        <div class="bvr-summary-divider"></div>
+
+        <div class="bvr-summary-row">
+          <div class="bvr-summary-col">
+            <div class="bvr-summary-label">Est. Net Worth — Renting <span class="bvr-summary-period" id="sum-label-nw-rent">(in 10 years)</span></div>
+            <div class="bvr-summary-amount" id="sum-nw-rent">—</div>
+          </div>
+          <div class="bvr-summary-vs">vs</div>
+          <div class="bvr-summary-col">
+            <div class="bvr-summary-label">Est. Net Worth — Buying <span class="bvr-summary-period" id="sum-label-nw-buy">(in 10 years)</span></div>
+            <div class="bvr-summary-amount" id="sum-nw-buy">—</div>
+          </div>
+        </div>
+
+        <p class="bvr-summary-note">↓ Full breakdown below</p>
+      </div>
+      <div class="bvr-current-grid">
+        <div class="bvr-result-card">
+          <div class="bvr-result-header h-rent">Current Rent</div>
+          <div class="bvr-metric">
+            <div class="bvr-metric-label">Monthly Rent</div>
+            <div class="bvr-metric-value" id="bvr-r-current">—</div>
+            <div class="bvr-metric-sub">/ month, today</div>
+            <div class="bvr-sub-lines" style="margin-top:10px">
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Principal &amp; Interest</span><span class="bvr-sub-value dash">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. Property Tax</span><span class="bvr-sub-value dash">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. Homeowners Ins.</span><span class="bvr-sub-value dash">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. Mortgage Insurance</span><span class="bvr-sub-value dash">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bvr-result-card">
+          <div class="bvr-result-header h-buy">Current Mortgage</div>
+          <div class="bvr-metric">
+            <div class="bvr-metric-label">Total Monthly Payment</div>
+            <div class="bvr-metric-value" id="bvr-b-current">—</div>
+            <div class="bvr-metric-sub">/ month, today</div>
+            <div class="bvr-apr-line" id="bvr-b-apr">—</div>
+            <div class="bvr-sub-lines" style="margin-top:10px">
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Principal &amp; Interest</span><span class="bvr-sub-value" id="bvr-b-cur-pi">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. Property Tax</span><span class="bvr-sub-value" id="bvr-b-cur-tax">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. Homeowners Ins.</span><span class="bvr-sub-value" id="bvr-b-cur-ins">—</span></div>
+              <div class="bvr-sub-line" id="bvr-b-cur-pmi-row" style="display:none"><span class="bvr-sub-label">Est. Mortgage Insurance (PMI)</span><span class="bvr-sub-value" id="bvr-b-cur-pmi">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pmi-disclaimer" id="bvr-cur-pmi-disclaimer">
+        <p><strong>Monthly mortgage insurance is required on loans with less than 20% down payment.</strong> This estimate is for informational purposes only. Contact a lending professional for an accurate quote.</p>
+      </div>
+
+      <div class="bvr-years-divider" id="bvr-years-divider-text">— Years From Now —</div>
+
+      <div class="bvr-rent-exceeds" id="bvr-rent-exceeds" style="display:none">
+        <span id="bvr-rent-exceeds-text"></span>
+      </div>
+
+      <!-- Future payments & net worth -->
+      <div class="bvr-current-grid">
+        <div class="bvr-result-card">
+          <div class="bvr-result-header h-rent">Renting</div>
+          <div class="bvr-metric">
+            <div class="bvr-metric-label">Future Estimated Rent Payment</div>
+            <div class="bvr-metric-value" id="bvr-r-futrent">—</div>
+            <div class="bvr-sub-lines" style="margin-top:10px">
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Annual increase</span><span class="bvr-sub-value" id="bvr-r-inc">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">After <span id="bvr-r-yrs"></span> years</span><span class="bvr-sub-value" id="bvr-r-futrent2">—</span></div>
+            </div>
+          </div>
+          <div class="bvr-metric">
+            <div class="bvr-metric-label">Estimated Net Worth (Investments)</div>
+            <div class="bvr-metric-value" id="bvr-r-networth">—</div>
+            <div class="bvr-sub-lines" style="margin-top:10px">
+              <div class="bvr-sub-line dp-note" id="bvr-r-initinv-row" style="display:none"><span class="bvr-sub-label">Initial investment (down pmt)</span><span class="bvr-sub-value" id="bvr-r-initinv-val">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Monthly invested</span><span class="bvr-sub-value" id="bvr-r-moinv">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Total contributions</span><span class="bvr-sub-value" id="bvr-r-contrib">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Investment return</span><span class="bvr-sub-value" id="bvr-r-invrate">—</span></div>
+              <div class="bvr-sub-line dp-note" id="bvr-r-dp-row" style="display:none"><span class="bvr-sub-label" id="bvr-r-dp-label">Down payment treatment</span><span class="bvr-sub-value" id="bvr-r-dp-val">—</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bvr-result-card">
+          <div class="bvr-result-header h-buy">Buying</div>
+          <div class="bvr-metric">
+            <div class="bvr-metric-label">Future Estimated Mortgage Payment</div>
+            <div class="bvr-metric-value" id="bvr-b-futpmt">—</div>
+            <div class="bvr-sub-lines" style="margin-top:10px">
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Principal &amp; Interest (fixed)</span><span class="bvr-sub-value" id="bvr-b-pi">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. future property tax</span><span class="bvr-sub-value" id="bvr-b-tax">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Est. future homeowners ins.</span><span class="bvr-sub-value" id="bvr-b-ins">—</span></div>
+              <div class="bvr-sub-line" id="bvr-b-fut-pmi-row" style="display:none"><span class="bvr-sub-label">Est. Mortgage Insurance (PMI)</span><span class="bvr-sub-value" id="bvr-b-fut-pmi">—</span></div>
+            </div>
+          </div>
+          <div class="bvr-metric">
+            <div class="bvr-metric-label">Estimated Net Worth (Home Equity)</div>
+            <div class="bvr-metric-value" id="bvr-b-networth">—</div>
+            <div class="bvr-sub-lines" style="margin-top:10px">
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Future home value</span><span class="bvr-sub-value" id="bvr-b-futval">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Remaining loan balance</span><span class="bvr-sub-value" id="bvr-b-balance">—</span></div>
+              <div class="bvr-sub-line"><span class="bvr-sub-label">Home equity</span><span class="bvr-sub-value green" id="bvr-b-equity">—</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="verdict-card" id="bvr-verdict">
+        <div class="verdict-text" id="bvr-verdict-text"></div>
+      </div>
+
+    </div><!-- /bvr-results -->
+
+    </div><!-- /panel-debt -->
+
+    <!-- ══════════════════════
+         PANEL 4 — HOW INTEREST WORKS
+    ══════════════════════ -->
+    <div id="panel-fi-interest" class="panel">
+      <div class="card">
+        <div class="card-title">How Interest Works</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Loan Amount</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="hi-principal" placeholder="20,000" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Annual Interest Rate (%)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">%</span>
+              <input type="number" id="hi-rate" placeholder="7" step="0.1" class="has-prefix">
+            </div>
+          </div>
+          <div class="field full">
+            <label>Desired Monthly Payment</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="number" id="hi-payment" placeholder="400" class="has-prefix">
+            </div>
+          </div>
+        </div>
+        <button class="calc-btn" onclick="calcInterest()">Calculate</button>
+      </div>
+
+      <!-- Key Takeaways summary -->
+      <div id="hi-summary" class="fin-summary">
+        <div class="fin-summary-title">Key Takeaways</div>
+        <ul class="fin-summary-list">
+          <li><span class="fin-sl">Interest-only payment</span><span class="fin-sv neg" id="hi-b-intonly">—</span></li>
+          <li><span class="fin-sl">Your payment</span><span class="fin-sv" id="hi-b-yourpmt">—</span></li>
+          <li><span class="fin-sl">Paid off in</span><span class="fin-sv" id="hi-b-payoff">—</span></li>
+        </ul>
+      </div>
+
+      <div id="hi-results" class="fin-results">
+      <button class="qualify-banner edu-banner" onclick="window.open('https://mtgxps.mymortgage-online.com/GavinHamilton.html','_blank')">
+        <div>
+          <div class="qualify-banner-text">For Educational Purposes Only</div>
+        </div>
+        <span class="qualify-banner-arrow">Questions? Click Here</span>
+      </button>
+
+        <div class="fin-section-label">⚠ Interest-Only Payment</div>
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">Interest Only / Month</div>
+            <div class="result-value negative" id="hi-int-only">—</div>
+            <div class="result-sub">loan balance stays at <span id="hi-int-balance">—</span> forever</div>
+          </div>
+        </div>
+        <div class="explain-box">
+          <p>At this payment, you cover <strong>only the interest</strong>. The loan balance <strong>never decreases</strong> — every dollar goes straight to the lender. You are renting the money indefinitely.</p>
+        </div>
+
+        <div class="fin-section-label">✓ Your Payment — <span id="hi-payoff-pmt-label">—</span> / Month</div>
+        <div class="result-grid">
+          <div class="result-card">
+            <div class="result-label">Paid Off In</div>
+            <div class="result-value highlight" id="hi-payoff-time">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Paid</div>
+            <div class="result-value" id="hi-payoff-total">—</div>
+          </div>
+          <div class="result-card">
+            <div class="result-label">Total Interest Paid</div>
+            <div class="result-value negative" id="hi-payoff-interest">—</div>
+            <div class="result-sub" id="hi-payoff-interest-pct"></div>
+          </div>
+        </div>
+        <div id="hi-payoff-explain" class="explain-box info">
+          <p>Your payment covers interest <strong>and</strong> chips away at the balance. As the balance drops each month, so does the interest charge — meaning more of each payment attacks the principal.</p>
+        </div>
+
+        <div class="fin-section-label">Amortization — Watch Interest Shrink as Balance Falls</div>
+        <div class="table-wrap">
+          <table class="amort-table">
+            <thead><tr><th>Mo</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+            <tbody id="hi-table"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════
+         PANEL 5 — COMPOUND INTEREST
+    ══════════════════════ -->
+    <div id="panel-fi-compound" class="panel">
+      <div class="card">
+        <div class="card-title">How Compound Interest Works</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Initial Amount</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="i-initial" placeholder="10,000" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Monthly Deposit</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="number" id="i-monthly" placeholder="500" class="has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Annual Return (%)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">%</span>
+              <input type="number" id="i-rate" placeholder="8" step="0.1" class="has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Time Horizon (Years)</label>
+            <div class="input-wrap">
+              <input type="number" id="i-years" placeholder="20">
+            </div>
+          </div>
+        </div>
+        <button class="calc-btn" onclick="calcInvestment()">Calculate</button>
+      </div>
+
+      <div id="i-summary" class="fin-summary">
+        <div class="fin-summary-title">Key Takeaways</div>
+        <ul class="fin-summary-list">
+          <li><span class="fin-sl">Total contributions</span><span class="fin-sv" id="i-b-contrib">—</span></li>
+          <li><span class="fin-sl">Future value</span><span class="fin-sv pos" id="i-b-fv">—</span></li>
+        </ul>
+      </div>
+
+      <div id="i-results" class="fin-results">
+      <button class="qualify-banner edu-banner" onclick="window.open('https://mtgxps.mymortgage-online.com/GavinHamilton.html','_blank')">
+        <div>
+          <div class="qualify-banner-text">For Educational Purposes Only</div>
+        </div>
+        <span class="qualify-banner-arrow">Questions? Click Here</span>
+      </button>
+        <div class="result-grid" id="i-result-grid"></div>
+
+        <div class="fin-section-label">Total Contributions vs Total Value Over Time</div>
+        <div class="ci-chart">
+          <div class="ci-chart-inner" id="i-chart"></div>
+        </div>
+        <div class="ci-x-labels" id="i-x-labels"></div>
+        <div class="chart-legend">
+          <span><span class="legend-dot" style="background:#c8c0e8"></span>Total Contributions</span>
+          <span><span class="legend-dot" style="background:#5a8fc0"></span>Total Value (with compound growth)</span>
+        </div>
+
+        <div class="cta-box">
+          <p>Want to see compounding in action? Keep everything the same — then add 10 years to your time horizon. Watch how dramatically the total value accelerates.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════════════
+         PANEL 6 — PAY OFF DEBT FASTER
+    ══════════════════════ -->
+    <div id="panel-fi-debtpay" class="panel">
+      <div class="card">
+        <div class="card-title">How Loan Amortization Works</div>
+        <div class="form-grid">
+          <div class="field">
+            <label>Borrowed Amount</label>
+            <div class="input-wrap">
+              <span class="input-prefix">$</span>
+              <input type="text" id="d-principal" placeholder="15,000" inputmode="numeric" class="comma-input has-prefix">
+            </div>
+          </div>
+          <div class="field">
+            <label>Annual Interest Rate (%)</label>
+            <div class="input-wrap">
+              <span class="input-prefix">%</span>
+              <input type="number" id="d-rate" placeholder="18" step="0.1" class="has-prefix">
+            </div>
+          </div>
+          <div class="field full">
+            <label>Payoff Timeframe (Years)</label>
+            <div class="input-wrap">
+              <input type="number" id="d-term" placeholder="5" min="1" max="30">
+            </div>
+          </div>
+        </div>
+        <button class="calc-btn" onclick="calcDebt()">Calculate</button>
+      </div>
+
+      <div id="d-summary" class="fin-summary">
+        <div class="fin-summary-title">Key Takeaways</div>
+        <ul class="fin-summary-list">
+          <li><span class="fin-sl">Monthly payment</span><span class="fin-sv" id="d-b-payment">—</span></li>
+          <li><span class="fin-sl">Pay off in</span><span class="fin-sv pos" id="d-b-payoff">—</span></li>
+        </ul>
+      </div>
+
+      <div id="d-results" class="fin-results">
+      <button class="qualify-banner edu-banner" onclick="window.open('https://mtgxps.mymortgage-online.com/GavinHamilton.html','_blank')">
+        <div>
+          <div class="qualify-banner-text">For Educational Purposes Only</div>
+        </div>
+        <span class="qualify-banner-arrow">Questions? Click Here</span>
+      </button>
+        <div id="d-scenario-output"></div>
+      </div>
+    </div>
+
+    </div><!-- /screen -->
+
+    <!-- CONTAINER FOOTER -->
+    <div class="container-footer">
+      <button class="reset-btn" onclick="resetAll()">↺ Reset</button>
+    </div>
+
+  </div><!-- /container -->
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    <p>© Mortgage Calculators by Gavin</p>
+    <p>This calculator is for educational and informational purposes only. Information provided is not a commitment to lend and should not be used as a qualifying tool. Actual rates, terms, and payment information vary depending on credit and other qualifications. Contact a lending professional for the most accurate quote.</p>
+    <p>Private mortgage insurance (if applicable) is an estimate. Actual mortgage insurance terms vary depending on credit qualifications, down payment, and loan program.</p>
+    <p>*The APR listed is an estimate, calculated based on estimated origination fees of $1,525, estimated settlement fees for home purchases in Portland, Oregon, a 1% discount "buy down" fee, and 15 days of prepaid interest. Contact a lending professional for the most accurate quote.</p>
+    <p>Future property tax and homeowners insurance estimates assume appreciation at the same rate as the input annual home appreciation. These are intended to illustrate that taxes and insurance can also increase over time.</p>
+  </div>
+
+  <!-- PNG FOOTER -->
+  <footer class="site-footer" id="site-footer" style="display:none">
+    <img src="footer.png" alt="" onload="document.getElementById('site-footer').style.display='block'" onerror="document.getElementById('site-footer').style.display='none'">
+  </footer>
+
+</div>
+
+<!-- ALERT MODAL -->
+<div class="alert-overlay" id="alert-modal">
+  <div class="alert-box">
+    <div class="alert-icon" id="alert-icon">⚠ Alert</div>
+    <div class="alert-msg" id="alert-msg"></div>
+    <button class="alert-btn" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+const fmt  = n => '$' + Math.round(n).toLocaleString();
+const fmt2 = n => '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+const parseVal = id => parseFloat(document.getElementById(id).value.replace(/,/g, '')) || 0;
+
+function formatCommaInput(el) {
+  const raw = el.value.replace(/,/g, '').replace(/[^0-9.]/g, '');
+  const num = parseFloat(raw);
+  if (!isNaN(num)) el.value = num.toLocaleString('en-US', { maximumFractionDigits: 2 });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.comma-input').forEach(el => {
+    el.addEventListener('blur', () => formatCommaInput(el));
+    el.addEventListener('focus', () => { el.value = el.value.replace(/,/g, ''); });
+  });
+});
+
+function switchMode(mode, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + mode).classList.add('active');
+  btn.classList.add('active');
+}
+
+/* ── HELPERS ── */
+function makeCard(label, value, cls = '', sub = '') {
+  return `<div class="result-card">
+    <div class="result-label">${label}</div>
+    <div class="result-value ${cls}">${value}</div>
+    ${sub ? `<div class="result-sub">${sub}</div>` : ''}
+  </div>`;
+}
+const pct = n => (n * 100).toFixed(1) + '%';
+
+/* ── CALC 4: HOW INTEREST WORKS ── */
+function calcInterest() {
+  const P          = parseVal('hi-principal');
+  const annualRate = parseFloat(document.getElementById('hi-rate').value) / 100;
+  const payment    = parseFloat(document.getElementById('hi-payment').value);
+  if (!P || P <= 0 || !annualRate || !payment) return;
+
+  const r       = annualRate / 12;
+  const intOnly = P * r;
+
+  document.getElementById('hi-int-only').textContent    = fmt2(intOnly) + ' / mo';
+  document.getElementById('hi-int-balance').textContent = fmt(P);
+
+  let payoffText, payoffClass, tableHTML = '';
+
+  if (payment < intOnly - 0.005) {
+    payoffText  = 'Never — balance is growing';
+    payoffClass = 'neg';
+    document.getElementById('hi-payoff-pmt-label').textContent      = fmt2(payment);
+    document.getElementById('hi-payoff-time').textContent            = 'Never';
+    document.getElementById('hi-payoff-time').className              = 'result-value negative';
+    document.getElementById('hi-payoff-total').textContent           = '—';
+    document.getElementById('hi-payoff-interest').textContent        = '—';
+    document.getElementById('hi-payoff-interest-pct').textContent    = '';
+    document.getElementById('hi-payoff-explain').querySelector('p').innerHTML =
+      'Your payment does not even cover the monthly interest. The unpaid interest is added to your balance — meaning you owe <strong>more</strong> next month than today.';
+  } else if (Math.abs(payment - intOnly) < 0.50) {
+    payoffText  = 'Never — interest only';
+    payoffClass = 'neg';
+    document.getElementById('hi-payoff-pmt-label').textContent      = fmt2(payment);
+    document.getElementById('hi-payoff-time').textContent            = 'Never';
+    document.getElementById('hi-payoff-time').className              = 'result-value negative';
+    document.getElementById('hi-payoff-total').textContent           = '—';
+    document.getElementById('hi-payoff-interest').textContent        = '—';
+    document.getElementById('hi-payoff-interest-pct').textContent    = 'principal never decreases';
+    document.getElementById('hi-payoff-explain').querySelector('p').innerHTML =
+      'Your payment exactly matches the monthly interest charge. The principal <strong>never decreases</strong> — you are paying to stay in place, not to get out of debt.';
+  } else {
+    let balance = P, months = 0;
+    while (balance > 0.005 && months < 1200) {
+      months++;
+      const intPmt  = balance * r;
+      let   prinPmt = payment - intPmt;
+      if (prinPmt > balance) prinPmt = balance;
+      balance -= prinPmt;
+      if (balance < 0.005) balance = 0;
+      const actualPmt = intPmt + prinPmt;
+      tableHTML += `<tr><td>${months}</td><td>${fmt2(actualPmt)}</td><td>${fmt2(prinPmt)}</td><td>${fmt2(intPmt)}</td><td>${fmt2(balance)}</td></tr>`;
+    }
+    let totalPaid = 0, bal2 = P;
+    for (let m = 0; m < months; m++) {
+      const ip = bal2 * r;
+      let pp = payment - ip;
+      if (pp > bal2) pp = bal2;
+      bal2 -= pp;
+      totalPaid += ip + pp;
+    }
+    const totalInterest = totalPaid - P;
+    const yrs = Math.floor(months / 12), mos = months % 12;
+    const timeStr = yrs > 0 ? `${yrs}y ${mos}m` : `${mos} months`;
+    payoffText  = timeStr;
+    payoffClass = 'pos';
+    document.getElementById('hi-payoff-pmt-label').textContent      = fmt2(payment);
+    document.getElementById('hi-payoff-time').textContent            = timeStr;
+    document.getElementById('hi-payoff-time').className              = 'result-value highlight';
+    document.getElementById('hi-payoff-total').textContent           = fmt(totalPaid);
+    document.getElementById('hi-payoff-interest').textContent        = fmt(totalInterest);
+    document.getElementById('hi-payoff-interest-pct').textContent    = pct(totalInterest / P) + ' of original loan';
+    document.getElementById('hi-payoff-explain').querySelector('p').innerHTML =
+      'Your payment covers interest <strong>and</strong> chips away at the balance. As the balance drops each month, so does the interest charge — meaning more of each payment attacks the principal.';
+  }
+
+  document.getElementById('hi-table').innerHTML = tableHTML;
+  document.getElementById('hi-results').classList.add('show');
+  document.getElementById('hi-b-intonly').textContent  = fmt2(intOnly) + ' / mo';
+  document.getElementById('hi-b-yourpmt').textContent  = fmt2(payment) + ' / mo';
+  document.getElementById('hi-b-payoff').textContent   = payoffText;
+  document.getElementById('hi-b-payoff').className     = 'fin-sv ' + payoffClass;
+  document.getElementById('hi-summary').classList.add('show');
+  setTimeout(() => document.getElementById('hi-summary').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ── CALC 5: COMPOUND INTEREST ── */
+function calcInvestment() {
+  const PV  = parseVal('i-initial');
+  const PMT = parseFloat(document.getElementById('i-monthly').value) || 0;
+  const r   = parseFloat(document.getElementById('i-rate').value) / 100 / 12;
+  const totalYears = parseInt(document.getElementById('i-years').value) || 1;
+  const n   = totalYears * 12;
+  if (!PV && !PMT) return;
+
+  const FV           = PV * Math.pow(1+r, n) + (r > 0 ? PMT * (Math.pow(1+r, n) - 1) / r : PMT * n);
+  const totalContrib = PV + PMT * n;
+  const gains        = FV - totalContrib;
+
+  document.getElementById('i-result-grid').innerHTML =
+    makeCard('Total Value',          fmt(FV),           'highlight') +
+    makeCard('Total Contributions',  fmt(totalContrib), '')          +
+    makeCard('Compound Growth',      fmt(gains),        'positive',  pct(gains / totalContrib) + ' total return') +
+    makeCard('Avg Monthly Growth',   fmt(gains / n),    'positive');
+
+  const chartEl = document.getElementById('i-chart');
+  const xEl     = document.getElementById('i-x-labels');
+  chartEl.innerHTML = ''; xEl.innerHTML = '';
+  const pts = [];
+  for (let y = 1; y <= totalYears; y++) {
+    const nm  = y * 12;
+    const fv  = PV * Math.pow(1+r, nm) + (r > 0 ? PMT * (Math.pow(1+r, nm) - 1) / r : PMT * nm);
+    pts.push({ y, fv, contrib: PV + PMT * nm });
+  }
+  const maxVal = Math.max(...pts.map(d => d.fv));
+  pts.forEach(d => {
+    const g = document.createElement('div');
+    g.className = 'ci-bar-group';
+    const cBar = document.createElement('div'); cBar.className = 'ci-bar-contrib'; cBar.style.height = (d.contrib / maxVal * 100) + '%';
+    const gBar = document.createElement('div'); gBar.className = 'ci-bar-gains';   gBar.style.height = ((d.fv - d.contrib) / maxVal * 100) + '%';
+    g.appendChild(gBar); g.appendChild(cBar); chartEl.appendChild(g);
+  });
+  const labelCount = Math.min(6, totalYears), step = Math.max(1, Math.floor(totalYears / labelCount));
+  for (let i = step; i <= totalYears; i += step) {
+    const span = document.createElement('span'); span.textContent = 'yr ' + i; xEl.appendChild(span);
+  }
+
+  document.getElementById('i-results').classList.add('show');
+  document.getElementById('i-b-contrib').textContent = fmt(totalContrib);
+  document.getElementById('i-b-fv').textContent      = fmt(FV);
+  document.getElementById('i-summary').classList.add('show');
+  setTimeout(() => document.getElementById('i-summary').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ── CALC 6: PAY OFF DEBT FASTER ── */
+function calcDebt() {
+  const P       = parseVal('d-principal');
+  const annRate = parseFloat(document.getElementById('d-rate').value) / 100;
+  const termYrs = parseInt(document.getElementById('d-term').value) || 5;
+  if (!P || P <= 0 || !annRate || !termYrs) return;
+
+  const r       = annRate / 12;
+  const n       = termYrs * 12;
+  const intOnly = P * r;
+  const payment = P * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+
+  let balance = P, months = 0, totalPaid = 0, tableHTML = '';
+  while (balance > 0.005 && months < n) {
+    months++;
+    const intCharge = balance * r;
+    let   prinPmt   = payment - intCharge;
+    if (prinPmt > balance) prinPmt = balance;
+    const actualPmt = intCharge + prinPmt;
+    balance -= prinPmt;
+    if (balance < 0.005) balance = 0;
+    totalPaid += actualPmt;
+    tableHTML += `<tr><td>${months}</td><td>${fmt2(actualPmt)}</td><td>${fmt2(prinPmt)}</td><td>${fmt2(intCharge)}</td><td>${fmt2(balance)}</td></tr>`;
+  }
+  const totalInterest = totalPaid - P;
+  const yrs = Math.floor(months / 12), mos = months % 12;
+  const timeStr = yrs > 0 ? `${yrs}y ${mos}m` : `${mos} months`;
+
+  document.getElementById('d-scenario-output').innerHTML = `
+    <div class="result-grid">
+      ${makeCard('Required Payment / Mo', fmt2(payment) + ' / mo', 'highlight', 'to pay off in ' + termYrs + ' years')}
+      ${makeCard('Interest-Only Payment', fmt2(intOnly) + ' / mo', 'negative',  'loan balance never decreases')}
+      ${makeCard('Total Paid',            fmt(totalPaid),           '')}
+      ${makeCard('Total Interest',        fmt(totalInterest),       'negative',  pct(totalInterest / P) + ' of original loan')}
+    </div>
+    <div class="explain-box info" style="margin-top:16px">
+      <p>At <strong>${fmt2(payment)}/mo</strong>, your loan is fully paid off in <strong>${timeStr}</strong>. As the balance falls each month, so does the interest charge — meaning more of every payment chips away at the debt.</p>
+    </div>
+    <div class="fin-section-label">Amortization — Interest Decreases as Balance Drops</div>
+    <div class="table-wrap">
+      <table class="amort-table">
+        <thead><tr><th>Mo</th><th>Payment</th><th>Principal</th><th>Interest</th><th>Balance</th></tr></thead>
+        <tbody>${tableHTML}</tbody>
+      </table>
+    </div>
+    <div class="encourage-box">
+      <p>Try adjusting the Payoff Timeframe to see how a shorter or longer timeline changes your required monthly payment and total interest paid. Every year makes a bigger difference than you might think.</p>
+    </div>`;
+
+  document.getElementById('d-b-payment').textContent = fmt2(payment) + ' / mo';
+  document.getElementById('d-b-payoff').textContent  = timeStr;
+  document.getElementById('d-b-payoff').className    = 'fin-sv pos';
+  document.getElementById('d-results').classList.add('show');
+  document.getElementById('d-summary').classList.add('show');
+  setTimeout(() => document.getElementById('d-summary').scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+function toggleTaxInsFields() {
+  const val = document.getElementById('mc-tai').value;
+  document.getElementById('mc-optional').classList.toggle('visible', val === 'yes');
+}
+
+function toggleCompareTaiFields() {
+  const val = document.getElementById('c-tai').value;
+  document.getElementById('c-optional').classList.toggle('visible', val === 'yes');
+}
+
+function toggleBvrTai() {
+  const val = document.getElementById('bvr-tai').value;
+  document.getElementById('bvr-optional').classList.toggle('visible', val === 'yes');
+}
+
+/* ── ALERT ── */
+function showAlert(msg, isError) {
+  const icon = document.getElementById('alert-icon');
+  icon.textContent = isError ? '⚠ Input Error' : '⚠ Heads Up';
+  icon.className = 'alert-icon' + (isError ? '' : ' warn');
+  document.getElementById('alert-msg').textContent = msg;
+  document.getElementById('alert-modal').classList.add('show');
+}
+function closeAlert() {
+  document.getElementById('alert-modal').classList.remove('show');
+}
+
+function checkLTV(loan, price) {
+  if (!price || price <= 0) return false;
+  const ltv = loan / price;
+  if (ltv > 1.0) {
+    showAlert('Loan amount exceeds purchase price. Please input a down payment.', true);
+    return true;
+  }
+  if (ltv > 0.95) {
+    showAlert('You have less than 5% down payment. Contact a lending professional to see if you qualify for low down payment programs.', false);
+    return false;
+  }
+  return false;
+}
+
+/* ── APR ── */
+function calcAPR(loan, annualRate, termYears, price, pmiMonthly) {
+  const r  = annualRate / 12;
+  const n  = termYears * 12;
+  const pi = loan * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  const origination = 1525;
+  const settlement  = 1700 + (price / 1000);
+  const discountPt  = loan * 0.01;
+  const prepaidInt  = loan * annualRate / 365 * 15;
+  const totalCosts  = origination + settlement + discountPt + prepaidInt;
+  const financedAmt = loan - totalCosts;
+  if (financedAmt <= 0) return annualRate * 100;
+
+  const hasPMI   = pmiMonthly > 0;
+  const target78 = price * 0.78;
+
+  if (!hasPMI) {
+    let guess = annualRate / 12;
+    for (let i = 0; i < 300; i++) {
+      const pow  = Math.pow(1 + guess, n);
+      const f    = pi * (1 - 1 / pow) / guess - financedAmt;
+      const df   = pi * (1 / (guess * guess) * (1 / pow - 1) + n / (guess * pow * (1 + guess)));
+      const next = guess - f / df;
+      if (Math.abs(next - guess) < 1e-12) { guess = next; break; }
+      guess = Math.max(next, 1e-10);
+    }
+    return guess * 12 * 100;
+  }
+
+  const cashFlows = [-financedAmt];
+  let balance = loan;
+  for (let m = 1; m <= n; m++) {
+    const intCharge = balance * r;
+    const prinPmt   = pi - intCharge;
+    balance -= prinPmt;
+    if (balance < 0) balance = 0;
+    cashFlows.push(pi + (balance > target78 ? pmiMonthly : 0));
+  }
+  let guess = annualRate / 12;
+  for (let i = 0; i < 300; i++) {
+    let npv = cashFlows[0], dnpv = 0;
+    for (let m = 1; m < cashFlows.length; m++) {
+      const disc = Math.pow(1 + guess, m);
+      npv  += cashFlows[m] / disc;
+      dnpv -= m * cashFlows[m] / (disc * (1 + guess));
+    }
+    if (Math.abs(dnpv) < 1e-20) break;
+    const next = guess - npv / dnpv;
+    if (Math.abs(next - guess) < 1e-12) { guess = next; break; }
+    guess = Math.max(next, 1e-10);
+  }
+  return guess * 12 * 100;
+}
+
+function fmtAPR(apr) { return apr.toFixed(3) + '% APR*'; }
+
+/* ── CALC 1: MORTGAGE ── */
+function calcMortgage() {
+  const loan  = parseVal('mc-loan');
+  const rate  = parseFloat(document.getElementById('mc-rate').value) / 100;
+  const term  = parseInt(document.getElementById('mc-term').value);
+  const price = parseVal('mc-price') || loan;
+  const tai   = document.getElementById('mc-tai').value;
+  if (!loan || loan <= 0 || !rate || !term) return;
+  if (checkLTV(loan, price)) return;
+
+  const r = rate / 12, n = term * 12;
+  const pi = loan * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+
+  let monthlyTax, monthlyIns;
+  if (tai === 'yes') {
+    monthlyTax = parseVal('mc-tax') / 12;
+    monthlyIns = parseVal('mc-ins') / 12;
+  } else {
+    monthlyTax = (price * 0.012) / 12;
+    monthlyIns = (loan  * 0.0025) / 12;
+  }
+
+  const ltv = loan / price;
+  const needsPMI = ltv > 0.80;
+  const monthlyPMI = needsPMI ? (loan * 0.006) / 12 : 0;
+  const total = pi + monthlyTax + monthlyIns + monthlyPMI;
+
+  document.getElementById('mc-total').textContent  = fmt2(total);
+  document.getElementById('mc-pi').textContent     = fmt2(pi);
+  document.getElementById('mc-tax-mo').textContent = fmt2(monthlyTax);
+  document.getElementById('mc-ins-mo').textContent = fmt2(monthlyIns);
+  document.getElementById('mc-apr').textContent    = fmtAPR(calcAPR(loan, rate, term, price, monthlyPMI));
+
+  const pmiRow = document.getElementById('mc-pmi-row');
+  const pmiDisc = document.getElementById('mc-pmi-disclaimer');
+  if (needsPMI) {
+    document.getElementById('mc-pmi-mo').textContent = fmt2(monthlyPMI);
+    pmiRow.style.display = 'flex';
+    pmiDisc.classList.add('show');
+  } else {
+    pmiRow.style.display = 'none';
+    pmiDisc.classList.remove('show');
+  }
+
+  const el = document.getElementById('mc-results');
+  el.classList.add('show');
+  el.style.display = 'block';
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ── CALC 2: 15 vs 30 ── */
+function toggleCompareTaiFields() {
+  const val = document.getElementById('c-tai').value;
+  document.getElementById('c-optional').classList.toggle('visible', val === 'yes');
+}
+
+function calcScenario(loanId, rateId, priceId, term, tai, customTax, customIns) {
+  const loan  = parseVal(loanId);
+  const rate  = parseFloat(document.getElementById(rateId).value) / 100;
+  const price = parseVal(priceId) || loan;
+  if (!loan || loan <= 0 || !rate) return null;
+  if (price > 0 && loan / price > 1.0) { showAlert('Loan amount exceeds purchase price. Please input a down payment.', true); return null; }
+  if (price > 0 && loan / price > 0.95) showAlert('You have less than 5% down payment. Contact a lending professional to see if you qualify for low down payment programs.', false);
+
+  const r = rate / 12, n = term * 12;
+  const pi = loan * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+  let monthlyTax, monthlyIns;
+  if (tai === 'yes') { monthlyTax = customTax / 12; monthlyIns = customIns / 12; }
+  else { monthlyTax = (price * 0.012) / 12; monthlyIns = (loan * 0.0025) / 12; }
+
+  const ltv = loan / price, needsPMI = ltv > 0.80;
+  const pmi = needsPMI ? (loan * 0.006) / 12 : 0;
+  const total = pi + monthlyTax + monthlyIns + pmi;
+  const apr = calcAPR(loan, rate, term, price, pmi);
+  return { pi, monthlyTax, monthlyIns, pmi, needsPMI, total, apr };
+}
+
+function buildCompareLines(containerId, result) {
+  const el = document.getElementById(containerId);
+  let html = `
+    <div class="compare-line-item"><div class="compare-line-label">Principal &amp; Interest</div><div class="compare-line-value">${fmt2(result.pi)}</div></div>
+    <div class="compare-line-item"><div class="compare-line-label">Monthly Property Tax</div><div class="compare-line-value">${fmt2(result.monthlyTax)}</div></div>
+    <div class="compare-line-item"><div class="compare-line-label">Monthly Homeowners Insurance</div><div class="compare-line-value">${fmt2(result.monthlyIns)}</div></div>`;
+  if (result.needsPMI) html += `<div class="compare-line-item pmi-item"><div class="compare-line-label">Monthly Mortgage Insurance (PMI)</div><div class="compare-line-value">${fmt2(result.pmi)}</div></div>`;
+  el.innerHTML = html;
+}
+
+function calcCompare() {
+  const tai = document.getElementById('c-tai').value;
+  const customTax = parseVal('c-tax'), customIns = parseVal('c-ins');
+  const r15 = calcScenario('c15-loan','c15-rate','c15-price',15,tai,customTax,customIns);
+  const r30 = calcScenario('c30-loan','c30-rate','c30-price',30,tai,customTax,customIns);
+  if (!r15 && !r30) return;
+
+  if (r15) { document.getElementById('c15-total').textContent = fmt2(r15.total); document.getElementById('c15-apr').textContent = fmtAPR(r15.apr); buildCompareLines('c15-lines', r15); }
+  if (r30) { document.getElementById('c30-total').textContent = fmt2(r30.total); document.getElementById('c30-apr').textContent = fmtAPR(r30.apr); buildCompareLines('c30-lines', r30); }
+
+  const disclaimer = document.getElementById('c-pmi-disclaimer');
+  disclaimer.classList.toggle('show', (r15 && r15.needsPMI) || (r30 && r30.needsPMI));
+
+  const diffBlock = document.getElementById('c-diff-block');
+  const diffText  = document.getElementById('c-diff-text');
+  const prosConsEl = document.getElementById('c-pros-cons');
+  const payoffNote = document.getElementById('c-payoff-note');
+
+  if (r15 && r30) {
+    const diff = r15.total - r30.total;
+    if (diff > 0) diffText.innerHTML = `A 15-year mortgage will cost <span class="diff-amount">${fmt2(diff)} more per month</span> than a 30-year mortgage.`;
+    else if (diff < 0) diffText.innerHTML = `A 30-year mortgage will cost <span class="diff-amount">${fmt2(Math.abs(diff))} more per month</span> than a 15-year mortgage.`;
+    else diffText.innerHTML = `Both loans have the same approximate monthly payment.`;
+    diffBlock.classList.add('show');
+
+    if (diff > 0) {
+      const loan30 = parseVal('c30-loan'), rate30 = parseFloat(document.getElementById('c30-rate').value) / 100;
+      if (loan30 > 0 && rate30 > 0) {
+        const rr = rate30 / 12, extraPmt = r30.pi + (r15.pi - r30.pi);
+        let balance = loan30, months = 0;
+        while (balance > 0.005 && months < 360) {
+          months++;
+          const intCharge = balance * rr;
+          let prin = extraPmt - intCharge;
+          if (prin > balance) prin = balance;
+          balance -= prin;
+          if (balance < 0.005) balance = 0;
+        }
+        const yrs = Math.floor(months / 12), mos = months % 12;
+        const timeStr = yrs > 0 ? `${yrs} years${mos > 0 ? ' and ' + mos + ' months' : ''}` : `${mos} months`;
+        payoffNote.innerHTML = `option to pay extra toward principal — <em>if you applied the ${fmt2(diff)}/mo savings as extra principal on the 30-year loan, it would be paid off in approximately ${timeStr} instead of 30 years</em>`;
+      }
+    } else {
+      payoffNote.innerHTML = `option to pay extra toward principal each month — any additional amount reduces your balance faster and saves on total interest paid`;
+    }
+    prosConsEl.classList.add('show');
+  } else {
+    diffBlock.classList.remove('show');
+    prosConsEl.classList.remove('show');
+  }
+
+  const resultsEl = document.getElementById('c-results');
+  resultsEl.classList.add('show');
+  setTimeout(() => resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ── CALC 3: BUY VS RENT ── */
+let dpInvestChoice = null;
+
+function showDpPopup(input) {
+  const val = input.value.replace(/,/g, '');
+  const popup = document.getElementById('bvr-dp-popup');
+  if (parseFloat(val) > 0) popup.classList.add('visible');
+  else {
+    popup.classList.remove('visible');
+    dpInvestChoice = null;
+    document.getElementById('dp-btn-yes').classList.remove('selected');
+    document.getElementById('dp-btn-no').classList.remove('selected');
+  }
+}
+
+function selectDpInvest(choice) {
+  dpInvestChoice = choice;
+  document.getElementById('dp-btn-yes').classList.toggle('selected', choice === 'yes');
+  document.getElementById('dp-btn-no').classList.toggle('selected', choice === 'no');
+}
+
+function calcBuyVsRent() {
+  const rent    = parseVal('bvr-rent');
+  const rentInc = parseFloat(document.getElementById('bvr-rent-inc').value) / 100 || 0;
+  const invest  = parseVal('bvr-invest');
+  const invRate = parseFloat(document.getElementById('bvr-inv-rate').value) / 100 || 0;
+  const price   = parseVal('bvr-price');
+  const down    = parseVal('bvr-down');
+  const rate    = parseFloat(document.getElementById('bvr-rate').value) / 100 || 0;
+  const term    = parseInt(document.getElementById('bvr-term').value);
+  const appr    = parseFloat(document.getElementById('bvr-appr').value) / 100 || 0;
+  const tai     = document.getElementById('bvr-tai').value;
+  const years   = parseInt(document.getElementById('bvr-years').value) || 10;
+
+  if (!rent || !price || !down || !rate) return;
+  const loan = price - down;
+  if (checkLTV(loan, price)) return;
+
+  const r = rate / 12, n = term * 12;
+  const pi = loan * r * Math.pow(1 + r, n) / (Math.pow(1 + r, n) - 1);
+
+  let annTax0, annIns0;
+  if (tai === 'yes') { annTax0 = parseVal('bvr-tax'); annIns0 = parseVal('bvr-ins'); }
+  else { annTax0 = price * 0.012; annIns0 = loan * 0.0025; }
+
+  const futMonthlyTax = (annTax0 * Math.pow(1 + appr, years)) / 12;
+  const futMonthlyIns = (annIns0 * Math.pow(1 + appr, years)) / 12;
+  const futTotalPmt   = pi + futMonthlyTax + futMonthlyIns;
+  const futHomeValue  = price * Math.pow(1 + appr, years);
+  const monthsPaid    = Math.min(years * 12, n);
+  const remainBal     = loan * Math.pow(1 + r, monthsPaid) - pi * (Math.pow(1 + r, monthsPaid) - 1) / r;
+  const remainBalClamped = Math.max(remainBal, 0);
+  const homeEquity    = futHomeValue - remainBalClamped;
+
+  const invR = invRate / 12, invMonths = years * 12;
+  let dpFV = 0, dpLumpSum = 0;
+
+  const dpRow = document.getElementById('bvr-r-dp-row');
+  const dpLabel = document.getElementById('bvr-r-dp-label');
+  const dpVal = document.getElementById('bvr-r-dp-val');
+  const initInvRow = document.getElementById('bvr-r-initinv-row');
+  const initInvVal = document.getElementById('bvr-r-initinv-val');
+
+  if (dpInvestChoice === 'yes') {
+    dpFV = invR > 0 ? down * Math.pow(1 + invR, invMonths) : down;
+    initInvRow.style.display = 'flex';
+    initInvVal.textContent = fmt2(down);
+    dpRow.style.display = 'none';
+  } else if (dpInvestChoice === 'no') {
+    dpLumpSum = down;
+    initInvRow.style.display = 'none';
+    dpLabel.textContent = 'Down pmt kept as cash';
+    dpVal.textContent = fmt(down) + ' added to net worth';
+    dpRow.style.display = 'flex';
+  } else {
+    initInvRow.style.display = 'none';
+    dpRow.style.display = 'none';
+  }
+
+  const monthlyFV = invR > 0 ? invest * (Math.pow(1 + invR, invMonths) - 1) / invR : invest * invMonths;
+  const totalContrib = (dpInvestChoice === 'yes' ? down : 0) + invest * invMonths;
+  const investFV = monthlyFV + dpFV + dpLumpSum;
+
+  const futRent = rent * Math.pow(1 + rentInc, years);
+  document.getElementById('bvr-r-current').textContent  = fmt2(rent);
+  document.getElementById('bvr-r-futrent').textContent  = fmt2(futRent);
+  document.getElementById('bvr-r-futrent2').textContent = fmt2(futRent);
+  document.getElementById('bvr-r-inc').textContent      = (rentInc * 100).toFixed(1) + '% / yr';
+  document.getElementById('bvr-r-yrs').textContent      = years;
+  document.getElementById('bvr-r-networth').textContent = fmt(investFV);
+  document.getElementById('bvr-r-moinv').textContent    = fmt2(invest);
+  document.getElementById('bvr-r-contrib').textContent  = fmt(totalContrib);
+  document.getElementById('bvr-r-invrate').textContent  = (invRate * 100).toFixed(1) + '% / yr';
+
+  const curMonthlyTax = annTax0 / 12, curMonthlyIns = annIns0 / 12;
+  const ltv = loan / price, needsPMI = ltv > 0.80;
+  const curPMI = needsPMI ? (loan * 0.006) / 12 : 0;
+  const currentMortgage = pi + curMonthlyTax + curMonthlyIns + curPMI;
+
+  document.getElementById('bvr-b-current').textContent  = fmt2(currentMortgage);
+  document.getElementById('bvr-b-cur-pi').textContent   = fmt2(pi);
+  document.getElementById('bvr-b-cur-tax').textContent  = fmt2(curMonthlyTax);
+  document.getElementById('bvr-b-cur-ins').textContent  = fmt2(curMonthlyIns);
+  document.getElementById('bvr-b-apr').textContent      = fmtAPR(calcAPR(loan, rate, term, price, curPMI));
+
+  const curPmiRow = document.getElementById('bvr-b-cur-pmi-row');
+  const curPmiDisc = document.getElementById('bvr-cur-pmi-disclaimer');
+  if (needsPMI) {
+    document.getElementById('bvr-b-cur-pmi').textContent = fmt2(curPMI);
+    curPmiRow.style.display = 'flex';
+    curPmiDisc.classList.add('show');
+  } else {
+    curPmiRow.style.display = 'none';
+    curPmiDisc.classList.remove('show');
+  }
+
+  const futLTV = remainBalClamped / price;
+  const futNeedsPMI = needsPMI && futLTV > 0.78;
+  const futPMI = futNeedsPMI ? (loan * 0.006) / 12 : 0;
+  const futTotalPmtWithPMI = futTotalPmt + futPMI;
+
+  const futPmiRow = document.getElementById('bvr-b-fut-pmi-row');
+  if (futNeedsPMI) { document.getElementById('bvr-b-fut-pmi').textContent = fmt2(futPMI); futPmiRow.style.display = 'flex'; }
+  else futPmiRow.style.display = 'none';
+
+  document.getElementById('bvr-b-futpmt').textContent   = fmt2(futTotalPmtWithPMI);
+  document.getElementById('bvr-b-pi').textContent       = fmt2(pi);
+  document.getElementById('bvr-b-tax').textContent      = fmt2(futMonthlyTax);
+  document.getElementById('bvr-b-ins').textContent      = fmt2(futMonthlyIns);
+  document.getElementById('bvr-b-networth').textContent = fmt(homeEquity);
+  document.getElementById('bvr-b-futval').textContent   = fmt(futHomeValue);
+  document.getElementById('bvr-b-balance').textContent  = fmt(remainBalClamped);
+  document.getElementById('bvr-b-equity').textContent   = fmt(homeEquity);
+
+  // ── SUMMARY CARD ──
+  const yrsLabel = years === 1 ? '1 year' : years + ' years';
+  document.getElementById('sum-rent-now').textContent      = fmt2(rent);
+  document.getElementById('sum-mortgage-now').textContent  = fmt2(currentMortgage);
+  document.getElementById('sum-rent-future').textContent   = fmt2(futRent);
+  document.getElementById('sum-mortgage-future').textContent = fmt2(futTotalPmtWithPMI);
+  document.getElementById('sum-nw-rent').textContent       = fmt(investFV);
+  document.getElementById('sum-nw-buy').textContent        = fmt(homeEquity);
+  const futPeriodLabel = `(in ${yrsLabel})`;
+  document.getElementById('sum-label-fut-rent').textContent  = futPeriodLabel;
+  document.getElementById('sum-label-fut-mort').textContent  = futPeriodLabel;
+  document.getElementById('sum-label-nw-rent').textContent   = futPeriodLabel;
+  document.getElementById('sum-label-nw-buy').textContent    = futPeriodLabel;
+
+  document.getElementById('bvr-years-divider-text').textContent = years + ' Years From Now';
+
+  const exceedsEl = document.getElementById('bvr-rent-exceeds');
+  const exceedsText = document.getElementById('bvr-rent-exceeds-text');
+  const rentExcess = futRent - futTotalPmtWithPMI;
+  if (rentExcess > 0) {
+    exceedsText.innerHTML = `Future estimated rent exceeds future estimated mortgage by <em>${fmt2(rentExcess)} / month</em>`;
+    exceedsEl.style.display = 'block';
+  } else {
+    exceedsEl.style.display = 'none';
+  }
+
+  const verdictEl = document.getElementById('bvr-verdict');
+  const verdictText = document.getElementById('bvr-verdict-text');
+  const diff = homeEquity - investFV;
+  if (diff > 0) verdictText.innerHTML = `After ${years} years, <span class="v-amount">buying</span> leaves you with an estimated <span class="v-amount">${fmt(Math.abs(diff))} more</span> in net worth than renting — based on home equity vs. investment portfolio.`;
+  else if (diff < 0) verdictText.innerHTML = `After ${years} years, <span class="v-amount">renting</span> and investing the difference leaves you with an estimated <span class="v-amount">${fmt(Math.abs(diff))} more</span> in net worth than buying.`;
+  else verdictText.innerHTML = `After ${years} years, buying and renting result in approximately the same estimated net worth.`;
+  verdictEl.classList.add('show');
+
+  const res = document.getElementById('bvr-results');
+  res.classList.add('show');
+  setTimeout(() => res.scrollIntoView({ behavior: 'smooth', block: 'start' }), 100);
+}
+
+/* ── RESET ── */
+function resetAll() {
+  document.querySelectorAll('.results-panel').forEach(p => { p.classList.remove('show'); p.style.display = 'none'; });
+  document.querySelectorAll('.fin-results').forEach(p => p.classList.remove('show'));
+  document.querySelectorAll('.fin-summary').forEach(p => p.classList.remove('show'));
+  document.getElementById('mc-pmi-row').style.display = 'none';
+  document.getElementById('mc-pmi-disclaimer').classList.remove('show');
+  document.getElementById('c-results').classList.remove('show');
+  document.getElementById('c-pmi-disclaimer').classList.remove('show');
+  document.getElementById('c-diff-block').classList.remove('show');
+  document.getElementById('c-pros-cons').classList.remove('show');
+  document.getElementById('c15-total').textContent = '—';
+  document.getElementById('c30-total').textContent = '—';
+  document.getElementById('c15-lines').innerHTML = '';
+  document.getElementById('c30-lines').innerHTML = '';
+  document.getElementById('bvr-results').classList.remove('show');
+  document.getElementById('bvr-verdict').classList.remove('show');
+  ['sum-rent-now','sum-mortgage-now','sum-rent-future','sum-mortgage-future','sum-nw-rent','sum-nw-buy'].forEach(id => { document.getElementById(id).textContent = '—'; });
+  document.getElementById('bvr-cur-pmi-disclaimer').classList.remove('show');
+  document.getElementById('bvr-b-cur-pmi-row').style.display = 'none';
+  document.getElementById('bvr-b-fut-pmi-row').style.display = 'none';
+  document.getElementById('bvr-rent-exceeds').style.display  = 'none';
+  document.getElementById('bvr-dp-popup').classList.remove('visible');
+  document.getElementById('bvr-r-dp-row').style.display = 'none';
+  document.getElementById('bvr-r-initinv-row').style.display = 'none';
+  document.getElementById('dp-btn-yes').classList.remove('selected');
+  document.getElementById('dp-btn-no').classList.remove('selected');
+  dpInvestChoice = null;
+  document.getElementById('hi-table').innerHTML = '';
+  document.getElementById('i-result-grid').innerHTML = '';
+  document.getElementById('i-chart').innerHTML = '';
+  document.getElementById('i-x-labels').innerHTML = '';
+  document.getElementById('d-scenario-output').innerHTML = '';
+  document.querySelectorAll('input:not([type="hidden"])').forEach(i => { i.value = ''; });
+}
+</script>
+<!-- ── EDU CONTACT MODAL ── -->
+<div class="contact-overlay" id="edu-contact-modal">
+  <div class="contact-modal">
+    <div class="contact-modal-icon"></div>
+    <div class="contact-modal-title">Contact Me Here</div>
+    <div class="contact-modal-body">
+      <span class="contact-detail"><a href="mailto:ghamilton@mtgxps.com">ghamilton@mtgxps.com</a></span>
+      <br>
+      <span class="contact-detail"><a href="tel:5035178983">503.517.8983</a> (direct line)</span>
+    </div>
+    <button class="contact-close-btn" onclick="closeEduContactModal()">Back to Calculator</button>
+  </div>
+</div>
+
+<!-- ── QUALIFY MODAL ── -->
+<div class="qualify-overlay" id="qualify-modal">
+  <div class="qualify-modal">
+    <div class="qualify-modal-icon"></div>
+    <div class="qualify-modal-title">Ready to Find Out What You Qualify For?</div>
+    <div class="qualify-modal-body">
+      Clicking <strong>Yes</strong> will take you to our secure application page, where you can share some basic information. We'll run a <strong>soft-pull credit report</strong> and provide you with a full personalized analysis within <strong>24 hours</strong>.
+      <br><br>
+      Ready to take the next step?
+    </div>
+    <div class="qualify-modal-btns">
+      <button class="btn-no" onclick="closeQualifyModal()">Not Right Now</button>
+      <button class="btn-yes" onclick="goToApplication()">Yes, Let's Do It →</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── CONTACT MODAL ── -->
+<div class="contact-overlay" id="contact-modal">
+  <div class="contact-modal">
+    <div class="contact-modal-icon"></div>
+    <div class="contact-modal-title">No problem — I'm here when you're ready!</div>
+    <div class="contact-modal-body">
+      If you have any questions about your numbers or want to talk through your options, feel free to reach out directly:
+      <br><br>
+      <span class="contact-detail"><a href="mailto:ghamilton@mtgxps.com">ghamilton@mtgxps.com</a></span>
+      <br>
+      <span class="contact-detail"><a href="tel:5035178983">503.517.8983</a> (direct line)</span>
+    </div>
+    <button class="contact-close-btn" onclick="closeContactModal()">Back to Calculator</button>
+  </div>
+</div>
+
+<script>
+function showEduContactModal() {
+  document.getElementById('edu-contact-modal').classList.add('show');
+}
+function closeEduContactModal() {
+  document.getElementById('edu-contact-modal').classList.remove('show');
+}
+
+/* ── QUALIFY MODAL FUNCTIONS ── */
+// ↓ Replace this URL with the actual application page URL
+const QUALIFY_URL = 'https://mtgxps.mymortgage-online.com/GavinHamilton.html';
+
+function showQualifyModal() {
+  document.getElementById('qualify-modal').classList.add('show');
+}
+function closeQualifyModal() {
+  document.getElementById('qualify-modal').classList.remove('show');
+  showContactModal();
+}
+function goToApplication() {
+  document.getElementById('qualify-modal').classList.remove('show');
+  window.open(QUALIFY_URL, '_blank');
+}
+function showContactModal() {
+  document.getElementById('contact-modal').classList.add('show');
+}
+function closeContactModal() {
+  document.getElementById('contact-modal').classList.remove('show');
+}
+</script>
+
+</body>
+</html>
