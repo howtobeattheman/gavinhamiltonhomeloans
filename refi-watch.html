@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Get a Better Rate — Let's Talk</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #ffffff;
+      --ivory:   #ffffff;
+      --charcoal:#1c1c1c;
+      --slate:   #4a4a4a;
+      --gold:    #b8924a;
+      --gold-lt: #d4ab6a;
+      --rule:    rgba(184,146,74,.35);
+      --radius:  4px;
+      --transition: .3s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #ffffff;
+      color: var(--charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ─────────────────────────────────────── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      opacity: .08;
+      pointer-events: none;
+    }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1.5rem 5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      width: 100%;
+      max-width: 520px;
+      padding: 3rem 3.5rem;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,.04),
+        0 20px 50px rgba(0,0,0,.08);
+      animation: cardRise .7s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    @keyframes cardRise {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    .card-eyebrow {
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: .9rem;
+    }
+
+    .card-headline {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--charcoal);
+      margin-bottom: 1rem;
+    }
+
+    .card-headline em {
+      font-style: italic;
+      color: var(--gold);
+    }
+
+    .card-sub {
+      font-size: .92rem;
+      color: var(--slate);
+      line-height: 1.6;
+      margin-bottom: 2.2rem;
+      font-weight: 300;
+    }
+
+    .card-sub strong {
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    /* gold rule divider */
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 2rem;
+      opacity: .7;
+    }
+
+    /* ── FORM ────────────────────────────────────────────── */
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-size: .72rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-bottom: .45rem;
+      font-weight: 500;
+    }
+
+    .required {
+      color: #c0392b;
+      margin-left: 3px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"] {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1px solid rgba(74,74,74,.25);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      color: var(--charcoal);
+      outline: none;
+      transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+      -moz-appearance: textfield;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    input:focus {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(184,146,74,.12);
+    }
+
+    input::placeholder { color: #bbb; }
+
+    .input-suffix {
+      position: relative;
+    }
+
+    .input-suffix input { padding-right: 2.4rem; }
+
+    .input-suffix span {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .9rem;
+      color: var(--gold);
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* ── SUBMIT BUTTON ───────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      margin-top: .6rem;
+      padding: .9rem 1.5rem;
+      background: var(--charcoal);
+      color: var(--ivory);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        background var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(184,146,74,.15) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform .5s ease;
+    }
+
+    .btn-submit:hover {
+      background: #2e2a22;
+      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:hover::after { transform: translateX(100%); }
+
+    .btn-submit:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    /* ── SUCCESS STATE ───────────────────────────────────── */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 1rem 0;
+      animation: cardRise .5s ease both;
+    }
+
+    .success-msg .check {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+    }
+
+    .success-msg .check svg { stroke: var(--gold); }
+
+    .success-msg h3 {
+      font-family: 'Cormorant Garamond', serif;
+      font-weight: 300;
+      font-size: 1.8rem;
+      margin-bottom: .5rem;
+    }
+
+    .success-msg p {
+      font-size: .88rem;
+      color: var(--slate);
+      font-weight: 300;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 1.2rem;
+      border-top: 1px solid var(--rule);
+      font-size: .72rem;
+      color: #aaa;
+      letter-spacing: .05em;
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .card { padding: 2.2rem 1.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layer (background.png) -->
+  <div class="bg-layer"></div>
+
+  <!-- ── MAIN ── -->
+  <main>
+    <div class="card">
+
+      <!-- Form state -->
+      <div id="formWrapper">
+        <h2 class="card-headline">Refi Watch List</h2>
+        <p class="card-sub">Stay ahead of the market. <strong>Let us notify you when it's the perfect time to refinance.</strong></p>
+        <div class="divider"></div>
+
+        <form id="leadForm" name="refi-watch-list" method="POST" data-netlify="true" netlify-honeypot="bot-field" action="/questions.html" novalidate>
+
+          <!-- Netlify form name (hidden, required for AJAX submissions) -->
+          <input type="hidden" name="form-name" value="refi-watch-list" />
+
+          <!-- Honeypot field for spam prevention (hidden from real users) -->
+          <p style="display:none;">
+            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+          </p>
+
+          <div class="form-group">
+            <label for="fullName">Full Name<span class="required">*</span></label>
+            <input
+              type="text"
+              id="fullName"
+              name="fullName"
+              placeholder="Jane Smith"
+              autocomplete="name"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email Address<span class="required">*</span></label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="jane@example.com"
+              autocomplete="email"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="rate">Current Interest Rate<span class="required">*</span></label>
+            <div class="input-suffix">
+              <input
+                type="number"
+                id="rate"
+                name="rate"
+                placeholder="6.75"
+                step="0.01"
+                min="0"
+                max="30"
+                required
+              />
+              <span>%</span>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">Join The List</button>
+
+        </form>
+      </div>
+
+      <!-- Success state -->
+      <div class="success-msg" id="successMsg">
+        <div class="check">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>You're all set.</h3>
+        <p>Thank you — I'll be in touch shortly<br/>to go over your options.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    &copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #000000
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Form submit — sends data to Netlify, then forwards user to questions.html
+    document.getElementById('leadForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const form  = e.target;
+      const name  = document.getElementById('fullName').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const rate  = document.getElementById('rate').value.trim();
+
+      // Basic validation
+      if (!name || !email || !rate) {
+        const empties = [];
+        if (!name)  empties.push('fullName');
+        if (!email) empties.push('email');
+        if (!rate)  empties.push('rate');
+        empties.forEach(id => {
+          const el = document.getElementById(id);
+          el.style.borderColor = '#c0392b';
+          el.addEventListener('input', () => el.style.borderColor = '', { once: true });
+        });
+        return;
+      }
+
+      // Submit form data to Netlify (which then emails the loan officer)
+      const formData = new FormData(form);
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString()
+      })
+      .then(() => {
+        // Pass the lead's info to the next page via URL parameters
+        // so questions.html can associate the follow-up answers with this person
+        const params = new URLSearchParams({
+          name: name,
+          email: email,
+          rate: rate
+        });
+        window.location.href = 'questions.html?' + params.toString();
+      })
+      .catch((error) => {
+        console.error('Form submission error:', error);
+        // Even if the AJAX call fails, send the user forward so they don't lose progress
+        const params = new URLSearchParams({ name, email, rate });
+        window.location.href = 'questions.html?' + params.toString();
+      });
+    });
+  </script>
+
+</body>
+</html>
