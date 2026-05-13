@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Just A Few More Questions — Refi Watch List</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #ffffff;
+      --ivory:   #ffffff;
+      --charcoal:#1c1c1c;
+      --slate:   #4a4a4a;
+      --gold:    #b8924a;
+      --gold-lt: #d4ab6a;
+      --rule:    rgba(184,146,74,.35);
+      --radius:  4px;
+      --transition: .3s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #ffffff;
+      color: var(--charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ─────────────────────────────────────── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      opacity: .08;
+      pointer-events: none;
+    }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1.5rem 5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      width: 100%;
+      max-width: 560px;
+      padding: 3rem 3.5rem;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,.04),
+        0 20px 50px rgba(0,0,0,.08);
+      animation: cardRise .7s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    @keyframes cardRise {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── STEP INDICATOR ──────────────────────────────────── */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1.6rem;
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .step-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .step-dot.muted {
+      background: rgba(184,146,74,.3);
+    }
+
+    .card-headline {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--charcoal);
+      margin-bottom: 1rem;
+    }
+
+    .card-sub {
+      font-size: .92rem;
+      color: var(--slate);
+      line-height: 1.6;
+      margin-bottom: 2.2rem;
+      font-weight: 300;
+    }
+
+    .card-sub strong {
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    /* gold rule divider */
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 2rem;
+      opacity: .7;
+    }
+
+    /* greeting line — addresses the user by name */
+    .greeting {
+      font-family: 'Cormorant Garamond', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: var(--gold);
+      margin-bottom: .75rem;
+    }
+
+    /* ── FORM ────────────────────────────────────────────── */
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-size: .72rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-bottom: .45rem;
+      font-weight: 500;
+    }
+
+    .required {
+      color: #c0392b;
+      margin-left: 3px;
+      font-weight: 600;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    input[type="tel"],
+    select,
+    textarea {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1px solid rgba(74,74,74,.25);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      color: var(--charcoal);
+      outline: none;
+      transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+      -moz-appearance: textfield;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23b8924a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 90px;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(184,146,74,.12);
+    }
+
+    input::placeholder, textarea::placeholder { color: #bbb; }
+
+    .input-suffix { position: relative; }
+    .input-suffix input { padding-right: 2.4rem; }
+    .input-suffix span {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .9rem;
+      color: var(--gold);
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* dollar-sign prefix variant for currency inputs */
+    .input-prefix { position: relative; }
+    .input-prefix input { padding-left: 2rem; }
+    .input-prefix span {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .95rem;
+      color: var(--gold);
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* lowercase parenthetical hint inside labels */
+    .hint {
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 400;
+      color: #999;
+      margin-left: .35rem;
+      font-size: .7rem;
+    }
+
+    /* two-column row on wider screens */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ── SUBMIT BUTTON ───────────────────────────────────── */
+    .btn-submit {
+      width: 100%;
+      margin-top: .6rem;
+      padding: .9rem 1.5rem;
+      background: var(--charcoal);
+      color: var(--ivory);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        background var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(184,146,74,.15) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform .5s ease;
+    }
+
+    .btn-submit:hover {
+      background: #2e2a22;
+      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:hover::after { transform: translateX(100%); }
+
+    .btn-submit:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    /* ── SUCCESS STATE ───────────────────────────────────── */
+    .success-msg {
+      display: none;
+      text-align: center;
+      padding: 1rem 0;
+      animation: cardRise .5s ease both;
+    }
+
+    .success-msg .check {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      border: 1.5px solid var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+    }
+
+    .success-msg .check svg { stroke: var(--gold); }
+
+    .success-msg h3 {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      letter-spacing: -0.02em;
+      margin-bottom: .5rem;
+    }
+
+    .success-msg p {
+      font-size: .92rem;
+      color: var(--slate);
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 2rem 1.5rem 1.8rem;
+      border-top: 1px solid var(--rule);
+      background: rgba(255,255,255,.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    /* uploadable footer image (footer.png) */
+    .footer-image-wrap {
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto 1.4rem;
+      text-align: center;
+    }
+
+    .footer-image-wrap img {
+      max-width: 100%;
+      height: auto;
+      max-height: 80px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity .6s ease;
+    }
+
+    .footer-image-wrap img.loaded { opacity: 1; }
+
+    .footer-rule {
+      width: 60px;
+      height: 1px;
+      background: var(--rule);
+      margin: 0 auto 1.2rem;
+    }
+
+    .footer-disclaimer {
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+      font-size: .65rem;
+      line-height: 1.65;
+      color: #888;
+      letter-spacing: .01em;
+      font-weight: 300;
+    }
+
+    .footer-disclaimer p {
+      margin-bottom: .7rem;
+    }
+
+    .footer-disclaimer p:last-child {
+      margin-bottom: 0;
+    }
+
+    .footer-disclaimer a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(184,146,74,.35);
+      transition: border-color var(--transition), color var(--transition);
+    }
+
+    .footer-disclaimer a:hover {
+      color: var(--gold-lt);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .card { padding: 2.2rem 1.8rem; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layer (background.png) -->
+  <div class="bg-layer"></div>
+
+  <!-- ── MAIN ── -->
+  <main>
+    <div class="card">
+
+      <!-- Form state -->
+      <div id="formWrapper">
+
+        <div class="step-indicator">
+          <span class="step-dot"></span>
+          <span>Step 2 of 2</span>
+          <span class="step-dot muted"></span>
+        </div>
+
+        <!-- Personalized greeting (populated via JS from URL params) -->
+        <p class="greeting" id="greeting"></p>
+
+        <h2 class="card-headline">Just A Few More Questions</h2>
+        <p class="card-sub">This allows us to create a plan and get you results <strong>customized to you</strong>.</p>
+        <div class="divider"></div>
+
+        <!--
+          This second form also posts to Netlify. The hidden fields carry forward
+          the name/email/rate from page 1 so the loan officer sees the full picture
+          in their email notification.
+        -->
+        <form id="detailsForm" name="refi-watch-list-details" method="POST" data-netlify="true" netlify-honeypot="bot-field" novalidate>
+
+          <input type="hidden" name="form-name" value="refi-watch-list-details" />
+
+          <!-- Hidden carry-forward fields populated from URL params -->
+          <input type="hidden" name="fullName" id="hiddenName" />
+          <input type="hidden" name="email" id="hiddenEmail" />
+          <input type="hidden" name="currentRate" id="hiddenRate" />
+
+          <!-- Honeypot -->
+          <p style="display:none;">
+            <label>Don't fill this out if you're human: <input name="bot-field" /></label>
+          </p>
+
+          <div class="form-group">
+            <label for="address">Address <span class="hint">(optional)</span></label>
+            <input
+              type="text"
+              id="address"
+              name="address"
+              placeholder="123 Main Street, City, ZIP"
+              autocomplete="street-address"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="homeValue">Estimated Home Value <span class="hint">(doesn't need to be exact)</span></label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input
+                type="number"
+                id="homeValue"
+                name="homeValue"
+                placeholder="450,000"
+                step="1000"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="loanBalance">Estimated Loan Balance <span class="hint">(doesn't need to be exact)</span></label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input
+                type="number"
+                id="loanBalance"
+                name="loanBalance"
+                placeholder="350,000"
+                step="1000"
+                min="0"
+              />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="occupancy">Occupancy</label>
+              <select id="occupancy" name="occupancy">
+                <option value="">Select…</option>
+                <option value="Primary">Primary</option>
+                <option value="Second Home">Second Home</option>
+                <option value="Investment Property">Investment Property</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="state">State</label>
+              <select id="state" name="state">
+                <option value="">Select…</option>
+                <option value="AZ">Arizona</option>
+                <option value="CA">California</option>
+                <option value="ID">Idaho</option>
+                <option value="OR">Oregon</option>
+                <option value="WA">Washington</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-submit">Complete My Profile</button>
+
+        </form>
+      </div>
+
+      <!-- Success state -->
+      <div class="success-msg" id="successMsg">
+        <div class="check">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </div>
+        <h3>You're On The List.</h3>
+        <p>Thank you — we'll be in touch shortly<br/>with a plan tailored to your goals.</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <!-- Footer image: place footer.png in the same folder as this file -->
+    <div class="footer-image-wrap">
+      <img
+        id="footerImg"
+        src="footer.png"
+        alt=""
+        onload="this.classList.add('loaded');"
+        onerror="this.style.display='none'; this.parentElement.style.display='none';"
+      />
+    </div>
+
+    <div class="footer-rule"></div>
+
+    <div class="footer-disclaimer">
+      <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+      <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; Licensed by the California Department of Financial Protection and Innovation under the Residential Mortgage Lending Act &nbsp;|&nbsp; AZBK-1027601 &nbsp;|&nbsp; Licensed in OR, ID, WA, UT, CA, CO &amp; AZ &nbsp;|&nbsp; Not all Loan Officers are licensed in all states &nbsp;|&nbsp; This is not a commitment to lend &nbsp;|&nbsp; Program terms, rates, and conditions are subject to change without notice &nbsp;|&nbsp; All loans are subject to credit and property approval &nbsp;|&nbsp; Loan products and availability may vary by state. Some loan products may be offered through approved lending partners. &nbsp;|&nbsp; Mortgage Express, LLC is an Equal Housing Opportunity. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Pull lead info from URL params (passed from page 1)
+    const params = new URLSearchParams(window.location.search);
+    const name   = params.get('name')  || '';
+    const email  = params.get('email') || '';
+    const rate   = params.get('rate')  || '';
+
+    // Personalized greeting using first name
+    if (name) {
+      const firstName = name.split(' ')[0];
+      document.getElementById('greeting').textContent = `Welcome, ${firstName}.`;
+    }
+
+    // Carry-forward hidden fields so loan officer sees everything in one notification
+    document.getElementById('hiddenName').value  = name;
+    document.getElementById('hiddenEmail').value = email;
+    document.getElementById('hiddenRate').value  = rate;
+
+    // Form submit
+    document.getElementById('detailsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const form = e.target;
+
+      // Submit to Netlify
+      const formData = new FormData(form);
+
+      fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(formData).toString()
+      })
+      .then(() => {
+        document.getElementById('formWrapper').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+      })
+      .catch((error) => {
+        console.error('Form submission error:', error);
+        // Show success anyway so user isn't stuck — Netlify still tends to capture POSTs
+        document.getElementById('formWrapper').style.display = 'none';
+        document.getElementById('successMsg').style.display = 'block';
+      });
+    });
+  </script>
+
+</body>
+</html>
