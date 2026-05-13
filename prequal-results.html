@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Affordability Results</title>
+<meta name="robots" content="noindex,nofollow">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+:root{
+  --teal:#00bcd4;--teal-dark:#00838f;
+  --cream:#f5f5f5;--warm:#eeeeee;--border:#d0d0d0;
+  --text:#111111;--muted:#666666;
+  --font:'DM Sans',sans-serif;--mono:'DM Mono',monospace;
+}
+
+/* prevent printing & right-click saving */
+@media print {
+  body { display: none !important; }
+}
+
+body {
+  background: var(--cream);
+  font-family: var(--font);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ── MAIN ── */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 48px 24px 60px;
+}
+
+/* CLIENT NAME ABOVE GRID */
+.client-heading {
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--teal);
+}
+.client-heading-name {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(22px, 3.5vw, 32px);
+  color: #111111;
+  font-weight: 600;
+  line-height: 1.2;
+}
+.client-heading-meta {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+/* ── LOW DOWN-PAYMENT NOTICE ── */
+.low-down-notice {
+  background: #fff7ed;
+  border: 1px solid #fed7aa;
+  border-left: 3px solid #c2410c;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  border-radius: 2px;
+}
+.low-down-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #9a3412;
+  margin-bottom: 6px;
+}
+.low-down-body {
+  font-size: 13px;
+  color: #7c2d12;
+  line-height: 1.65;
+  font-weight: 400;
+}
+.low-down-body strong {
+  font-weight: 700;
+  color: #431407;
+}
+
+/* ── INTRO STATEMENT ── */
+.intro-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--teal);
+  padding: 18px 22px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #111111;
+  line-height: 1.65;
+  font-weight: 400;
+}
+.intro-card a {
+  color: var(--teal-dark);
+  font-weight: 600;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,131,143,.3);
+  transition: border-color 0.15s;
+}
+.intro-card a:hover {
+  border-bottom-color: var(--teal-dark);
+}
+
+/* ── HEADLINE: Maximum Purchase Price ── */
+.max-price-card {
+  background: white;
+  border: 1px solid var(--border);
+  padding: 32px 28px;
+  margin-bottom: 24px;
+  text-align: center;
+}
+.max-price-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.max-price-value {
+  font-family: var(--mono);
+  font-size: clamp(36px, 6vw, 56px);
+  font-weight: 500;
+  color: #111111;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+.max-price-sub {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* ── SCENARIO GRID (matches admin) ── */
+.scenarios-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+}
+.scenario-col {
+  background: white;
+}
+.sc-header {
+  background: #111111;
+  color: white;
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(14px, 2vw, 18px);
+  padding: 16px 20px;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+/* SECTION LABELS */
+.sc-summary-lbl {
+  background: #111111 !important;
+  color: var(--teal) !important;
+  border-top: none !important;
+}
+.sc-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 12px 20px 6px;
+  background: var(--warm);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* LINES */
+.sc-lines { background: white; }
+.sc-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 11px 20px;
+  border-bottom: 1px solid rgba(208,208,208,0.5);
+}
+.sc-line:last-child { border-bottom: none; }
+.sc-line-label {
+  font-size: clamp(11px, 1.6vw, 13px);
+  color: var(--muted);
+}
+.sc-line-value {
+  font-size: clamp(12px, 1.8vw, 14px);
+  font-weight: 500;
+  color: var(--text);
+}
+
+/* HIGHLIGHT */
+.sc-highlight {
+  background: rgba(0,188,212,0.05);
+}
+.sc-highlight .sc-line-label {
+  font-weight: 600;
+  color: #111111;
+}
+.sc-highlight .sc-line-value {
+  font-weight: 700;
+  color: #111111;
+  font-size: clamp(13px, 2vw, 16px);
+}
+
+.sc-cc-total .sc-line-label,
+.sc-cc-total .sc-line-value {
+  font-weight: 600;
+  color: #111111;
+}
+.sc-prepaids-label {
+  background: #e0f7fa !important;
+  color: var(--teal-dark) !important;
+}
+.sc-apr { color: var(--teal-dark); }
+.apr-tag {
+  font-size: 10px;
+  color: var(--teal-dark);
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* ── MORE INFO BUTTON ── */
+.fee-btn-wrap {
+  padding: 14px 20px;
+  background: white;
+  border-top: 1px solid var(--border);
+}
+.fee-details-btn {
+  width: 100%;
+  padding: 11px 16px;
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #111111;
+  font-family: var(--font);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.fee-details-btn:hover {
+  background: var(--warm);
+  border-color: #111111;
+}
+.fee-details-btn.open {
+  background: #111111;
+  color: white;
+  border-color: #111111;
+}
+.fee-details-panel {
+  display: none;
+  border-top: 1px solid var(--border);
+}
+
+/* ── NEXT STEPS CARD ── */
+.next-card {
+  margin-top: 24px;
+  background: white;
+  border: 1px solid var(--border);
+  padding: 28px 24px;
+}
+.next-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  color: #111111;
+  margin-bottom: 8px;
+}
+.next-body {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.65;
+}
+.next-body strong {
+  color: #111111;
+  font-weight: 600;
+}
+
+/* ── DISCLAIMER (matches admin) ── */
+.disclaimer {
+  margin-top: 32px;
+  padding: 20px 24px;
+  background: white;
+  border: 1px solid var(--border);
+}
+.disclaimer-inner {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.disclaimer-logo {
+  flex-shrink: 0;
+  width: 60px;
+}
+.disclaimer-logo img {
+  width: 60px;
+  height: auto;
+  display: block;
+}
+.disclaimer-text { flex: 1; }
+.disclaimer-primary {
+  font-size: 12px;
+  font-weight: 700;
+  color: #111111;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+.disclaimer-secondary {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.disclaimer-rule {
+  height: 1px;
+  background: var(--border);
+  margin: 12px 0;
+}
+
+/* ── FOOTER ── */
+footer.page-footer {
+  background: white;
+  padding: 24px 1.5rem 1.8rem;
+  border-top: 1px solid var(--border);
+  margin-top: 40px;
+}
+.footer-image-wrap {
+  width: 100%;
+  max-width: 280px;
+  margin: 0 auto 1.4rem;
+  text-align: center;
+}
+.footer-image-wrap img {
+  max-width: 100%;
+  height: auto;
+  max-height: 80px;
+  object-fit: contain;
+  opacity: 0;
+  transition: opacity .6s ease;
+}
+.footer-image-wrap img.loaded { opacity: 1; }
+.footer-rule {
+  width: 60px;
+  height: 1px;
+  background: rgba(184,146,74,.35);
+  margin: 0 auto 1.2rem;
+}
+.footer-disclaimer {
+  max-width: 920px;
+  margin: 0 auto;
+  text-align: center;
+  font-size: .65rem;
+  line-height: 1.65;
+  color: #888;
+  letter-spacing: .01em;
+  font-weight: 300;
+}
+.footer-disclaimer p { margin-bottom: .7rem; }
+.footer-disclaimer p:last-child { margin-bottom: 0; }
+.footer-disclaimer a {
+  color: #b8924a;
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid rgba(184,146,74,.35);
+}
+
+/* ── ERROR / EMPTY STATE ── */
+.no-data {
+  max-width: 560px;
+  margin: 80px auto;
+  background: white;
+  border: 1px solid var(--border);
+  padding: 40px 32px;
+  text-align: center;
+}
+.no-data h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  color: #111111;
+  margin-bottom: 12px;
+}
+.no-data p {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+.no-data a {
+  display: inline-block;
+  padding: 12px 24px;
+  background: #111111;
+  color: white;
+  text-decoration: none;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+.hidden { display: none; }
+
+@media (max-width: 700px) {
+  .main { padding: 24px 16px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── REPORT (rendered by JS) ── -->
+<div id="reportRoot" class="main"></div>
+
+<!-- ── No-data fallback if user lands here directly ── -->
+<div id="noDataState" class="no-data hidden">
+  <h2>Let's start at the beginning</h2>
+  <p>It looks like we don't have your information yet. Take a quick three-minute affordability check to see your results.</p>
+  <a href="prequal-1.html">Start Affordability Calculator</a>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="page-footer">
+  <div class="footer-image-wrap">
+    <img
+      id="footerImg"
+      src="footer.png"
+      alt=""
+      onload="this.classList.add('loaded');"
+      onerror="this.style.display='none'; this.parentElement.style.display='none';"
+    />
+  </div>
+
+  <div class="footer-rule"></div>
+
+  <div class="footer-disclaimer">
+    <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+    <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; Licensed by the California Department of Financial Protection and Innovation under the Residential Mortgage Lending Act &nbsp;|&nbsp; AZBK-1027601 &nbsp;|&nbsp; Licensed in OR, ID, WA, UT, CA, CO &amp; AZ &nbsp;|&nbsp; Not all Loan Officers are licensed in all states &nbsp;|&nbsp; This is not a commitment to lend &nbsp;|&nbsp; Program terms, rates, and conditions are subject to change without notice &nbsp;|&nbsp; All loans are subject to credit and property approval &nbsp;|&nbsp; Loan products and availability may vary by state. Some loan products may be offered through approved lending partners. &nbsp;|&nbsp; Mortgage Express, LLC is an Equal Housing Opportunity. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+  </div>
+</footer>
+
+<script>
+/* ── Year ── */
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── Block save/print to keep the report consumer-side only ── */
+document.addEventListener('contextmenu', e => e.preventDefault());
+document.addEventListener('keydown', e => {
+  // Block Ctrl/Cmd+S and Ctrl/Cmd+P
+  if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'S' || e.key === 'p' || e.key === 'P')) {
+    e.preventDefault();
+  }
+});
+
+/* ── Formatting helpers (match admin tool) ── */
+const fmt  = n => '$' + Math.round(n).toLocaleString();
+const fmt2 = n => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const escH = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+/* ── Load user inputs ── */
+const data = JSON.parse(sessionStorage.getItem('prequalData') || '{}');
+
+// Required fields to render anything meaningful
+const requiredKeys = ['monthlyIncome', 'interestRate', 'loanTerm', 'downPayment'];
+const hasData = requiredKeys.every(k => data[k] !== undefined && data[k] !== '' && data[k] !== null);
+
+if (!hasData) {
+  document.getElementById('reportRoot').classList.add('hidden');
+  document.getElementById('noDataState').classList.remove('hidden');
+} else {
+  renderReport();
+}
+
+function renderReport() {
+  // ── PARSE INPUTS ──
+  const fullName     = (data.fullName || 'Your').trim();
+  const reportDate   = new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+  const monthlyIncome  = parseFloat(data.monthlyIncome)  || 0;
+  const totalMoDebt    = parseFloat(data.totalMonthlyDebt) || 0;
+  const rate           = parseFloat(data.interestRate)   || 0;     // annual %
+  const downPaymentPct = parseFloat(data.downPayment)    || 0;     // %
+  const stateValue     = data.state || '';
+  // term comes as "30 years" — extract numeric years and convert to months
+  const termYears      = parseInt((data.loanTerm || '30 years').match(/\d+/) || [30], 10);
+  const termMonths     = termYears * 12;
+
+  // ── CALCULATE MAX PURCHASING POWER ──
+  // Industry standard: max DTI of 43% for qualified mortgages.
+  // Allowable monthly housing payment = (43% × income) − existing debts.
+  // From that housing payment, we back out the max loan amount using P&I formula,
+  // then estimate the max purchase price (loan + down payment).
+  //
+  // Caveat: the 43% DTI includes the FULL housing payment (P&I + taxes + insurance).
+  // We allocate ~75% of allowable payment to P&I and reserve ~25% for taxes+insurance.
+
+  const dtiCap          = 0.43;
+  const maxTotalHousing = (monthlyIncome * dtiCap) - totalMoDebt;
+  const piShare         = 0.75; // share of housing payment available for P&I
+  const maxPI           = Math.max(0, maxTotalHousing * piShare);
+
+  // Solve for max loan amount given target P&I, rate, and term
+  const r = rate / 100 / 12;
+  let maxLoan = 0;
+  if (r > 0 && termMonths > 0 && maxPI > 0) {
+    // P&I = L × r × (1+r)^n / ((1+r)^n − 1)
+    // → L = P&I × ((1+r)^n − 1) / (r × (1+r)^n)
+    const pow = Math.pow(1 + r, termMonths);
+    maxLoan = maxPI * (pow - 1) / (r * pow);
+  } else if (termMonths > 0 && maxPI > 0) {
+    // 0% rate edge case
+    maxLoan = maxPI * termMonths;
+  }
+
+  // ── LOW DOWN-PAYMENT HANDLING ──
+  // If the user entered less than 5% down (LTV > 95%), we don't have enough
+  // information for an accurate quick-estimate (jumbo MI rates, program-specific
+  // rules, etc.). For the on-screen preview, treat the down payment as 5% and
+  // flag it at the top of the page; the loan officer will follow up with the
+  // proper in-depth analysis within 1–2 business days.
+  const userEnteredLowDown  = downPaymentPct < 5;
+  const effectiveDownPct    = userEnteredLowDown ? 5 : downPaymentPct;
+
+  // Max purchase price: loan = (purchase − down). If down is %, then purchase = loan / (1 − dp%).
+  const downFrac = effectiveDownPct / 100;
+  let maxPurchase = downFrac < 1 ? maxLoan / (1 - downFrac) : maxLoan;
+  // Round down to nearest $1,000 for a clean headline number
+  maxPurchase = Math.floor(maxPurchase / 1000) * 1000;
+
+  // Recompute final loan / down based on rounded purchase price
+  const purchasePrice = maxPurchase;
+  const down          = purchasePrice * downFrac;
+  const loan          = Math.max(0, purchasePrice - down);
+
+  // Final P&I from the rounded loan amount
+  let pi = 0;
+  if (r > 0 && termMonths > 0 && loan > 0) {
+    const pow = Math.pow(1 + r, termMonths);
+    pi = loan * r * pow / (pow - 1);
+  } else if (termMonths > 0 && loan > 0) {
+    pi = loan / termMonths;
+  }
+
+  // ── ESTIMATE TAXES / INSURANCE ──
+  // National-average assumptions; the loan officer will refine these with the user later.
+  //   Annual property tax       = 1.2% of purchase price
+  //   Annual homeowners insurance = 0.3% of loan amount
+  const annualTaxRate           = 0.012;   // 1.2% of purchase price
+  const annualInsuranceRate     = 0.003;   // 0.3% of loan amount
+  const annTax = purchasePrice * annualTaxRate;
+  const annIns = loan * annualInsuranceRate;
+  const moTax  = annTax / 12;
+  const moIns  = annIns / 12;
+
+  // ── MORTGAGE INSURANCE (PMI) — tiered by LTV ──
+  // LTV brackets and their corresponding annual MI rates:
+  //   80.01% – 85%  → 0.39%
+  //   85.01% – 90%  → 0.52%
+  //   90.01% – 95%  → 0.78%
+  //   Above 95%     → falls back to 0.78% (the 90.01–95% rate)
+  //                   AND the report itself is recomputed at 5% down (95% LTV).
+  // Monthly PMI = loan × rate ÷ 1200.
+  const ltv = purchasePrice > 0 ? loan / purchasePrice : 0;
+  let mmiRate = 0;
+  if      (ltv > 0.95)  mmiRate = 0.78;
+  else if (ltv > 0.90)  mmiRate = 0.78;
+  else if (ltv > 0.85)  mmiRate = 0.52;
+  else if (ltv > 0.80)  mmiRate = 0.39;
+  const moPMI = mmiRate > 0 ? loan * mmiRate / 1200 : 0;
+
+  const totalMonthly = pi + moTax + moIns + moPMI;
+
+  // ── CLOSING COSTS — matches the Mortgage Calculator's APR fee assumptions ──
+  // The Mortgage Calculator uses four estimated cost components to derive APR:
+  //   1) Origination fee: $1,525
+  //   2) Settlement fee:  $1,700 + (purchase price / 1000)   [Portland, OR estimate]
+  //   3) Discount point:  1% of loan amount
+  //   4) Prepaid interest: 15 days at the daily rate
+  const origination = 1525;
+  const settlement  = (1700 + (purchasePrice / 1000)) / 2;
+  const discountPt  = loan * 0.01;
+  const prepaidInt15Days = loan * (rate / 100) / 365 * 15;
+
+  const ccRows = [
+    { desc: 'Origination Fee',                              amount: origination,     type: 'fixed' },
+    { desc: 'Settlement Fee',                               amount: settlement,      type: 'fixed' },
+    { desc: 'Discount Point (1% buy-down)',                 amount: discountPt,      type: 'auto'  },
+    { desc: 'Prepaid Interest (15 days)',                   amount: prepaidInt15Days,type: 'auto'  }
+  ];
+  const ccTotal = ccRows.reduce((sum, r) => sum + (parseFloat(r.amount) || 0), 0);
+
+  // ── PREPAIDS (tax reserves + insurance reserves + annual insurance premium) ──
+  //   Tax reserves                    = 11 months of property tax
+  //   Insurance reserves              = 3 months of insurance
+  //   Annual homeowners insurance premium = full 12 months collected at closing
+  const taxMos    = 11;
+  const insMos    = 3;
+  const taxReserve         = moTax * taxMos;
+  const insReserve         = moIns * insMos;
+  const annualInsPremium   = moIns * 12;
+  const prepaidTotal = taxReserve + insReserve + annualInsPremium;
+
+  // ── CASH TO CLOSE ──
+  const cashToClose = down + ccTotal + prepaidTotal;
+
+  // ── APR ESTIMATE (mirrors Mortgage Calculator's calcAPR) ──
+  // Finances origination + settlement + discount point + 15-day prepaid interest against the loan,
+  // and when PMI applies, treats PMI as part of the cash-flow stream until LTV reaches 78%.
+  const totalAprCosts = origination + settlement + discountPt + prepaidInt15Days;
+  const financedAmt   = loan - totalAprCosts;
+  const target78      = purchasePrice * 0.78;
+  let aprPct = rate;
+
+  if (loan > 0 && r > 0 && termMonths > 0 && financedAmt > 0) {
+    if (moPMI === 0) {
+      // No-PMI case: solve PV = PI × (1 − (1+g)^-n) / g for g (monthly)
+      let g = r;
+      for (let i = 0; i < 300; i++) {
+        const pow = Math.pow(1 + g, termMonths);
+        const f   = pi * (1 - 1 / pow) / g - financedAmt;
+        const df  = pi * (1 / (g * g) * (1 / pow - 1) + termMonths / (g * pow * (1 + g)));
+        if (Math.abs(df) < 1e-20) break;
+        const next = g - f / df;
+        if (Math.abs(next - g) < 1e-12) { g = next; break; }
+        g = Math.max(next, 1e-10);
+      }
+      aprPct = g * 12 * 100;
+    } else {
+      // PMI case: build the cash-flow stream including PMI until balance ≤ 78% of purchase price
+      const cashFlows = [-financedAmt];
+      let balance = loan;
+      for (let m = 1; m <= termMonths; m++) {
+        const intCharge = balance * r;
+        const prinPmt   = pi - intCharge;
+        balance -= prinPmt;
+        if (balance < 0) balance = 0;
+        cashFlows.push(pi + (balance > target78 ? moPMI : 0));
+      }
+      let g = r;
+      for (let i = 0; i < 300; i++) {
+        let npv = cashFlows[0], dnpv = 0;
+        for (let m = 1; m < cashFlows.length; m++) {
+          const disc = Math.pow(1 + g, m);
+          npv  += cashFlows[m] / disc;
+          dnpv -= m * cashFlows[m] / (disc * (1 + g));
+        }
+        if (Math.abs(dnpv) < 1e-20) break;
+        const next = g - npv / dnpv;
+        if (Math.abs(next - g) < 1e-12) { g = next; break; }
+        g = Math.max(next, 1e-10);
+      }
+      aprPct = g * 12 * 100;
+    }
+  }
+
+  // Label every line item that contributes to APR
+  const APR_FEE_NAMES = ['origination', 'settlement fee', 'discount point', 'prepaid interest'];
+  const aprLabel = desc =>
+    desc && APR_FEE_NAMES.some(n => desc.toLowerCase().includes(n))
+      ? ' <span class="apr-tag">(APR fee)</span>'
+      : '';
+
+  // ── RENDER ──
+  const firstName = fullName.split(' ')[0];
+  const headline  = (firstName === 'Your') ? "Here's What You Can Afford" : `${firstName}, Here's What You Can Afford`;
+
+  const ccRowsHTML = ccRows.map(r =>
+    `<div class="sc-line">
+      <span class="sc-line-label">${escH(r.desc)}${aprLabel(r.desc)}</span>
+      <span class="sc-line-value">${fmt2(r.amount)}</span>
+    </div>`
+  ).join('');
+
+  const html = `
+    <div class="client-heading">
+      <div class="client-heading-name">${escH(headline)}</div>
+      <div class="client-heading-meta">Preliminary Affordability Report &nbsp;·&nbsp; ${escH(reportDate)}</div>
+    </div>
+
+    ${userEnteredLowDown ? `
+    <!-- ── LOW DOWN-PAYMENT NOTICE ── -->
+    <div class="low-down-notice">
+      <div class="low-down-title">Heads Up — Less Than 5% Down Payment</div>
+      <div class="low-down-body">
+        You entered a down payment of <strong>${downPaymentPct.toFixed(1)}%</strong>, which requires a more in-depth analysis. A detailed report will follow in the next <strong>1&ndash;2 business days</strong>. For the sake of providing you with immediate feedback, the report below is based on a <strong>5% down payment</strong>.
+      </div>
+    </div>
+    ` : ''}
+
+    <!-- ── INTRO ── -->
+    <div class="intro-card">
+      Based on the information you provided, here are your preliminary results. You will receive a follow-up email with a more detailed in-depth analysis within 1–2 business days from <a href="mailto:ghamilton@mtgxps.com">ghamilton@mtgxps.com</a>.
+    </div>
+
+    <!-- ── MAX PURCHASE PRICE HEADLINE ── -->
+    <div class="max-price-card">
+      <div class="max-price-label">Estimated Maximum Purchase Price</div>
+      <div class="max-price-value">${fmt(maxPurchase)}</div>
+      <div class="max-price-sub">Based on your monthly income, existing debt, target down payment, interest rate, and ${termYears}-year term — assuming a 43% debt-to-income limit.</div>
+    </div>
+
+    <!-- ── SCENARIO CARD ── -->
+    <div class="scenarios-grid">
+      <div class="scenario-col">
+        <div class="sc-header">${termYears}-Year Fixed Scenario</div>
+
+        <!-- Summary -->
+        <div class="sc-section-label sc-summary-lbl">Summary</div>
+        <div class="sc-lines">
+          <div class="sc-line"><span class="sc-line-label">Purchase Price</span><span class="sc-line-value">${fmt(purchasePrice)}</span></div>
+          <div class="sc-line"><span class="sc-line-label">Loan Amount</span><span class="sc-line-value">${fmt(loan)}</span></div>
+          <div class="sc-line"><span class="sc-line-label">Interest Rate</span><span class="sc-line-value">${rate.toFixed(3)}%</span></div>
+          <div class="sc-line"><span class="sc-line-label">APR</span><span class="sc-line-value sc-apr">${aprPct > 0 ? aprPct.toFixed(3) + '% APR*' : '—'}</span></div>
+          <div class="sc-line"><span class="sc-line-label">Term</span><span class="sc-line-value">${termMonths} months</span></div>
+          <div class="sc-line sc-highlight"><span class="sc-line-label">Monthly Payment</span><span class="sc-line-value">${fmt2(totalMonthly)}</span></div>
+          <div class="sc-line sc-highlight"><span class="sc-line-label">Total Cash to Close</span><span class="sc-line-value">${fmt2(cashToClose)}</span></div>
+        </div>
+
+        <!-- More Info button -->
+        <div class="fee-btn-wrap">
+          <button class="fee-details-btn" onclick="toggleMoreInfo(0)" id="more-btn-0">More Info &#9662;</button>
+        </div>
+
+        <!-- More Info panel -->
+        <div class="fee-details-panel" id="more-panel-0">
+
+          <!-- Monthly payment breakdown -->
+          <div class="sc-section-label">Monthly Payment Breakdown</div>
+          <div class="sc-lines">
+            <div class="sc-line"><span class="sc-line-label">Principal &amp; Interest</span><span class="sc-line-value">${fmt2(pi)}</span></div>
+            <div class="sc-line"><span class="sc-line-label">Property Tax <span class="apr-tag">(estimate)</span></span><span class="sc-line-value">${fmt2(moTax)}</span></div>
+            <div class="sc-line"><span class="sc-line-label">Homeowners Insurance <span class="apr-tag">(estimate)</span></span><span class="sc-line-value">${fmt2(moIns)}</span></div>
+            ${moPMI > 0 ? `<div class="sc-line"><span class="sc-line-label">Mortgage Insurance</span><span class="sc-line-value">${fmt2(moPMI)}</span></div>` : ''}
+            <div class="sc-line sc-cc-total"><span class="sc-line-label">Total Monthly Payment</span><span class="sc-line-value">${fmt2(totalMonthly)}</span></div>
+          </div>
+
+          <!-- Down Payment -->
+          <div class="sc-section-label">Down Payment</div>
+          <div class="sc-lines">
+            <div class="sc-line sc-cc-total"><span class="sc-line-label">Down Payment (${effectiveDownPct.toFixed(1)}%)</span><span class="sc-line-value">${fmt2(down)}</span></div>
+          </div>
+
+          <!-- Closing Costs -->
+          <div class="sc-section-label">Estimated Closing Costs</div>
+          <div class="sc-lines">
+            ${ccRowsHTML}
+            <div class="sc-line sc-cc-total"><span class="sc-line-label">Total Closing Costs</span><span class="sc-line-value">${fmt2(ccTotal)}</span></div>
+          </div>
+
+          <!-- Prepaid Costs -->
+          <div class="sc-section-label sc-prepaids-label">Estimated Prepaid Costs</div>
+          <div class="sc-lines">
+            <div class="sc-line"><span class="sc-line-label">Tax Reserves (${taxMos} mo &times; ${fmt2(moTax)}/mo)</span><span class="sc-line-value">${fmt2(taxReserve)}</span></div>
+            <div class="sc-line"><span class="sc-line-label">Insurance Reserves (${insMos} mo &times; ${fmt2(moIns)}/mo)</span><span class="sc-line-value">${fmt2(insReserve)}</span></div>
+            <div class="sc-line"><span class="sc-line-label">Annual Homeowners Insurance Premium (12 mo)</span><span class="sc-line-value">${fmt2(annualInsPremium)}</span></div>
+            <div class="sc-line sc-cc-total"><span class="sc-line-label">Total Prepaid Costs</span><span class="sc-line-value">${fmt2(prepaidTotal)}</span></div>
+          </div>
+
+          <!-- Total Cash to Close -->
+          <div class="sc-section-label">Total Cash to Close</div>
+          <div class="sc-lines">
+            <div class="sc-line"><span class="sc-line-label">Down Payment</span><span class="sc-line-value">${fmt2(down)}</span></div>
+            <div class="sc-line"><span class="sc-line-label">Closing Costs</span><span class="sc-line-value">${fmt2(ccTotal)}</span></div>
+            <div class="sc-line"><span class="sc-line-label">Prepaid Costs</span><span class="sc-line-value">${fmt2(prepaidTotal)}</span></div>
+            <div class="sc-line sc-cc-total"><span class="sc-line-label">Total Cash to Close</span><span class="sc-line-value">${fmt2(cashToClose)}</span></div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Disclaimer ── -->
+    <div class="disclaimer">
+      <div class="disclaimer-inner">
+        <div class="disclaimer-text">
+          <div class="disclaimer-secondary"><strong>Disclaimer:</strong> This calculator is offered for illustrative and educational purposes only and it is not intended to replace a professional estimate. Calculator results do not reflect all loan types and are subject to individual program loan limits. All calculations and costs are estimates and therefore, this tool does not make any guarantee or warranty (express or implied) that all possible costs have been included. The assumptions made here and the output of the calculator do not constitute a loan offer or solicitation, or financial or legal advice. Please connect with a loan professional for a formal estimate. Every effort is made to maintain accurate calculations; however, we assume no liability to any third parties that rely on this information and is not responsible for the accuracy of rates, APRs or any other loan information factored in the calculations.</div>
+
+          <div class="disclaimer-rule"></div>
+
+          <div class="disclaimer-secondary">This calculator is for educational and informational purposes only. Information provided is not a commitment to lend and should not be used as a qualifying tool. Actual rates, terms, and payment information vary depending on credit and other qualifications. Contact a lending professional for the most accurate quote.</div>
+          <br>
+          <div class="disclaimer-secondary">Private mortgage insurance (if applicable) is an estimate. Actual mortgage insurance terms vary depending on credit qualifications, down payment, and loan program.</div>
+          <br>
+          <div class="disclaimer-secondary"><strong>*The APR listed is an estimate</strong>, calculated based on estimated origination fees of $1,525, estimated settlement fees for home purchases in Portland, Oregon, a 1% discount "buy down" fee, and 15 days of prepaid interest. Contact a lending professional for the most accurate quote.</div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('reportRoot').innerHTML = html;
+}
+
+/* ── More Info toggle (matches admin) ── */
+function toggleMoreInfo(idx) {
+  const panel = document.getElementById('more-panel-' + idx);
+  const btn   = document.getElementById('more-btn-' + idx);
+  const isOpen = panel.style.display === 'block';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.textContent = isOpen ? 'More Info \u25be' : 'More Info \u25b4';
+  btn.classList.toggle('open', !isOpen);
+}
+</script>
+
+</body>
+</html>
