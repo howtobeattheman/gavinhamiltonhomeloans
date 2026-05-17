@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Affordability Calculator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --cream:   #ffffff;
+      --ivory:   #ffffff;
+      --charcoal:#1c1c1c;
+      --slate:   #4a4a4a;
+      --gold:    #b8924a;
+      --gold-lt: #d4ab6a;
+      --rule:    rgba(184,146,74,.35);
+      --radius:  4px;
+      --transition: .3s cubic-bezier(.4,0,.2,1);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background-color: #ffffff;
+      color: var(--charcoal);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* ── BACKGROUND ─────────────────────────────────────── */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: url('background.png');
+      background-size: cover;
+      background-position: center;
+      opacity: .08;
+      pointer-events: none;
+    }
+
+    /* ── MAIN LAYOUT ─────────────────────────────────────── */
+    main {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 4rem 1.5rem 5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border: 1px solid var(--rule);
+      border-radius: 2px;
+      width: 100%;
+      max-width: 560px;
+      padding: 3rem 3.5rem;
+      box-shadow:
+        0 4px 6px rgba(0,0,0,.04),
+        0 20px 50px rgba(0,0,0,.08);
+      animation: cardRise .7s cubic-bezier(.4,0,.2,1) both;
+    }
+
+    @keyframes cardRise {
+      from { opacity:0; transform: translateY(28px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+
+    /* ── STEP INDICATOR ──────────────────────────────────── */
+    .step-indicator {
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      margin-bottom: 1.6rem;
+      font-size: .68rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--gold);
+    }
+
+    .step-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--gold);
+    }
+
+    .step-dot.muted {
+      background: rgba(184,146,74,.3);
+    }
+
+    .card-headline {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 700;
+      font-size: clamp(2rem, 5vw, 2.6rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      color: var(--charcoal);
+      margin-bottom: 1rem;
+    }
+
+    .card-sub {
+      font-size: .92rem;
+      color: var(--slate);
+      line-height: 1.6;
+      margin-bottom: 2.2rem;
+      font-weight: 300;
+    }
+
+    .card-sub strong {
+      font-weight: 600;
+      color: var(--charcoal);
+    }
+
+    /* gold rule divider */
+    .divider {
+      width: 48px;
+      height: 1px;
+      background: var(--gold);
+      margin-bottom: 2rem;
+      opacity: .7;
+    }
+
+    /* ── FORM ────────────────────────────────────────────── */
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+
+    label {
+      display: block;
+      font-size: .72rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-bottom: .45rem;
+      font-weight: 500;
+    }
+
+    .required {
+      color: #c0392b;
+      margin-left: 3px;
+      font-weight: 600;
+    }
+
+    /* helper text under a field (e.g. the national-average rates link) */
+    .field-hint {
+      margin-top: .5rem;
+      font-size: .78rem;
+      line-height: 1.45;
+      color: #888;
+      font-weight: 300;
+    }
+
+    .field-hint a {
+      color: var(--gold);
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px solid rgba(184,146,74,.35);
+      transition: border-color var(--transition), color var(--transition);
+    }
+
+    .field-hint a:hover {
+      color: var(--gold-lt);
+      border-bottom-color: var(--gold);
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="number"],
+    select {
+      width: 100%;
+      padding: .75rem 1rem;
+      border: 1px solid rgba(74,74,74,.25);
+      border-radius: var(--radius);
+      background: rgba(255,255,255,.7);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .95rem;
+      color: var(--charcoal);
+      outline: none;
+      transition:
+        border-color var(--transition),
+        box-shadow var(--transition),
+        background var(--transition);
+      -moz-appearance: textfield;
+    }
+
+    select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23b8924a' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 1rem center;
+      padding-right: 2.5rem;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+    input:focus, select:focus {
+      border-color: var(--gold);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(184,146,74,.12);
+    }
+
+    input::placeholder { color: #bbb; }
+
+    /* percent % suffix variant */
+    .input-suffix { position: relative; }
+    .input-suffix input { padding-right: 2.4rem; }
+    .input-suffix span {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: .9rem;
+      color: var(--gold);
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    /* two-column row on wider screens */
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    /* ── BUTTON ROW ──────────────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-top: .6rem;
+    }
+
+    .btn-back {
+      flex: 0 0 auto;
+      padding: .9rem 1.4rem;
+      background: transparent;
+      color: var(--slate);
+      border: 1px solid rgba(74,74,74,.25);
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .75rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        border-color var(--transition),
+        color var(--transition),
+        background var(--transition);
+    }
+
+    .btn-back:hover {
+      border-color: var(--gold);
+      color: var(--charcoal);
+      background: rgba(184,146,74,.05);
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: .9rem 1.5rem;
+      background: var(--charcoal);
+      color: var(--ivory);
+      border: none;
+      border-radius: var(--radius);
+      font-family: 'DM Sans', sans-serif;
+      font-size: .8rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition:
+        background var(--transition),
+        box-shadow var(--transition),
+        transform var(--transition);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-submit::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(184,146,74,.15) 50%, transparent 100%);
+      transform: translateX(-100%);
+      transition: transform .5s ease;
+    }
+
+    .btn-submit:hover {
+      background: #2e2a22;
+      box-shadow: 0 6px 20px rgba(0,0,0,.18);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:hover::after { transform: translateX(100%); }
+
+    .btn-submit:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────── */
+    footer {
+      position: relative;
+      z-index: 10;
+      padding: 2rem 1.5rem 1.8rem;
+      border-top: 1px solid var(--rule);
+      background: rgba(255,255,255,.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+    }
+
+    .footer-image-wrap {
+      width: 100%;
+      max-width: 280px;
+      margin: 0 auto 1.4rem;
+      text-align: center;
+    }
+
+    .footer-image-wrap img {
+      max-width: 100%;
+      height: auto;
+      max-height: 80px;
+      object-fit: contain;
+      opacity: 0;
+      transition: opacity .6s ease;
+    }
+
+    .footer-image-wrap img.loaded { opacity: 1; }
+
+    .footer-rule {
+      width: 60px;
+      height: 1px;
+      background: var(--rule);
+      margin: 0 auto 1.2rem;
+    }
+
+    .footer-disclaimer {
+      max-width: 920px;
+      margin: 0 auto;
+      text-align: center;
+      font-size: .65rem;
+      line-height: 1.65;
+      color: #888;
+      letter-spacing: .01em;
+      font-weight: 300;
+    }
+
+    .footer-disclaimer p {
+      margin-bottom: .7rem;
+    }
+
+    .footer-disclaimer p:last-child {
+      margin-bottom: 0;
+    }
+
+    .footer-disclaimer a {
+      color: var(--gold);
+      text-decoration: none;
+      font-weight: 500;
+      border-bottom: 1px solid rgba(184,146,74,.35);
+      transition: border-color var(--transition), color var(--transition);
+    }
+
+    .footer-disclaimer a:hover {
+      color: var(--gold-lt);
+      border-bottom-color: var(--gold);
+    }
+
+    /* ── RESPONSIVE ──────────────────────────────────────── */
+    @media (max-width: 560px) {
+      .card { padding: 2.2rem 1.8rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .btn-row { flex-direction: column-reverse; }
+      .btn-back, .btn-submit { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background layer (background.png) -->
+  <div class="bg-layer"></div>
+
+  <!-- ── MAIN ── -->
+  <main>
+    <div class="card">
+
+      <div class="step-indicator">
+        <span class="step-dot"></span>
+        <span class="step-dot"></span>
+        <span>Step 2 of 3</span>
+        <span class="step-dot muted"></span>
+      </div>
+
+      <h2 class="card-headline">Loan Details</h2>
+      <p class="card-sub">A few details about the loan you're considering. <strong>This helps us calculate your purchasing power accurately.</strong></p>
+      <div class="divider"></div>
+
+      <form id="prequal2Form" novalidate>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="interestRate">Interest Rate<span class="required">*</span></label>
+            <div class="input-suffix">
+              <input
+                type="number"
+                id="interestRate"
+                name="interestRate"
+                placeholder="6.75"
+                step="0.01"
+                min="0"
+                max="30"
+                required
+              />
+              <span>%</span>
+            </div>
+            <p class="field-hint">Not sure of rate? <a href="https://housingbrief.com/mortgage-rates/645becce942e00cd9087ec76" target="_blank" rel="noopener">Click here for today's national average rates</a></p>
+          </div>
+
+          <div class="form-group">
+            <label for="loanTerm">Term of Mortgage<span class="required">*</span></label>
+            <select id="loanTerm" name="loanTerm" required>
+              <option value="">Select…</option>
+              <option value="15 years">15 years</option>
+              <option value="20 years">20 years</option>
+              <option value="30 years">30 years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="downPayment">Down Payment<span class="required">*</span></label>
+            <div class="input-suffix">
+              <input
+                type="number"
+                id="downPayment"
+                name="downPayment"
+                placeholder="20"
+                step="0.5"
+                min="0"
+                max="100"
+                required
+              />
+              <span>%</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="state">Select Your State<span class="required">*</span></label>
+            <select id="state" name="state" required>
+              <option value="">Select…</option>
+              <option value="AZ">Arizona</option>
+              <option value="CA">California</option>
+              <option value="ID">Idaho</option>
+              <option value="OR">Oregon</option>
+              <option value="WA">Washington</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn-back" id="backBtn">Back</button>
+          <button type="submit" class="btn-submit">Next</button>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="footer-image-wrap">
+      <img
+        id="footerImg"
+        src="footer.png"
+        alt=""
+        onload="this.classList.add('loaded');"
+        onerror="this.style.display='none'; this.parentElement.style.display='none';"
+      />
+    </div>
+
+    <div class="footer-rule"></div>
+
+    <div class="footer-disclaimer">
+      <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+      <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; Licensed by the California Department of Financial Protection and Innovation under the Residential Mortgage Lending Act &nbsp;|&nbsp; AZBK-1027601 &nbsp;|&nbsp; Licensed in OR, ID, WA, UT, CA, CO &amp; AZ &nbsp;|&nbsp; Not all Loan Officers are licensed in all states &nbsp;|&nbsp; This is not a commitment to lend &nbsp;|&nbsp; Program terms, rates, and conditions are subject to change without notice &nbsp;|&nbsp; All loans are subject to credit and property approval &nbsp;|&nbsp; Loan products and availability may vary by state. Some loan products may be offered through approved lending partners. &nbsp;|&nbsp; Mortgage Express, LLC is an Equal Housing Opportunity. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Pre-fill from sessionStorage if user navigated back or is returning
+    const saved = JSON.parse(sessionStorage.getItem('prequalData') || '{}');
+    ['interestRate', 'loanTerm', 'downPayment', 'state'].forEach(id => {
+      if (saved[id] !== undefined && saved[id] !== '') {
+        document.getElementById(id).value = saved[id];
+      }
+    });
+
+    // Back button — return to step 1 (saved data preserved automatically)
+    document.getElementById('backBtn').addEventListener('click', function() {
+      window.location.href = 'prequal-1.html';
+    });
+
+    // Form submit
+    document.getElementById('prequal2Form').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const fields = ['interestRate', 'loanTerm', 'downPayment', 'state'];
+      let hasError = false;
+
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value || el.value.trim() === '') {
+          el.style.borderColor = '#c0392b';
+          el.addEventListener('input',  () => el.style.borderColor = '', { once: true });
+          el.addEventListener('change', () => el.style.borderColor = '', { once: true });
+          hasError = true;
+        }
+      });
+
+      if (hasError) return;
+
+      // Merge with existing prequal data and persist
+      const data = {
+        ...saved,
+        interestRate: document.getElementById('interestRate').value.trim(),
+        loanTerm:     document.getElementById('loanTerm').value,
+        downPayment:  document.getElementById('downPayment').value.trim(),
+        state:        document.getElementById('state').value
+      };
+
+      sessionStorage.setItem('prequalData', JSON.stringify(data));
+      window.location.href = 'prequal-3.html';
+    });
+  </script>
+
+</body>
+</html>
