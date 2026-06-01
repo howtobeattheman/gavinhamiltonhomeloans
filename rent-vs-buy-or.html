@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rent vs. Buy Comparison</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --charcoal:#1c1c1c;--slate:#4a4a4a;
+  --gold:#b8924a;--gold-lt:#d4ab6a;--gold-dim:rgba(184,146,74,.35);
+  --green:#1a6640;--green-bg:#f0faf6;
+  --blue:#1a4066;--blue-bg:#f0f5fa;--blue-dim:rgba(26,64,102,.25);
+  --radius:4px;--transition:.3s cubic-bezier(.4,0,.2,1);
+  --shadow:0 4px 6px rgba(0,0,0,.04),0 20px 50px rgba(0,0,0,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background-color:#f9f8f5;color:var(--charcoal);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.bg-layer{position:fixed;inset:0;z-index:0;background-image:url('background.png');background-size:cover;background-position:center;opacity:.06;pointer-events:none}
+main{position:relative;z-index:10;flex:1;display:flex;align-items:flex-start;justify-content:center;padding:4rem 1.5rem 5rem}
+.card{background:#fff;border:1px solid var(--gold-dim);border-radius:2px;width:100%;max-width:820px;padding:3rem 3.5rem;box-shadow:var(--shadow);animation:cardRise .7s cubic-bezier(.4,0,.2,1) both}
+@keyframes cardRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.card-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.card-headline{font-weight:700;font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.75rem}
+.card-sub{font-size:.92rem;color:var(--slate);line-height:1.65;margin-bottom:2rem;font-weight:300;max-width:540px}
+.card-sub strong{font-weight:600;color:var(--charcoal)}
+.divider{width:48px;height:1px;background:var(--gold);margin-bottom:2rem;opacity:.7;border:none}
+.sec-title{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.sec-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.5}
+.sec-badge{font-size:.62rem;letter-spacing:.12em;padding:2px 8px;border-radius:20px;border:1px solid var(--gold-dim);color:var(--gold);margin-left:auto}
+.input-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:24px}
+@media(max-width:580px){.input-cols{grid-template-columns:1fr}}
+.icol{border:1px solid rgba(74,74,74,.15);border-radius:var(--radius);padding:1.5rem;background:#faf9f7}
+.icol.col-buy{border-color:rgba(184,146,74,.3);background:rgba(184,146,74,.03)}
+.icol.col-rent{border-color:rgba(26,64,102,.2);background:rgba(26,64,102,.02)}
+.field{margin-bottom:1.3rem}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.4rem;font-weight:500}
+.fnote{font-size:.72rem;font-weight:300;text-transform:none;letter-spacing:0;color:#999;font-style:italic}
+.iwrap{position:relative}
+.pfx{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--gold);font-weight:500;pointer-events:none;user-select:none}
+input[type="text"],input[type="number"],select{width:100%;padding:.7rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--charcoal);outline:none;transition:border-color var(--transition),box-shadow var(--transition),background var(--transition);-webkit-appearance:none;-moz-appearance:textfield}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+input.hpfx{padding-left:1.9rem}
+input:focus,select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(184,146,74,.12)}
+input::placeholder{color:#bbb}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b8924a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:28px}
+select option{background:#fff;color:var(--charcoal)}
+.rent-big-field{border:1px solid rgba(26,64,102,.2);border-radius:var(--radius);padding:1.5rem;background:rgba(26,64,102,.02);margin-bottom:24px}
+.rent-big-field .sec-title{color:var(--blue)}
+.rent-big-field .sec-dot{background:var(--blue)}
+.rent-big-field .sec-badge{border-color:var(--blue-dim);color:var(--blue)}
+.rent-big-field label{color:var(--blue)}
+.rent-big-field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,64,102,.1)}
+.rent-big-field .pfx{color:var(--blue)}
+.hcard{border:1px solid rgba(74,74,74,.15);border-radius:var(--radius);padding:1.5rem;background:#faf9f7;margin-bottom:2rem}
+.cgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:600px){.cgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:420px){.cgrid{grid-template-columns:1fr}}
+.btn-submit{display:block;width:100%;margin-top:.4rem;padding:.9rem 1.5rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--transition),box-shadow var(--transition),transform var(--transition);position:relative;overflow:hidden}
+.btn-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(184,146,74,.18) 50%,transparent 100%);transform:translateX(-100%);transition:transform .5s ease}
+.btn-submit:hover{background:#2e2a22;box-shadow:0 6px 20px rgba(0,0,0,.18);transform:translateY(-1px)}
+.btn-submit:hover::after{transform:translateX(100%)}
+.btn-submit:active{transform:translateY(0);box-shadow:none}
+.reset-link{display:block;text-align:center;margin-top:1rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa;cursor:pointer;transition:color var(--transition);background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;padding:.25rem}
+.reset-link:hover{color:var(--gold)}
+/* ── RESULTS ── */
+.results-section{display:none;margin-top:3rem}
+.results-section.show{display:block}
+.results-rule{width:100%;height:1px;background:var(--gold-dim);margin-bottom:2.5rem;border:none}
+.results-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem;font-weight:500}
+.results-headline{font-weight:700;font-size:1.25rem;letter-spacing:-0.01em;color:var(--charcoal);margin-bottom:1.8rem}
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px}
+@media(max-width:520px){.compare-cols{grid-template-columns:1fr}}
+.cc{border:1px solid rgba(74,74,74,.15);border-radius:var(--radius);overflow:hidden;background:#fff}
+.cc.cc-buy{border-color:rgba(184,146,74,.35)}
+.cc.cc-rent{border-color:rgba(26,64,102,.25)}
+.cc-head{padding:.75rem 1.2rem;background:#faf9f7;border-bottom:1px solid rgba(74,74,74,.1);display:flex;align-items:center;gap:.5rem}
+.cc.cc-buy .cc-head{background:rgba(184,146,74,.05)}
+.cc.cc-rent .cc-head{background:rgba(26,64,102,.04)}
+.hdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-rent{background:var(--blue)}
+.dot-buy{background:var(--gold)}
+.hlbl{font-size:.68rem;letter-spacing:.15em;text-transform:uppercase;font-weight:600;color:var(--slate)}
+.cc.cc-buy .hlbl{color:var(--gold)}
+.cc.cc-rent .hlbl{color:var(--blue)}
+.piti-block{padding:1.2rem 1.2rem .9rem;border-bottom:1px solid rgba(74,74,74,.1)}
+.piti-meta{font-size:.65rem;letter-spacing:.15em;text-transform:uppercase;color:#aaa;margin-bottom:.35rem;font-weight:500}
+.piti-amount{font-weight:700;font-size:clamp(1.6rem,3.5vw,2.2rem);letter-spacing:-0.02em;color:var(--charcoal);line-height:1}
+.piti-sub{font-size:.75rem;color:#aaa;margin-top:.25rem;font-weight:300}
+.eff-block{padding:.9rem 1.2rem;background:var(--green-bg);border-bottom:1px solid rgba(26,102,64,.15)}
+.eff-lbl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:#2a6040;margin-bottom:.3rem;font-weight:500;display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.eff-amount{font-weight:700;font-size:clamp(1.2rem,2.5vw,1.6rem);letter-spacing:-0.01em;color:var(--green);line-height:1}
+.eff-note{font-size:.72rem;color:#3a7050;margin-top:.25rem;font-weight:300}
+.eff-cap-badge{font-size:.58rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:2px 6px;border-radius:10px;border:1px solid var(--gold-dim);color:var(--gold);background:rgba(184,146,74,.06)}
+/* Rent result card — no tax benefit, just the raw number */
+.rent-piti-block{padding:1.2rem 1.2rem .9rem}
+.rent-note-block{padding:.9rem 1.2rem;background:rgba(26,64,102,.04);border-bottom:1px solid rgba(26,64,102,.1)}
+.rent-note-lbl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.3rem;font-weight:500}
+.rent-note-txt{font-size:.78rem;color:var(--blue);font-weight:300;line-height:1.6}
+.li-list{display:flex;flex-direction:column}
+.li-row{display:flex;flex-direction:column;padding:.65rem 1.2rem;border-bottom:1px solid rgba(74,74,74,.07)}
+.li-row:last-child{border-bottom:none}
+.li-lbl{font-size:.7rem;color:#aaa;margin-bottom:.15rem;letter-spacing:.05em}
+.li-val{font-weight:600;font-size:.95rem;color:var(--charcoal)}
+.sum-callout{padding:1.2rem 1.5rem;border:1px solid var(--gold-dim);border-radius:var(--radius);background:rgba(184,146,74,.04);margin-bottom:2rem}
+.sum-callout p{font-size:.88rem;color:var(--slate);line-height:1.75;font-weight:300}
+.sum-callout .hl{font-weight:600;color:var(--charcoal)}
+.tax-sec-lbl{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;font-weight:500}
+.math-cols{display:grid;grid-template-columns:1fr;gap:20px;margin-bottom:1.5rem}
+.mc{border:1px solid rgba(74,74,74,.14);border-radius:var(--radius);overflow:hidden;background:#fff}
+.mc-head{padding:.65rem 1rem;background:#faf9f7;border-bottom:1px solid rgba(74,74,74,.1);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);font-weight:600}
+.mstep{padding:.85rem 1rem;border-bottom:1px solid rgba(74,74,74,.07)}
+.mstep:last-child{border-bottom:none}
+.mstep-lbl{display:flex;align-items:center;gap:.4rem;font-size:.63rem;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:.5rem;font-weight:500}
+.snum{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;border-radius:50%;border:1px solid var(--gold-dim);font-size:.6rem;font-weight:700;color:var(--gold);flex-shrink:0}
+.meq{display:flex;justify-content:space-between;align-items:baseline;padding:2px 0;border-bottom:1px dotted rgba(74,74,74,.1)}
+.meq:last-child{border-bottom:none}
+.meq-l{font-size:.78rem;color:var(--slate);font-weight:300}
+.meq-v{font-size:.82rem;font-weight:600;color:var(--charcoal);font-family:'DM Mono',monospace}
+.meq-v.gld{color:var(--gold)}
+.mtot{display:flex;justify-content:space-between;align-items:baseline;padding-top:.5rem;margin-top:.35rem;border-top:1px solid var(--gold-dim)}
+.mtot-l{font-size:.78rem;font-weight:600;color:var(--slate)}
+.mtot-v{font-size:.95rem;font-weight:700;color:var(--green);font-family:'DM Mono',monospace}
+.mtot-v.zero{color:#bbb}
+.nb-note{font-size:.75rem;color:#7a5800;background:rgba(248,198,60,.1);border:1px solid rgba(200,160,0,.25);border-radius:var(--radius);padding:.5rem .75rem;margin-top:.5rem;line-height:1.55;font-weight:300}
+.salt{display:inline-block;font-size:.6rem;font-weight:600;letter-spacing:.06em;padding:1px 5px;border-radius:10px;border:1px solid rgba(0,110,160,.25);color:#0060a0;margin-left:3px;vertical-align:middle;text-transform:uppercase}
+.tax-note{padding:1rem 1.25rem;border-left:2px solid var(--gold-dim);background:rgba(184,146,74,.03);border-radius:0 var(--radius) var(--radius) 0;margin-top:1.5rem}
+.tax-note p{font-size:.76rem;color:#888;line-height:1.75;font-weight:300}
+.tax-note p strong{font-weight:600;color:var(--slate)}
+/* Alert */
+.alert-overlay{display:none;position:fixed;inset:0;background:rgba(28,28,28,.45);z-index:1000;align-items:center;justify-content:center;padding:1.5rem}
+.alert-overlay.show{display:flex}
+.alert-box{background:#fff;border:1px solid var(--gold-dim);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 2rem 1.5rem;max-width:400px;width:100%}
+.alert-icon{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:#b03020;margin-bottom:.6rem}
+.alert-msg{font-size:.9rem;color:var(--charcoal);line-height:1.7;margin-bottom:1.5rem;font-weight:300}
+.alert-btn{display:block;width:100%;padding:.75rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--transition)}
+.alert-btn:hover{background:#2e2a22}
+/* Footer */
+footer{position:relative;z-index:10;padding:2rem 1.5rem 1.8rem;border-top:1px solid var(--gold-dim);background:rgba(255,255,255,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.fi-wrap{width:100%;max-width:280px;margin:0 auto 1.4rem;text-align:center}
+.fi-wrap img{max-width:100%;height:auto;max-height:80px;object-fit:contain;opacity:0;transition:opacity .6s ease}
+.fi-wrap img.loaded{opacity:1}
+.f-rule{width:60px;height:1px;background:var(--gold-dim);margin:0 auto 1.2rem}
+.f-disc{max-width:920px;margin:0 auto;text-align:center;font-size:.63rem;line-height:1.65;color:#888;letter-spacing:.01em;font-weight:300}
+.f-disc p{margin-bottom:.7rem}
+.f-disc p:last-child{margin-bottom:0}
+.f-disc a{color:var(--gold);text-decoration:none;font-weight:500;border-bottom:1px solid var(--gold-dim);transition:border-color var(--transition),color var(--transition)}
+.f-disc a:hover{color:var(--gold-lt);border-bottom-color:var(--gold)}
+@media(max-width:600px){.card{padding:2rem 1.5rem}}
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+
+<main>
+  <div class="card">
+
+    <div id="calc-header-wrap" style="display:none;margin-bottom:2rem">
+      <img src="calc-header.png" alt="" style="max-width:240px;height:auto;display:block;margin:0 auto"
+        onload="document.getElementById('calc-header-wrap').style.display='block'"
+        onerror="document.getElementById('calc-header-wrap').style.display='none'">
+    </div>
+
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Mortgage Planning Tool</div>
+    <h1 class="card-headline">Rent vs. Buy</h1>
+    <p class="card-sub">Compare your current rent to the estimated cost of buying a home. <strong>Enter the details below to see a side-by-side monthly payment breakdown, including the effective cost after estimated tax deductions.</strong></p>
+    <hr class="divider">
+
+    <!-- RENT INPUT (single field, full-width feel) -->
+    <div class="rent-big-field">
+      <div class="sec-title">
+        <span class="sec-dot" style="background:var(--blue)"></span>
+        Current Rent
+        <span class="sec-badge" style="border-color:var(--blue-dim);color:var(--blue)">Renting</span>
+      </div>
+      <div class="field" style="margin-bottom:0">
+        <label style="color:var(--blue)">Monthly Rent Payment</label>
+        <div class="iwrap">
+          <span class="pfx" style="color:var(--blue)">$</span>
+          <input type="text" id="rent-amount" class="ci hpfx" inputmode="numeric">
+        </div>
+      </div>
+    </div>
+
+    <!-- BUY INPUT -->
+    <div class="icol col-buy" style="margin-bottom:24px">
+      <div class="sec-title"><span class="sec-dot"></span>Estimated Purchase<span class="sec-badge">Buying</span></div>
+
+      <div class="field">
+        <label>Purchase Price</label>
+        <div class="iwrap"><span class="pfx">$</span><input type="text" id="new-price" class="ci hpfx" inputmode="numeric"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="field" style="margin-bottom:0">
+          <label>Down Payment</label>
+          <div class="iwrap"><span class="pfx">%</span><input type="number" id="new-down" step="0.1" min="0" max="100" class="hpfx"></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Interest Rate</label>
+          <div class="iwrap"><span class="pfx">%</span><input type="number" id="new-rate" step="0.001" min="0" class="hpfx"></div>
+        </div>
+      </div>
+      <div class="field" style="margin-top:1.3rem">
+        <label>Loan Term</label>
+        <div class="iwrap"><select id="new-term"><option value="30">30 Years</option><option value="20">20 Years</option><option value="15">15 Years</option><option value="10">10 Years</option></select></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="field" style="margin-bottom:0">
+          <label>Annual Property Taxes</label>
+          <div class="iwrap"><span class="pfx">$</span><input type="text" id="new-tax" class="ci hpfx" inputmode="numeric"></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Annual Homeowners Insurance <span class="fnote">(approx.)</span></label>
+          <div class="iwrap"><span class="pfx">$</span><input type="text" id="new-ins" class="ci hpfx" inputmode="numeric"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOUSEHOLD INFO -->
+    <div class="hcard">
+      <div class="sec-title" style="margin-bottom:1.2rem"><span class="sec-dot"></span>Household &amp; Tax Information</div>
+      <div class="cgrid">
+        <div class="field" style="margin-bottom:0">
+          <label>Annual Household Income</label>
+          <div class="iwrap"><span class="pfx">$</span><input type="text" id="hh-income" class="ci hpfx" inputmode="numeric"></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>Filing Status</label>
+          <div class="iwrap"><select id="filing"><option value="single" selected>Single Filer</option><option value="joint">Joint Filer (MFJ)</option><option value="hoh">Head of Household</option></select></div>
+        </div>
+        <div class="field" style="margin-bottom:0">
+          <label>State</label>
+          <div class="iwrap"><select id="state"><option value="OR" selected>Oregon</option><option disabled>── Other States Coming Soon ──</option></select></div><div style="margin-top:.45rem;font-size:.68rem;color:#aaa;font-weight:300;line-height:1.5;">This calculator can be used for informational purposes to illustrate how itemizing tax deductions works, regardless of state. <span style="font-weight:600;color:#888;">What can vary is state and local taxes.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-submit" onclick="runComparison()">Compare Options</button>
+    <button class="reset-link" onclick="resetAll()">&#8635; Reset</button>
+
+    <!-- ═══════════════ RESULTS ═══════════════ -->
+    <div id="results" class="results-section">
+      <hr class="results-rule">
+      <div class="results-eyebrow">Side-by-side breakdown</div>
+      <div class="results-headline">Rent vs. Buy Comparison</div>
+
+      <div class="compare-cols">
+
+        <!-- RENT CARD -->
+        <div class="cc cc-rent">
+          <div class="cc-head"><span class="hdot dot-rent"></span><span class="hlbl">Renting</span></div>
+          <div class="rent-piti-block">
+            <div class="piti-meta">Monthly Rent</div>
+            <div class="piti-amount" id="r-rent-amount">—</div>
+            <div class="piti-sub">/ month</div>
+          </div>
+          <div class="rent-note-block">
+            <div class="rent-note-lbl">What you're not building</div>
+            <div class="rent-note-txt">Rent payments build no equity. Every dollar paid goes to your landlord — not toward ownership.</div>
+          </div>
+          <div class="li-list">
+            <div class="li-row"><div class="li-lbl">Tax deduction benefit</div><div class="li-val" style="color:#aaa">None</div></div>
+            <div class="li-row"><div class="li-lbl">Effective monthly cost</div><div class="li-val" id="r-rent-eff">—</div></div>
+            <div class="li-row"><div class="li-lbl">Annual rent cost</div><div class="li-val" id="r-rent-annual">—</div></div>
+          </div>
+        </div>
+
+        <!-- BUY CARD -->
+        <div class="cc cc-buy">
+          <div class="cc-head"><span class="hdot dot-buy"></span><span class="hlbl">Buying</span></div>
+          <div class="piti-block">
+            <div class="piti-meta">Total PITI / Month</div>
+            <div class="piti-amount" id="r-buy-piti">—</div>
+            <div class="piti-sub">/ month</div>
+          </div>
+          <div class="eff-block">
+            <div class="eff-lbl">Effective Payment After Tax Benefit <span class="eff-cap-badge">SALT cap $40k</span></div>
+            <div class="eff-amount" id="r-buy-eff">—</div>
+            <div class="eff-note" id="r-buy-saving-note">—</div>
+          </div>
+          <div class="li-list">
+            <div class="li-row"><div class="li-lbl">Principal &amp; Interest</div><div class="li-val" id="r-buy-pi">—</div></div>
+            <div class="li-row"><div class="li-lbl">Monthly Property Tax</div><div class="li-val" id="r-buy-tax">—</div></div>
+            <div class="li-row"><div class="li-lbl">Monthly Insurance</div><div class="li-val" id="r-buy-ins">—</div></div>
+            <div class="li-row"><div class="li-lbl">Loan Amount</div><div class="li-val" id="r-buy-loan">—</div></div>
+            <div class="li-row"><div class="li-lbl">Down Payment</div><div class="li-val" id="r-buy-down">—</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SUMMARY CALLOUT -->
+      <div class="sum-callout"><p id="summary-text">—</p></div>
+
+      <!-- TAX BREAKDOWN (buy side only) -->
+      <div class="tax-sec-lbl">Purchase — Tax Deduction Breakdown</div>
+      <div class="math-cols">
+        <div class="mc">
+          <div class="mc-head">Estimated Purchase — Tax Math</div>
+          <div class="mstep">
+            <div class="mstep-lbl"><span class="snum">1</span>Itemizable deductions</div>
+            <div class="meq"><span class="meq-l">Mortgage interest (est. annual)</span><span class="meq-v" id="tm-int">—</span></div>
+            <div class="meq"><span class="meq-l">State income tax (est. annual)</span><span class="meq-v" id="tm-state-inc">—</span></div>
+            <div class="meq"><span class="meq-l">Property taxes</span><span class="meq-v" id="tm-tax">—</span></div>
+            <div class="meq"><span class="meq-l">SALT subtotal <span class="salt">cap $40k</span></span><span class="meq-v" id="tm-salt-sub">—</span></div>
+            <div class="mtot"><span class="mtot-l">Total itemized</span><span class="meq-v gld" id="tm-total-item">—</span></div>
+          </div>
+          <div class="mstep">
+            <div class="mstep-lbl"><span class="snum">2</span>vs. Standard deduction</div>
+            <div class="meq"><span class="meq-l">Standard deduction</span><span class="meq-v" id="tm-std">—</span></div>
+            <div class="meq"><span class="meq-l">Excess above standard</span><span class="meq-v gld" id="tm-excess">—</span></div>
+            <div id="tm-no-benefit" class="nb-note" style="display:none">Itemized deductions do not exceed the standard deduction — no itemization benefit applies.</div>
+          </div>
+          <div class="mstep">
+            <div class="mstep-lbl"><span class="snum">3</span>Federal marginal rate</div>
+            <div class="meq"><span class="meq-l">Federal bracket</span><span class="meq-v" id="tm-fed">—</span></div>
+            <div class="mtot"><span class="mtot-l">Rate applied to savings</span><span class="meq-v gld" id="tm-combined">—</span></div>
+          </div>
+          <div class="mstep">
+            <div class="mstep-lbl"><span class="snum">4</span>Monthly savings</div>
+            <div class="meq"><span class="meq-l">Annual savings (excess × rate)</span><span class="meq-v" id="tm-annual">—</span></div>
+            <div class="mtot"><span class="mtot-l">Monthly (&#247; 12)</span><span class="mtot-v" id="tm-monthly">—</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tax-note">
+        <p><strong>Tax deduction methodology:</strong> Effective payment reflects estimated monthly tax savings from itemizing deductions versus taking the standard deduction (2026: Single $16,100 · Joint $32,200 · HoH $24,150). Per IRS Topic 503, SALT includes both state income taxes and property taxes, combined and capped at <strong>$40,000 per the One Big Beautiful Bill Act</strong>. State income tax is a SALT deductible item — it reduces your federal taxable income, generating a <strong>federal</strong> tax savings only. Tax savings are calculated using your federal marginal bracket only. Oregon state income tax uses graduated brackets (4.75%–9.90%). California uses graduated brackets (1.00%–9.30%+ for income below $1M) per CA FTB Schedule X/Y/Z, with personal exemption credit applied. Washington has no state income tax — only property taxes are included in SALT for WA residents. Rent provides no federal tax deduction benefit. This is an estimate — consult a tax professional for personalized advice.</p>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="fi-wrap">
+    <img id="footerImg" src="footer.png" alt=""
+      onload="this.classList.add('loaded')"
+      onerror="this.style.display='none';this.parentElement.style.display='none'">
+  </div>
+  <div class="f-rule"></div>
+  <div class="f-disc">
+    <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+    <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; This calculator is for educational and informational purposes only and is not a commitment to lend. Tax benefit estimates are approximations — consult a qualified tax professional. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+  </div>
+</footer>
+
+<div class="alert-overlay" id="alert-modal">
+  <div class="alert-box">
+    <div class="alert-icon">Input Required</div>
+    <div class="alert-msg" id="alert-msg"></div>
+    <button class="alert-btn" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── CONSTANTS ── */
+const SALT_CAP = 40000;
+const STD_DEDUCTION = { single: 16100, joint: 32200, hoh: 24150 }; // 2026 IRS Rev. Proc. 2025-32
+// 2026 federal brackets — IRS Rev. Proc. 2025-32 (inflation-adjusted, OBBBA permanent rates)
+const FED_BRACKETS = {
+  single: [[11925,0.10],[48475,0.12],[103350,0.22],[197300,0.24],[250525,0.32],[626350,0.35],[Infinity,0.37]],
+  joint:  [[23850,0.10],[96950,0.12],[206700,0.22],[394600,0.24],[501050,0.32],[751600,0.35],[Infinity,0.37]],
+  hoh:    [[17000,0.10],[64850,0.12],[103350,0.22],[197300,0.24],[250500,0.32],[626350,0.35],[Infinity,0.37]]
+};
+// Flat marginal rates — null means graduated brackets are used instead
+const STATE_RATES = { OR: null, WA: 0.000, CA: null, ID: 0.058, AZ: 0.025, OT: 0.050 };
+const OR_BRACKETS_SINGLE = [[4050,0.0475],[10200,0.0675],[125000,0.0875],[Infinity,0.099]];
+const OR_BRACKETS_JOINT  = [[8100,0.0475],[20400,0.0675],[250000,0.0875],[Infinity,0.099]];
+const OR_BRACKETS_HOH    = [[4050,0.0475],[10200,0.0675],[125000,0.0875],[Infinity,0.099]];
+
+// California 2024 brackets — source: CA FTB 2024 Tax Rate Schedules (Schedule X/Y/Z)
+const CA_BRACKETS_SINGLE = [[10756,0.01],[25499,0.02],[40245,0.04],[55866,0.06],[70606,0.08],[360659,0.093],[432787,0.103],[721314,0.113],[Infinity,0.123]];
+const CA_BRACKETS_JOINT  = [[21512,0.01],[50998,0.02],[80490,0.04],[111732,0.06],[141212,0.08],[721318,0.093],[865574,0.103],[1442628,0.113],[Infinity,0.123]];
+const CA_BRACKETS_HOH    = [[21527,0.01],[51000,0.02],[65744,0.04],[81364,0.06],[96107,0.08],[490493,0.093],[588593,0.103],[980987,0.113],[Infinity,0.123]];
+
+/* ── HELPERS ── */
+const fmt   = n => '$' + Math.round(n).toLocaleString();
+const fmt2  = n => '$' + n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const fmtPct= n => (n*100).toFixed(1)+'%';
+const pv    = id => parseFloat(document.getElementById(id).value.replace(/,/g,''))||0;
+
+function calcOregonTax(income, filing) {
+  const brackets = filing==='joint' ? OR_BRACKETS_JOINT : filing==='hoh' ? OR_BRACKETS_HOH : OR_BRACKETS_SINGLE;
+  let tax=0, prev=0;
+  for (const [lim, rate] of brackets) {
+    if (income <= prev) break;
+    tax += (Math.min(income, lim) - prev) * rate;
+    prev = lim;
+    if (lim === Infinity) break;
+  }
+  return tax;
+}
+
+function calcCaliforniaTax(income, filing) {
+  const brackets = filing==='joint' ? CA_BRACKETS_JOINT : filing==='hoh' ? CA_BRACKETS_HOH : CA_BRACKETS_SINGLE;
+  // CA personal exemption credits: Single/HOH $144, Joint $288
+  const exemptionCredit = filing==='joint' ? 288 : 144;
+  let tax=0, prev=0;
+  for (const [lim, rate] of brackets) {
+    if (income <= prev) break;
+    tax += (Math.min(income, lim) - prev) * rate;
+    prev = lim;
+    if (lim === Infinity) break;
+  }
+  return Math.max(0, tax - exemptionCredit);
+}
+function getStateIncomeTax(income, filing, state) {
+  if (state === 'OR') return calcOregonTax(income, filing);
+  if (state === 'CA') return calcCaliforniaTax(income, filing);
+  if (state === 'WA') return 0;
+  return income * (STATE_RATES[state] || 0.05);
+}
+function getStateMarginalRate(income, filing, state) {
+  if (state === 'OR') {
+    const brackets = filing==='joint' ? OR_BRACKETS_JOINT : filing==='hoh' ? OR_BRACKETS_HOH : OR_BRACKETS_SINGLE;
+    for (const [lim, rate] of brackets) { if (income <= lim) return rate; }
+    return 0.099;
+  }
+  if (state === 'CA') {
+    const brackets = filing==='joint' ? CA_BRACKETS_JOINT : filing==='hoh' ? CA_BRACKETS_HOH : CA_BRACKETS_SINGLE;
+    for (const [lim, rate] of brackets) { if (income <= lim) return rate; }
+    return 0.123;
+  }
+  if (state === 'WA') return 0;
+  return STATE_RATES[state] || 0.05;
+}
+function fedRate(income, filing) {
+  const b = FED_BRACKETS[filing]||FED_BRACKETS.single;
+  for (const [lim,r] of b) if (income<=lim) return r;
+  return 0.37;
+}
+function fedLabel(income, filing) {
+  const b = FED_BRACKETS[filing]||FED_BRACKETS.single;
+  for (const [lim,r] of b) if (income<=lim) return (r*100).toFixed(0)+'%';
+  return '37%';
+}
+function pmt(r,n,pv) { return r===0 ? pv/n : pv*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1); }
+
+function taxBenefit(annInt, annTax, income, filing, state) {
+  const annStateIncomeTax = getStateIncomeTax(income, filing, state);
+  const saltRaw = annTax + annStateIncomeTax;
+  const saltCapped = Math.min(saltRaw, SALT_CAP);
+  const tot = annInt + saltCapped;
+  const std = STD_DEDUCTION[filing] || STD_DEDUCTION.single;
+  const excess = tot - std;
+  const fr = fedRate(income, filing);
+  const sr = getStateMarginalRate(income, filing, state);
+  if (excess <= 0) return {monthly:0,annual:0,excess:0,totalItemized:tot,std,saltCapped,saltRaw,annTax,annStateIncomeTax,hasBenefit:false,sr,fr};
+  return {monthly:excess*fr/12,annual:excess*fr,excess,totalItemized:tot,std,saltCapped,saltRaw,annTax,annStateIncomeTax,hasBenefit:true,sr,fr};
+}
+
+/* ── COMMA INPUT FORMATTING ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.ci').forEach(el=>{
+    el.addEventListener('blur',()=>{
+      const n=parseFloat(el.value.replace(/,/g,'').replace(/[^0-9.]/g,''));
+      if(!isNaN(n)) el.value=n.toLocaleString('en-US',{maximumFractionDigits:2});
+    });
+    el.addEventListener('focus',()=>{ el.value=el.value.replace(/,/g,''); });
+  });
+});
+
+function showAlert(msg){document.getElementById('alert-msg').textContent=msg;document.getElementById('alert-modal').classList.add('show')}
+function closeAlert(){document.getElementById('alert-modal').classList.remove('show')}
+function set(id,val,html){const el=document.getElementById(id);if(!el)return;html?el.innerHTML=val:el.textContent=val}
+
+/* ── MAIN CALCULATION ── */
+function runComparison(){
+  const rentAmount = pv('rent-amount');
+  const newPrice   = pv('new-price');
+  const newDown    = parseFloat(document.getElementById('new-down').value)||0;
+  const newRate    = parseFloat(document.getElementById('new-rate').value)||0;
+  const newTerm    = parseInt(document.getElementById('new-term').value);
+  const newTaxAnn  = pv('new-tax');
+  const newInsAnn  = pv('new-ins');
+  const income     = pv('hh-income');
+  const filing     = document.getElementById('filing').value;
+  const state      = document.getElementById('state').value;
+
+  if(!rentAmount){showAlert('Please enter your current monthly rent.');return}
+  if(!newPrice||!newRate){showAlert('Please enter a purchase price and interest rate.');return}
+  if(!income){showAlert('Please enter your annual household income.');return}
+  if(newDown<0||newDown>100){showAlert('Down payment must be between 0% and 100%.');return}
+
+  /* ── Buy calcs ── */
+  const newLoan    = newPrice*(1-newDown/100);
+  const newDownAmt = newPrice*(newDown/100);
+  const nr=newRate/100/12, nn=newTerm*12;
+  const newPI  = pmt(nr,nn,newLoan);
+  const taxMo  = (newTaxAnn||newPrice*0.012)/12;
+  const insMo  = (newInsAnn||newLoan*0.0025)/12;
+  const buyPITI= newPI+taxMo+insMo;
+
+  /* First-year annual interest */
+  let annInt=0, tb=newLoan;
+  for(let i=0;i<12;i++){const ic=tb*nr;annInt+=ic;tb=tb*(1+nr)-newPI}
+
+  const annTax = newTaxAnn||newPrice*0.012;
+  const nt = taxBenefit(annInt,annTax,income,filing,state);
+  const buyEff = buyPITI - nt.monthly;
+
+  /* ── Rent calcs ── */
+  const rentEff    = rentAmount; // no tax benefit for rent
+  const rentAnnual = rentAmount * 12;
+
+  /* ── Populate rent card ── */
+  set('r-rent-amount', fmt2(rentAmount));
+  set('r-rent-eff',    fmt2(rentEff));
+  set('r-rent-annual', fmt(rentAnnual)+' / year');
+
+  /* ── Populate buy card ── */
+  set('r-buy-piti', fmt2(buyPITI));
+  set('r-buy-pi',   fmt2(newPI));
+  set('r-buy-tax',  fmt2(taxMo));
+  set('r-buy-ins',  fmt2(insMo));
+  set('r-buy-loan', fmt(newLoan));
+  set('r-buy-down', fmt(newDownAmt)+' ('+newDown.toFixed(1)+'%)');
+  set('r-buy-eff',  fmt2(buyEff));
+  set('r-buy-saving-note', nt.hasBenefit
+    ? 'Est. monthly tax savings: '+fmt2(nt.monthly)
+    : 'No itemization benefit — below standard deduction');
+
+  /* ── Summary callout ── */
+  const diff     = buyEff - rentEff;
+  const diffAbs  = Math.abs(diff);
+  const cheaper  = diff < 0 ? 'buying' : 'renting';
+  const moreExp  = diff < 0 ? 'renting' : 'buying';
+  let summaryHTML;
+  if(Math.abs(diff) < 1){
+    summaryHTML = 'After estimated tax deductions, the effective monthly cost of buying (<span class="hl">'+fmt2(buyEff)+'</span>) and renting (<span class="hl">'+fmt2(rentEff)+'</span>) are virtually identical — but buying builds equity while renting does not.';
+  } else {
+    summaryHTML = 'After estimated tax deductions, <span class="hl">'+cheaper+'</span> is <span class="hl">'+fmt2(diffAbs)+'/mo less</span> than '+moreExp+' — a difference of <span class="hl">'+fmt(diffAbs*12)+' per year</span>.'
+      + (cheaper==='buying' ? ' And unlike rent, your mortgage payment builds equity with every payment.' : ' However, buying builds equity over time while rent payments do not.');
+  }
+  set('summary-text', summaryHTML, true);
+
+  /* ── Tax math breakdown ── */
+  const fl = fedLabel(income,filing);
+  const cl = fmtPct(fedRate(income,filing));
+
+  set('tm-int',        fmt(annInt));
+  set('tm-state-inc',  fmt(nt.annStateIncomeTax));
+  set('tm-tax',        fmt(annTax));
+  set('tm-salt-sub',   fmt(nt.saltCapped)+(nt.saltRaw>SALT_CAP?' (capped from '+fmt(nt.saltRaw)+')':''));
+  set('tm-total-item', fmt(nt.totalItemized));
+  set('tm-std',        fmt(nt.std));
+  set('tm-excess',     nt.hasBenefit?fmt(nt.excess):'$0');
+  set('tm-fed',        fl);
+  set('tm-combined',   cl);
+  set('tm-annual',     fmt(nt.annual)+' / yr');
+  set('tm-monthly',    nt.hasBenefit?fmt2(nt.monthly)+' / mo':'$0.00 / mo');
+  document.getElementById('tm-monthly').className='mtot-v'+(nt.hasBenefit?'':' zero');
+  document.getElementById('tm-no-benefit').style.display=nt.hasBenefit?'none':'block';
+
+  const re=document.getElementById('results');
+  re.classList.add('show');
+  setTimeout(()=>re.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+/* ── RESET ── */
+function resetAll(){
+  document.getElementById('results').classList.remove('show');
+  document.querySelectorAll('input:not([type="hidden"])').forEach(i=>{i.value=''});
+  ['r-rent-amount','r-rent-eff','r-rent-annual',
+   'r-buy-piti','r-buy-eff','r-buy-pi','r-buy-tax','r-buy-ins','r-buy-loan','r-buy-down','r-buy-saving-note',
+   'summary-text','tm-int','tm-state-inc','tm-tax','tm-salt-sub','tm-total-item','tm-std','tm-excess',
+   'tm-fed','tm-combined','tm-annual','tm-monthly']
+    .forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—'});
+  document.getElementById('tm-no-benefit').style.display='none';
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+</script>
+</body>
+</html>
