@@ -1,0 +1,1399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Existing Homeowner Tools — Gavin Hamilton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --charcoal:#1c1c1c;--slate:#4a4a4a;
+  --gold:#b8924a;--gold-lt:#d4ab6a;--gold-dim:rgba(184,146,74,.35);
+  --green:#1a6640;--green-bg:#f0faf6;
+  --blue:#185FA5;--red:#b03020;--red-bg:#fff5f3;
+  --ivory:#faf9f7;
+  --radius:4px;--trans:.3s cubic-bezier(.4,0,.2,1);
+  --shadow:0 4px 6px rgba(0,0,0,.04),0 20px 50px rgba(0,0,0,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f9f8f5;color:var(--charcoal);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.bg-layer{position:fixed;inset:0;z-index:0;background-image:url('background.png');background-size:cover;background-position:center;opacity:.06;pointer-events:none}
+main{position:relative;z-index:10;flex:1;padding:3rem 1.5rem 5rem;max-width:860px;margin:0 auto;width:100%}
+
+/* HERO */
+.hero{text-align:center;padding:2.5rem 1rem 2rem;margin-bottom:2rem}
+.hero-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;display:flex;align-items:center;justify-content:center;gap:.5rem;font-weight:500}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.hero-headline{font-weight:700;font-size:clamp(2rem,5vw,2.8rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.8rem}
+.hero-sub{font-size:.95rem;color:var(--slate);line-height:1.7;font-weight:300;max-width:520px;margin:0 auto}
+.hero-sub strong{font-weight:600;color:var(--charcoal)}
+.hero-sub-2{font-size:.95rem;color:var(--slate);line-height:1.7;font-weight:300;max-width:520px;margin:.75rem auto 0}
+.hero-sub-2 strong{font-weight:600;color:var(--charcoal)}
+.hero-divider{width:48px;height:1px;background:var(--gold);margin:1.5rem auto 0;opacity:.7}
+
+/* STEP NAV */
+.step-nav{display:flex;gap:0;margin-bottom:2.5rem;border:1px solid var(--gold-dim);border-radius:var(--radius);overflow:hidden;position:sticky;top:12px;z-index:100;background:#fff;box-shadow:var(--shadow)}
+.step-nav-btn{flex:1;padding:.75rem .5rem;background:transparent;border:none;border-right:1px solid var(--gold-dim);font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#aaa;cursor:pointer;transition:all var(--trans);line-height:1.4;text-align:center}
+.step-nav-btn:last-child{border-right:none}
+.step-nav-btn:hover{background:rgba(184,146,74,.05);color:var(--gold)}
+.step-nav-btn.active{background:var(--charcoal);color:#fff}
+.step-nav-btn.done{background:var(--green-bg);color:var(--green)}
+.step-num{display:block;font-size:.6rem;margin-bottom:2px;opacity:.7}
+
+/* CALC CARD */
+.calc-card{background:#fff;border:1px solid var(--gold-dim);border-radius:2px;padding:2.5rem 3rem;box-shadow:var(--shadow);margin-bottom:1.5rem;animation:cardRise .5s cubic-bezier(.4,0,.2,1) both}
+@keyframes cardRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.card-headline{font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.15;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.6rem}
+.card-sub{font-size:.88rem;color:var(--slate);line-height:1.65;margin-bottom:1.75rem;font-weight:300}
+.card-sub strong{font-weight:600;color:var(--charcoal)}
+hr.divider{width:40px;height:1px;background:var(--gold);margin-bottom:1.75rem;opacity:.7;border:none}
+
+/* BRIDGE */
+.bridge{padding:1.5rem 1.75rem;border-left:3px solid var(--gold);background:rgba(184,146,74,.04);border-radius:0 var(--radius) var(--radius) 0;margin-bottom:2rem;display:none}
+.bridge.show{display:block;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.bridge-eyebrow{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.4rem}
+.bridge-text{font-size:.9rem;color:var(--slate);line-height:1.75;font-weight:300}
+.bridge-text .hl{font-weight:600;color:var(--charcoal)}
+.bridge-text .hl-green{font-weight:600;color:var(--green)}
+.bridge-btn{margin-top:.9rem;display:inline-block;padding:.65rem 1.4rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--trans),transform var(--trans)}
+.bridge-btn:hover{background:#2e2a22;transform:translateY(-1px)}
+
+/* SECTION LABELS */
+.sec-label{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.sec-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.5}
+
+/* EQUITY CALCULATOR — step indicators */
+.steps-wrap{display:flex;align-items:center;gap:0;margin-bottom:2rem}
+.step-pill{display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border:1px solid rgba(74,74,74,.15);border-radius:20px;background:var(--ivory);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#bbb;transition:all var(--trans);cursor:default}
+.step-pill.active{border-color:var(--gold-dim);background:rgba(184,146,74,.06);color:var(--gold)}
+.step-pill.done{border-color:rgba(26,102,64,.25);background:var(--green-bg);color:var(--green)}
+.step-num-pill{width:18px;height:18px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0}
+.step-pill.done .step-num-pill{background:var(--green);border-color:var(--green);color:#fff}
+.step-connector{flex:1;height:1px;background:rgba(74,74,74,.12);margin:0 .5rem}
+.calc-step{display:none}
+.calc-step.active{display:block;animation:fadeUp .4s cubic-bezier(.4,0,.2,1) both}
+
+/* FORM */
+.input-panel{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);padding:1.25rem;background:var(--ivory);margin-bottom:1.25rem}
+.input-panel.buy-panel{border-color:var(--gold-dim);background:rgba(184,146,74,.02)}
+.form-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.form-group{margin-bottom:1.2rem}
+.form-group:last-child{margin-bottom:0}
+label{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.38rem;font-weight:500}
+.required{color:#b03020;margin-left:2px;font-weight:600}
+.fnote{font-size:.7rem;font-weight:300;text-transform:none;letter-spacing:0;color:#999;font-style:italic;margin-left:.25rem}
+.iwrap{position:relative}
+.pfx-sym{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--gold);font-weight:500;pointer-events:none}
+.pfx input{padding-left:1.9rem!important}
+input[type="text"],input[type="number"],select{width:100%;padding:.68rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--charcoal);outline:none;transition:border-color var(--trans),box-shadow var(--trans);-webkit-appearance:none;-moz-appearance:textfield}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+input.hpfx{padding-left:1.9rem}
+input:focus,select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(184,146,74,.12)}
+input::placeholder{color:#bbb}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b8924a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:2.5rem}
+.sfx{position:relative}.sfx input{padding-right:2.4rem}
+.sfx-sym{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--gold);font-weight:500;pointer-events:none}
+.range-wrap{display:flex;align-items:center;gap:.75rem}
+input[type="range"]{-webkit-appearance:none;appearance:none;flex:1;height:3px;border-radius:2px;background:rgba(74,74,74,.2);outline:none;border:none;padding:0;cursor:pointer}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2)}
+.range-val{font-size:.85rem;font-weight:600;color:var(--gold);font-family:DM Mono,monospace;min-width:38px;text-align:right}
+
+/* BUTTONS */
+.btn-primary{display:block;width:100%;margin-top:.4rem;padding:.9rem 1.5rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--trans),box-shadow var(--trans),transform var(--trans);position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(184,146,74,.18),transparent);transform:translateX(-100%);transition:transform .5s ease}
+.btn-primary:hover{background:#2e2a22;box-shadow:0 6px 20px rgba(0,0,0,.18);transform:translateY(-1px)}
+.btn-primary:hover::after{transform:translateX(100%)}
+.btn-primary:active{transform:translateY(0);box-shadow:none}
+.btn-green{background:var(--green)!important}
+.btn-green:hover{background:#0f3d26!important}
+.btn-back{display:inline-block;padding:.65rem 1.2rem;background:transparent;color:var(--slate);border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all var(--trans)}
+.btn-back:hover{border-color:var(--gold);color:var(--gold)}
+.btn-row{display:flex;gap:.75rem;align-items:center;margin-top:1.5rem}
+.reset-link{display:block;text-align:center;margin-top:1rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;padding:.25rem;transition:color var(--trans)}
+.reset-link:hover{color:var(--gold)}
+
+/* RESULT CARDS */
+.result-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.rc{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);overflow:hidden;background:#fff}
+.rc.rc-highlight{border-color:var(--gold-dim)}
+.rc.rc-green{border-color:rgba(26,102,64,.3)}
+.rc-head{padding:.6rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);font-size:.62rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;color:var(--slate);display:flex;align-items:center;gap:.4rem}
+.rc.rc-highlight .rc-head{background:rgba(184,146,74,.05);color:var(--gold)}
+.rc.rc-green .rc-head{background:var(--green-bg);color:var(--green)}
+.rhead-dot{width:6px;height:6px;border-radius:50%;background:#aaa;flex-shrink:0}
+.rc.rc-highlight .rhead-dot{background:var(--gold)}
+.rc.rc-green .rhead-dot{background:var(--green)}
+.rc-body{padding:1rem 1.2rem}
+.rc-lbl{font-size:.63rem;letter-spacing:.11em;text-transform:uppercase;color:#aaa;margin-bottom:.3rem;font-weight:500}
+.rc-val{font-weight:700;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-0.02em;color:var(--charcoal);line-height:1;font-family:DM Mono,monospace}
+.rc.rc-highlight .rc-val{color:var(--gold)}
+.rc.rc-green .rc-val{color:var(--green)}
+.rc-sub{font-size:.72rem;color:#aaa;margin-top:.3rem;font-weight:300;line-height:1.5}
+.rc-note{font-size:.68rem;color:#999;font-style:italic;margin-top:.3rem;font-weight:300;line-height:1.5}
+
+/* REVEAL BLOCKS */
+.reveal-block{padding:1.1rem 1.4rem;border-left:2px solid var(--gold);background:rgba(184,146,74,.04);border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0}
+.reveal-block p{font-size:.86rem;color:var(--slate);line-height:1.75;font-weight:300}
+.reveal-block p .hl{font-weight:600;color:var(--charcoal)}
+.reveal-block p .hl-green{font-weight:600;color:var(--green)}
+.reveal-block p .hl-gold{font-weight:600;color:var(--gold)}
+
+/* APPRECIATION MATH */
+.appr-math-wrap{margin:1rem 0}
+.appr-math-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.appr-math-box{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);overflow:hidden;background:#fff}
+.appr-math-box.appr-box-next{border-color:rgba(26,102,64,.3);background:var(--green-bg)}
+.appr-math-head{padding:.6rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--slate)}
+.appr-math-box.appr-box-next .appr-math-head{background:rgba(26,102,64,.08);border-bottom-color:rgba(26,102,64,.15);color:var(--green)}
+.appr-math-body{padding:1rem 1.1rem}
+.appr-context{font-size:.72rem;color:#aaa;font-weight:300;margin-bottom:.35rem;line-height:1.4}
+.appr-equation{font-size:.92rem;color:var(--slate);font-family:DM Mono,monospace;font-weight:500;margin-bottom:.5rem}
+.appr-equation span.eq-val{font-weight:700;color:var(--charcoal)}
+.appr-result{font-size:clamp(1.6rem,4vw,2rem);font-weight:700;font-family:DM Mono,monospace;color:var(--charcoal);letter-spacing:-0.02em;line-height:1}
+.appr-result.green{color:var(--green)}
+.appr-result-sub{font-size:.7rem;color:#aaa;margin-top:.35rem;font-weight:300}
+.appr-diff-row{border:1px solid var(--gold-dim);border-radius:var(--radius);background:rgba(184,146,74,.06);padding:1rem 1.2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.75rem}
+.appr-diff-lbl{font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);font-weight:700}
+.appr-diff-val{font-size:clamp(1.4rem,3.5vw,1.8rem);font-weight:700;font-family:DM Mono,monospace;color:var(--gold);letter-spacing:-0.01em}
+.appr-insight{padding:.9rem 1.1rem;background:var(--charcoal);border-radius:var(--radius);margin-bottom:.75rem}
+.appr-insight-text{font-size:.82rem;color:rgba(255,255,255,.85);line-height:1.7;font-weight:300}
+.appr-insight-text strong{font-weight:700;color:#fff}
+.proj-table{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);overflow:hidden;margin:1rem 0}
+.proj-head{display:grid;grid-template-columns:70px 1fr 1fr;padding:.6rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09)}
+.proj-head span{font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:var(--slate)}
+.proj-row{display:grid;grid-template-columns:70px 1fr 1fr;padding:.7rem 1rem;border-bottom:1px solid rgba(74,74,74,.06)}
+.proj-row:last-child{border-bottom:none;background:rgba(184,146,74,.04)}
+.proj-row span{font-size:.85rem;color:var(--charcoal);font-family:DM Mono,monospace}
+.proj-row span:first-child{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--slate);font-family:'DM Sans',sans-serif;font-weight:500}
+.proj-row.final span{font-weight:700}
+.proj-row .next-green{color:var(--green)}
+
+/* GATE */
+.gate-wrap{display:none;animation:fadeUp .4s ease both}
+.gate-wrap.show{display:block}
+.gate-dots{display:flex;align-items:center;gap:.6rem;margin-bottom:1.4rem}
+.gate-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.gate-hl{font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.6rem}
+.gate-sub{font-size:.88rem;color:var(--slate);line-height:1.6;margin-bottom:1.5rem;font-weight:300}
+.gate-sub strong{font-weight:600;color:var(--charcoal)}
+.consent-block{font-size:.7rem;color:#888;line-height:1.7;padding:.8rem .95rem;background:var(--ivory);border:1px solid rgba(74,74,74,.1);border-radius:var(--radius);font-weight:300;margin-bottom:1rem}
+.consent-block a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim)}
+.btn-row-2{display:flex;gap:.75rem;align-items:center;margin-top:.4rem}
+.btn-back-plain{flex:0 0 auto;padding:.85rem 1.2rem;background:transparent;color:var(--slate);border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all var(--trans)}
+.btn-back-plain:hover{border-color:var(--gold);color:var(--charcoal);background:rgba(184,146,74,.04)}
+.gate-continue{margin-top:.75rem;display:block;text-align:center;font-size:.72rem;color:#aaa;font-weight:300;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;padding:.3rem;transition:color var(--trans)}
+.gate-continue:hover{color:var(--gold)}
+
+/* INLINE GATE SLOTS */
+.inline-gate-slot{display:none}
+
+/* TAX RESULTS */
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.cc{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);overflow:hidden;background:#fff}
+.cc.cc-buy{border-color:var(--gold-dim)}.cc.cc-rent{border-color:rgba(26,95,165,.2)}
+.cc-head{padding:.65rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);display:flex;align-items:center;gap:.4rem}
+.cc.cc-buy .cc-head{background:rgba(184,146,74,.05)}
+.hdot{width:6px;height:6px;border-radius:50%;flex-shrink:0;background:var(--gold)}
+.hlbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--gold)}
+.piti-block{padding:1rem 1rem .8rem;border-bottom:1px solid rgba(74,74,74,.09)}
+.piti-meta{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#aaa;margin-bottom:.3rem;font-weight:500}
+.piti-amount{font-weight:700;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-0.02em;color:var(--charcoal);line-height:1}
+.piti-sub{font-size:.72rem;color:#aaa;margin-top:.2rem;font-weight:300}
+.eff-block{padding:.8rem 1rem;background:var(--green-bg);border-bottom:1px solid rgba(26,102,64,.13)}
+.eff-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#2a6040;margin-bottom:.25rem;font-weight:500;display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+.eff-amount{font-weight:700;font-size:clamp(1.1rem,2.3vw,1.45rem);letter-spacing:-0.01em;color:var(--green);line-height:1}
+.eff-note{font-size:.7rem;color:#3a7050;margin-top:.2rem;font-weight:300}
+.eff-cap-badge{font-size:.56rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;border:1px solid var(--gold-dim);color:var(--gold);background:rgba(184,146,74,.06)}
+.tax-2027-warning{padding:.85rem 1rem;background:rgba(184,146,74,.08);border-bottom:1px solid rgba(184,146,74,.25);border-top:1px solid rgba(184,146,74,.15)}
+.tax-2027-warning p{font-size:.78rem;color:var(--charcoal);line-height:1.7;font-weight:400}
+.li-list{display:flex;flex-direction:column}
+.li-row{display:flex;flex-direction:column;padding:.6rem 1rem;border-bottom:1px solid rgba(74,74,74,.06)}
+.li-row:last-child{border-bottom:none}
+.li-lbl{font-size:.67rem;color:#aaa;margin-bottom:.12rem;letter-spacing:.05em}
+.li-val{font-weight:600;font-size:.9rem;color:var(--charcoal)}
+.pmi-notice{display:none;padding:.7rem 1rem;background:var(--red-bg);border:1px solid rgba(176,48,32,.18);border-radius:var(--radius);margin-bottom:.75rem;font-size:.76rem;color:var(--red);line-height:1.6}
+.pmi-notice.show{display:block}
+.sum-callout{padding:1rem 1.2rem;border:1px solid var(--gold-dim);border-radius:var(--radius);background:rgba(184,146,74,.04);margin-bottom:1.5rem;font-size:.86rem;color:var(--slate);line-height:1.75;font-weight:300}
+.sum-callout .hl{font-weight:600;color:var(--charcoal)}
+.math-box{border:1px solid rgba(74,74,74,.12);border-radius:var(--radius);overflow:hidden;background:#fff;margin-bottom:1rem}
+.math-box-head{padding:.6rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-weight:600}
+.mstep{padding:.8rem 1rem;border-bottom:1px solid rgba(74,74,74,.06)}
+.mstep:last-child{border-bottom:none}
+.mstep-lbl{display:flex;align-items:center;gap:.4rem;font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;color:#aaa;margin-bottom:.45rem;font-weight:500}
+.snum{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--gold-dim);font-size:.58rem;font-weight:700;color:var(--gold);flex-shrink:0}
+.meq{display:flex;justify-content:space-between;align-items:baseline;padding:2px 0;border-bottom:1px dotted rgba(74,74,74,.09)}
+.meq:last-child{border-bottom:none}
+.meq-l{font-size:.76rem;color:var(--slate);font-weight:300}
+.meq-v{font-size:.8rem;font-weight:600;color:var(--charcoal);font-family:DM Mono,monospace}
+.meq-v.gld{color:var(--gold)}
+.mtot{display:flex;justify-content:space-between;align-items:baseline;padding-top:.45rem;margin-top:.3rem;border-top:1px solid var(--gold-dim)}
+.mtot-l{font-size:.76rem;font-weight:600;color:var(--slate)}
+.mtot-v{font-size:.9rem;font-weight:700;color:var(--green);font-family:DM Mono,monospace}
+.mtot-v.zero{color:#bbb}
+.nb-note{font-size:.73rem;color:#7a5800;background:rgba(248,198,60,.1);border:1px solid rgba(200,160,0,.22);border-radius:var(--radius);padding:.45rem .7rem;margin-top:.4rem;line-height:1.55;font-weight:300}
+.salt{display:inline-block;font-size:.58rem;font-weight:600;letter-spacing:.05em;padding:1px 4px;border-radius:8px;border:1px solid rgba(0,110,160,.22);color:#0060a0;margin-left:3px;vertical-align:middle;text-transform:uppercase}
+.tax-note{padding:.9rem 1.1rem;border-left:2px solid var(--gold-dim);background:rgba(184,146,74,.03);border-radius:0 var(--radius) var(--radius) 0;margin-top:1.25rem}
+.tax-note p{font-size:.69rem;color:#999;line-height:1.75;font-weight:300}
+.tax-note p strong{font-weight:600;color:var(--slate)}
+.income-joint-note{display:none;margin-top:.5rem;padding:.65rem .85rem;background:rgba(184,146,74,.07);border:1px solid var(--gold-dim);border-radius:var(--radius);font-size:.76rem;color:var(--slate);line-height:1.6;font-weight:300}
+.income-joint-note.show{display:block}
+
+/* WHAT HAPPENS NEXT */
+.next-steps-card{margin-top:1.75rem;border:1px solid var(--gold-dim);border-radius:var(--radius);overflow:hidden}
+.next-steps-header{background:var(--charcoal);padding:1.2rem 1.5rem}
+.next-steps-eyebrow{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt);font-weight:600;margin-bottom:.38rem}
+.next-steps-hl{font-size:.98rem;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.3;margin-bottom:.3rem}
+.next-steps-sub{font-size:.76rem;color:rgba(255,255,255,.52);font-weight:300;line-height:1.55}
+.next-steps-body{padding:1.2rem 1.5rem;background:#fff}
+.vp-list{display:flex;flex-direction:column;gap:.42rem;margin-bottom:0}
+.vp-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.79rem;color:var(--slate);font-weight:300;line-height:1.5}
+.vp-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:.43rem}
+.trust-strip{display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(74,74,74,.08)}
+.trust-item{font-size:.6rem;color:#bbb;font-weight:300}
+.trust-dot{width:3px;height:3px;border-radius:50%;background:#ddd}
+
+/* CALC NOTE */
+.calc-note{padding:.9rem 1.1rem;border-left:2px solid var(--gold-dim);background:rgba(184,146,74,.03);border-radius:0 var(--radius) var(--radius) 0;margin-top:1.25rem}
+.calc-note p{font-size:.68rem;color:#999;line-height:1.75;font-weight:300}
+.calc-note p strong{font-weight:600;color:var(--slate)}
+
+/* RESULTS WRAP */
+.results-wrap{display:none;margin-top:1.5rem;animation:fadeUp .4s ease both}
+.results-wrap.show{display:block}
+.results-rule{border:none;border-top:1px solid var(--gold-dim);margin-bottom:1.75rem}
+
+/* METRIC CARDS */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.metric-card{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);padding:.9rem 1rem;background:#fff}
+.metric-card.highlight{border-color:var(--gold-dim);background:rgba(184,146,74,.03)}
+.metric-card.green-card{border-color:rgba(26,102,64,.25);background:var(--green-bg)}
+.metric-lbl{font-size:.6rem;letter-spacing:.11em;text-transform:uppercase;color:#aaa;margin-bottom:.3rem;font-weight:500}
+.metric-val{font-family:DM Mono,monospace;font-size:clamp(1.1rem,2.5vw,1.5rem);font-weight:500;color:var(--charcoal);line-height:1}
+.metric-card.highlight .metric-val{color:var(--gold)}
+.metric-card.green-card .metric-val{color:var(--green)}
+.metric-sub{font-size:.68rem;color:#aaa;margin-top:.25rem;font-weight:300;line-height:1.4}
+
+/* ALERT */
+.alert-overlay{display:none;position:fixed;inset:0;background:rgba(28,28,28,.45);z-index:2000;align-items:center;justify-content:center;padding:1.5rem}
+.alert-overlay.show{display:flex}
+.alert-box{background:#fff;border:1px solid var(--gold-dim);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.75rem 1.75rem 1.25rem;max-width:360px;width:100%}
+.alert-icon{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#b03020;margin-bottom:.45rem}
+.alert-msg{font-size:.88rem;color:var(--charcoal);line-height:1.7;margin-bottom:1.2rem;font-weight:300}
+.alert-btn{display:block;width:100%;padding:.7rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.73rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;cursor:pointer}
+
+/* FOOTER */
+footer{position:relative;z-index:10;padding:2rem 1.5rem 1.8rem;border-top:1px solid var(--gold-dim);background:rgba(255,255,255,.6);backdrop-filter:blur(4px)}
+.fi-wrap{width:100%;max-width:280px;margin:0 auto 1.4rem;text-align:center}
+.fi-wrap img{max-width:100%;height:auto;max-height:80px;object-fit:contain;opacity:0;transition:opacity .6s ease}
+.fi-wrap img.loaded{opacity:1}
+.f-rule{width:60px;height:1px;background:var(--gold-dim);margin:0 auto 1.2rem}
+.f-disc{max-width:920px;margin:0 auto;text-align:center;font-size:.63rem;line-height:1.65;color:#888;letter-spacing:.01em;font-weight:300}
+.f-disc p{margin-bottom:.7rem}.f-disc p:last-child{margin-bottom:0}
+.f-disc a{color:var(--gold);text-decoration:none;font-weight:500;border-bottom:1px solid var(--gold-dim)}
+
+@media(max-width:600px){
+  main{padding:2rem 1rem 4rem}
+  .calc-card{padding:1.75rem 1.5rem}
+  .form-cols,.result-row,.compare-cols,.appr-math-row{grid-template-columns:1fr}
+  .step-nav-btn{font-size:.6rem;padding:.65rem .35rem}
+  .btn-row-2{flex-direction:column-reverse}
+  .btn-back-plain{width:100%;text-align:center}
+}
+</style>
+</head>
+<body><div class="bg-layer"></div>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div id="lp-header-wrap" style="display:none;margin-bottom:1.5rem">
+      <img src="calc-header.png" alt="" style="max-width:220px;height:auto;display:block;margin:0 auto"
+        onload="document.getElementById('lp-header-wrap').style.display='block'"
+        onerror="document.getElementById('lp-header-wrap').style.display='none'">
+    </div>
+    <div class="hero-eyebrow"><span class="eyebrow-dot"></span>Existing homeowner tools</div>
+    <h1 class="hero-headline">You've built something.<br>Now let's see what it's worth.</h1>
+    <p class="hero-sub">You already own. The question is whether what you've built opens a better door.</p>
+    <p class="hero-sub-2"><strong>Walk through three tools that show you your equity, what a move actually costs after taxes, and what your next payment looks like.</strong></p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- STEP NAV -->
+  <div class="step-nav">
+    <button class="step-nav-btn active" id="nav-0" onclick="scrollToSection(0)">
+      <span class="step-num">Step 1</span>Equity &amp; Appreciation
+    </button>
+    <button class="step-nav-btn" id="nav-1" onclick="scrollToSection(1)">
+      <span class="step-num">Step 2</span>Tax Advantages
+    </button>
+    <button class="step-nav-btn" id="nav-2" onclick="scrollToSection(2)">
+      <span class="step-num">Step 3</span>Total Cost Analysis
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════
+       SECTION 1 — EQUITY & APPRECIATION
+  ═══════════════════════════════ -->
+  <div class="calc-card" id="section-0">
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Step 1 of 3</div>
+    <h2 class="card-headline">Equity &amp; Appreciation</h2>
+    <p class="card-sub">See what you've built in your current home — and what that equity becomes when you move. <strong>Walk through your numbers step by step.</strong></p>
+    <hr class="divider">
+
+    <div id="eq-input-wrap">
+      <div class="steps-wrap">
+        <div class="step-pill active" id="eq-sp-0"><span class="step-num-pill">1</span>Your home</div>
+        <div class="step-connector"></div>
+        <div class="step-pill" id="eq-sp-1"><span class="step-num-pill">2</span>Equity</div>
+        <div class="step-connector"></div>
+        <div class="step-pill" id="eq-sp-2"><span class="step-num-pill">3</span>The full picture</div>
+      </div>
+
+      <!-- STEP 0 — INPUTS -->
+      <div class="calc-step active" id="eq-step-0">
+        <div class="sec-label"><span class="sec-dot"></span>Your current home</div>
+        <div class="input-panel">
+          <div class="form-cols">
+            <div class="form-group">
+              <label for="eq-home-value">Current home value<span class="required">*</span></label>
+              <div class="iwrap"><span class="pfx-sym">$</span><input type="text" id="eq-home-value" class="ci hpfx" inputmode="numeric" placeholder="500,000"></div>
+            </div>
+            <div class="form-group">
+              <label for="eq-mortgage">Remaining mortgage balance</label>
+              <div class="iwrap"><span class="pfx-sym">$</span><input type="text" id="eq-mortgage" class="ci hpfx" inputmode="numeric" placeholder="Leave blank if paid off"></div>
+            </div>
+            <div class="form-group">
+              <label for="eq-next-home">Estimated next home value<span class="required">*</span></label>
+              <div class="iwrap"><span class="pfx-sym">$</span><input type="text" id="eq-next-home" class="ci hpfx" inputmode="numeric" placeholder="650,000"></div>
+            </div>
+            <div class="form-group">
+              <label for="eq-appreciation">Annual appreciation rate</label>
+              <div class="range-wrap">
+                <input type="range" id="eq-appreciation" min="1" max="10" value="4" step="1">
+                <span class="range-val" id="eq-appr-out">4%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="btn-primary" onclick="eqNext(1)">Next &rarr;</button>
+        <button class="reset-link" onclick="eqReset()">&#8635; Reset</button>
+      </div>
+
+      <!-- STEP 1 — EQUITY RESULTS -->
+      <div class="calc-step" id="eq-step-1">
+        <div class="sec-label"><span class="sec-dot"></span>Step 2 — Your equity</div>
+        <div class="result-row">
+          <div class="rc">
+            <div class="rc-head"><span class="rhead-dot"></span>Current home value</div>
+            <div class="rc-body"><div class="rc-lbl">Estimated value</div><div class="rc-val" id="eq-r-home-value">—</div></div>
+          </div>
+          <div class="rc">
+            <div class="rc-head"><span class="rhead-dot"></span>Mortgage balance</div>
+            <div class="rc-body"><div class="rc-lbl">Remaining balance</div><div class="rc-val" id="eq-r-mortgage">—</div></div>
+          </div>
+        </div>
+        <div class="result-row">
+          <div class="rc rc-highlight">
+            <div class="rc-head"><span class="rhead-dot"></span>Your equity</div>
+            <div class="rc-body">
+              <div class="rc-lbl">Estimated equity</div>
+              <div class="rc-val" id="eq-r-equity">—</div>
+              <div class="rc-sub" id="eq-r-equity-pct">—</div>
+            </div>
+          </div>
+          <div class="rc rc-green">
+            <div class="rc-head"><span class="rhead-dot"></span>Estimated net proceeds</div>
+            <div class="rc-body">
+              <div class="rc-lbl">After selling costs</div>
+              <div class="rc-val" id="eq-r-net-proceeds">—</div>
+              <div class="rc-sub" id="eq-r-net-proceeds-sub">—</div>
+              <div class="rc-note" id="eq-r-sell-costs-note">—</div>
+            </div>
+          </div>
+        </div>
+        <div class="reveal-block"><p id="eq-equity-narrative">—</p></div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="eqNext(0)">← Back</button>
+          <button class="btn-primary" style="flex:1" onclick="eqNext(2)">See the full picture &rarr;</button>
+        </div>
+      </div>
+
+      <!-- STEP 2 — APPRECIATION PROJECTION -->
+      <div class="calc-step" id="eq-step-2">
+        <div class="sec-label"><span class="sec-dot"></span>Step 3 — <span id="eq-step3-title">Appreciating at a higher price point</span></div>
+        <p id="eq-step3-intro" style="font-size:.88rem;color:var(--slate);line-height:1.75;font-weight:300;margin-bottom:1.2rem">When you move up, your equity doesn't just transfer — it starts appreciating on a larger base. The same rate produces a bigger number every year.</p>
+
+        <div class="appr-math-wrap">
+          <div class="appr-math-row">
+            <div class="appr-math-box">
+              <div class="appr-math-head">Current home — one year appreciation</div>
+              <div class="appr-math-body">
+                <div class="appr-context">At your current home value</div>
+                <div class="appr-equation" id="eq-eq-current">—</div>
+                <div class="appr-result" id="eq-eq-current-result">—</div>
+                <div class="appr-result-sub">gained in year one</div>
+              </div>
+            </div>
+            <div class="appr-math-box appr-box-next">
+              <div class="appr-math-head">Next home — one year appreciation</div>
+              <div class="appr-math-body">
+                <div class="appr-context">At your next home value</div>
+                <div class="appr-equation" id="eq-eq-next">—</div>
+                <div class="appr-result green" id="eq-eq-next-result">—</div>
+                <div class="appr-result-sub">gained in year one</div>
+              </div>
+            </div>
+          </div>
+          <div class="appr-insight">
+            <p class="appr-insight-text">Here's what the math shows at the <em>same</em> appreciation rate — though in practice, <strong>a higher-priced home in a strong market often appreciates at a faster rate too</strong>, which can widen this gap further. Keep in mind: appreciation rates vary by location, market conditions, and property type, and past performance doesn't guarantee future results. <strong>What these numbers illustrate is the leverage effect of a larger base — the same percentage produces a meaningfully larger dollar gain.</strong></p>
+          </div>
+          <div class="appr-diff-row" id="eq-appr-diff-row">
+            <span class="appr-diff-lbl">Additional annual gain</span>
+            <span class="appr-diff-val" id="eq-r-annual-diff">—</span>
+          </div>
+        </div>
+
+        <div class="reveal-block"><p id="eq-appreciation-narrative">—</p></div>
+
+        <p id="eq-step4-intro" style="font-size:.88rem;color:var(--slate);line-height:1.75;font-weight:300;margin:1.25rem 0 .75rem">Projected value of your next home over seven years — compared to staying in your current home.</p>
+
+        <div class="proj-table">
+          <div class="proj-head">
+            <span>Year</span><span>Current home</span><span style="color:var(--green)">Next home</span>
+          </div>
+          <div id="eq-projection-rows"></div>
+        </div>
+
+        <div class="result-row" style="margin-top:1rem">
+          <div class="rc">
+            <div class="rc-head"><span class="rhead-dot"></span>7-yr gain — current home</div>
+            <div class="rc-body"><div class="rc-val" id="eq-r-7yr-gain-current">—</div><div class="rc-sub" id="eq-r-7yr-sub-current">—</div></div>
+          </div>
+          <div class="rc rc-green">
+            <div class="rc-head"><span class="rhead-dot"></span>7-yr gain — next home</div>
+            <div class="rc-body"><div class="rc-val" id="eq-r-7yr-gain-next">—</div><div class="rc-sub" id="eq-r-7yr-sub-next">—</div></div>
+          </div>
+        </div>
+        <div class="rc rc-highlight" style="margin-bottom:1rem">
+          <div class="rc-head"><span class="rhead-dot"></span>Additional equity gained by moving</div>
+          <div class="rc-body"><div class="rc-val" id="eq-r-7yr-equity-gained">—</div><div class="rc-sub" id="eq-r-7yr-equity-sub">—</div></div>
+        </div>
+
+        <div class="reveal-block"><p id="eq-final-narrative">—</p></div>
+
+        <div class="btn-row">
+          <button class="btn-back" onclick="eqNext(1)">← Back</button>
+          <button class="btn-primary btn-green" style="flex:1" onclick="eqFireGate()">Show me what this means for my move &rarr;</button>
+        </div>
+        <div class="calc-note"><p><strong>Methodology:</strong> Selling costs estimated at 6% of current home value (agent commissions, title, escrow &amp; closing costs). Appreciation projections use a fixed annual rate applied to each year's starting value. All figures are estimates — actual results vary. Not a commitment to lend.</p></div>
+      </div>
+    </div>
+
+    <!-- INLINE GATE SLOT -->
+    <div id="inline-gate-0" style="display:none"></div>
+
+    <!-- EQUITY RESULTS (shown after gate) -->
+    <div class="results-wrap" id="eq-results-reveal">
+    </div>
+  </div>
+
+  <!-- BRIDGE 1→2 -->
+  <div class="bridge" id="bridge-1">
+    <div class="bridge-eyebrow">Next: tax advantages</div>
+    <p class="bridge-text" id="bridge-1-text">Now let's look at what a new purchase actually costs after tax deductions. Your mortgage interest and property taxes may be deductible — and that changes the effective monthly number.</p>
+    <button class="bridge-btn" onclick="scrollToSection(1)">See your tax picture &rarr;</button>
+  </div>
+
+  <!-- ═══════════════════════════════
+       SECTION 2 — TAX ADVANTAGES
+  ═══════════════════════════════ -->
+  <div class="calc-card" id="section-1">
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Step 2 of 3</div>
+    <h2 class="card-headline">Tax advantages of<br>your new purchase</h2>
+    <p class="card-sub">See what the new mortgage actually costs after estimated tax deductions — including mortgage interest, property taxes, and the SALT cap. <strong>Enter the details of your anticipated purchase below.</strong></p>
+    <hr class="divider">
+
+    <div id="section-input-1">
+      <div class="input-panel buy-panel">
+        <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>Purchase details</div>
+        <div class="form-cols">
+          <div class="form-group">
+            <label for="tax-price">Purchase price<span class="required">*</span></label>
+            <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="tax-price" class="hpfx" placeholder="650,000" step="5000" min="0"></div>
+          </div>
+          <div class="form-group">
+            <label for="tax-down">Down payment<span class="required">*</span></label>
+            <div class="sfx"><input type="number" id="tax-down" placeholder="20" step="0.1" min="0" max="100"><span class="sfx-sym">%</span></div>
+          </div>
+          <div class="form-group">
+            <label for="tax-rate">Interest rate<span class="required">*</span></label>
+            <div class="sfx"><input type="number" id="tax-rate" placeholder="6.75" step="0.001" min="0"><span class="sfx-sym">%</span></div>
+          </div>
+          <div class="form-group">
+            <label for="tax-term">Loan term<span class="required">*</span></label>
+            <select id="tax-term">
+              <option value="30" selected>30 years</option>
+              <option value="20">20 years</option>
+              <option value="15">15 years</option>
+              <option value="10">10 years</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label>Taxes &amp; insurance</label>
+            <div style="display:flex;gap:8px;margin-top:.3rem">
+              <button type="button" id="tai-estimate-btn" onclick="setTaxInsMode('estimate')" style="flex:1;padding:.6rem .5rem;background:var(--charcoal);color:#fff;border:1px solid var(--charcoal);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:600;cursor:pointer;transition:all var(--trans);text-align:center">Use estimate</button>
+              <button type="button" id="tai-custom-btn" onclick="setTaxInsMode('custom')" style="flex:1;padding:.6rem .5rem;background:#fff;color:var(--slate);border:1px solid rgba(74,74,74,.2);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:600;cursor:pointer;transition:all var(--trans);text-align:center">Enter my own</button>
+            </div>
+            <p id="tai-estimate-note" style="font-size:.68rem;color:var(--gold);margin-top:.45rem;font-weight:400;line-height:1.4">Using estimates: property taxes at 1% of purchase price &middot; homeowners insurance at 0.3% of loan amount.</p>
+            <div id="tai-custom-fields" style="display:none;margin-top:.85rem">
+              <div class="form-cols">
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="tax-prop-tax">Annual property taxes<span class="required">*</span></label>
+                  <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="tax-prop-tax" class="hpfx" placeholder="e.g. 6,500" step="100" min="0"></div>
+                </div>
+                <div class="form-group" style="margin-bottom:0">
+                  <label for="tax-ins">Annual homeowners insurance<span class="required">*</span></label>
+                  <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="tax-ins" class="hpfx" placeholder="e.g. 1,800" step="100" min="0"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="input-panel">
+        <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>Household &amp; tax information</div>
+        <div class="form-cols">
+          <div class="form-group">
+            <label for="tax-income">Annual household income<span class="required">*</span></label>
+            <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="tax-income" class="hpfx" placeholder="120,000" step="1000" min="0"></div>
+            <div class="income-joint-note" id="income-joint-note"><strong style="font-weight:600;color:var(--charcoal)">Please confirm:</strong> this should reflect the <strong style="font-weight:600;color:var(--charcoal)">combined total income for all tax filers</strong> on this return.</div>
+          </div>
+          <div class="form-group">
+            <label for="tax-filing">Filing status<span class="required">*</span></label>
+            <select id="tax-filing" onchange="onFilingChange(this)">
+              <option value="single" selected>Single filer</option>
+              <option value="joint">Joint filer (MFJ)</option>
+              <option value="hoh">Head of household</option>
+            </select>
+          </div>
+          <div class="form-group" style="grid-column:1/-1">
+            <label for="tax-state">State</label>
+            <select id="tax-state">
+              <option value="OR" selected>Oregon</option>
+              <option disabled>── Other states coming soon ──</option>
+            </select>
+            <p style="font-size:.68rem;color:#aaa;margin-top:.4rem;font-weight:300;line-height:1.4">Currently optimized for Oregon. Can be used as an educational resource for other states — state and local taxes will vary.</p>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-primary" onclick="taxRun()">Calculate tax advantages &rarr;</button>
+    </div>
+
+    <!-- INLINE GATE SLOT -->
+    <div id="inline-gate-1" style="display:none"></div>
+
+    <!-- TAX RESULTS -->
+    <div class="results-wrap" id="tax-results">
+      <hr class="results-rule">
+      <div style="font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;font-weight:500">New purchase — breakdown</div>
+      <div style="font-weight:700;font-size:1.15rem;letter-spacing:-0.01em;color:var(--charcoal);margin-bottom:1.25rem">Monthly Payment &amp; Tax Advantage</div>
+
+      <div class="cc cc-buy" style="margin-bottom:1rem">
+        <div class="cc-head"><span class="hdot"></span><span class="hlbl">New purchase</span></div>
+        <div class="piti-block">
+          <div class="piti-meta" id="tax-b-piti-label">Total PITI / month</div>
+          <div class="piti-amount" id="tax-b-piti">—</div>
+          <div class="piti-sub">/ month</div>
+        </div>
+        <div class="eff-block">
+          <div class="eff-lbl">Effective payment — Year 1 estimate <span class="eff-cap-badge">SALT cap $40k</span></div>
+          <div class="eff-amount" id="tax-b-eff">—</div>
+          <div class="eff-note" id="tax-b-note">—</div>
+        </div>
+        <div class="tax-2027-warning">
+          <p><strong style="font-weight:700;display:block;margin-bottom:.3rem">&#9888;&nbsp; These tax benefits won't be realized until you file your 2027 tax return.</strong>If you purchase in 2026, the earliest these deductions can be claimed is on your 2027 federal and state returns. <strong style="font-weight:600">The figure shown is an estimate based on the first 12 months of interest paid — for educational and informational purposes only. Please consult with a qualified tax advisor.</strong></p>
+        </div>
+        <div class="li-list">
+          <div class="li-row"><div class="li-lbl">Principal &amp; Interest</div><div class="li-val" id="tax-b-pi">—</div></div>
+          <div class="li-row"><div class="li-lbl">Monthly property tax</div><div class="li-val" id="tax-b-tax">—</div></div>
+          <div class="li-row"><div class="li-lbl">Monthly insurance</div><div class="li-val" id="tax-b-ins">—</div></div>
+          <div class="li-row" id="tax-b-pmi-row" style="display:none"><div class="li-lbl" style="color:var(--red)">Mortgage insurance (PMI)</div><div class="li-val" id="tax-b-pmi" style="color:var(--red)">—</div></div>
+          <div class="li-row"><div class="li-lbl">Loan amount</div><div class="li-val" id="tax-b-loan">—</div></div>
+          <div class="li-row"><div class="li-lbl">Down payment</div><div class="li-val" id="tax-b-down">—</div></div>
+        </div>
+      </div>
+
+      <div class="pmi-notice" id="tax-pmi-notice">Mortgage insurance (PMI) applies — down payment is less than 20%. PMI is not tax-deductible but is included in the total monthly payment. Actual terms vary.</div>
+      <div class="sum-callout"><p id="tax-summary">—</p></div>
+
+      <div class="sec-label"><span class="sec-dot"></span>Tax deduction breakdown</div>
+      <div class="math-box">
+        <div class="math-box-head">Estimated purchase — tax math</div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">1</span>Itemizable deductions</div>
+          <div class="meq"><span class="meq-l">Mortgage interest (est. annual)</span><span class="meq-v" id="tax-tm-int">—</span></div>
+          <div class="meq"><span class="meq-l">State income tax (est. annual)</span><span class="meq-v" id="tax-tm-state">—</span></div>
+          <div class="meq"><span class="meq-l">Property taxes</span><span class="meq-v" id="tax-tm-proptax">—</span></div>
+          <div class="meq"><span class="meq-l">SALT subtotal <span class="salt">cap $40k</span></span><span class="meq-v" id="tax-tm-salt">—</span></div>
+          <div class="mtot"><span class="mtot-l">Total itemized</span><span class="meq-v gld" id="tax-tm-total">—</span></div>
+        </div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">2</span>vs. Standard deduction</div>
+          <div class="meq"><span class="meq-l">Standard deduction</span><span class="meq-v" id="tax-tm-std">—</span></div>
+          <div class="meq"><span class="meq-l">Excess above standard</span><span class="meq-v gld" id="tax-tm-excess">—</span></div>
+          <div id="tax-tm-no-benefit" class="nb-note" style="display:none">Itemized deductions do not exceed the standard deduction — no itemization benefit applies.</div>
+        </div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">3</span>Federal marginal rate</div>
+          <div class="meq"><span class="meq-l">Federal bracket</span><span class="meq-v" id="tax-tm-fed">—</span></div>
+          <div class="mtot"><span class="mtot-l">Rate applied to savings</span><span class="meq-v gld" id="tax-tm-combined">—</span></div>
+        </div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">4</span>Monthly savings estimate <span style="font-size:.58rem;font-weight:400;letter-spacing:.04em;text-transform:none;color:#bbb;font-style:italic">— first full year of ownership</span></div>
+          <div class="meq"><span class="meq-l">Annual savings (excess × rate)</span><span class="meq-v" id="tax-tm-annual">—</span></div>
+          <div class="mtot"><span class="mtot-l">Est. monthly savings (÷ 12)</span><span class="mtot-v" id="tax-tm-monthly">—</span></div>
+        </div>
+      </div>
+      <div class="tax-note"><p><strong>Tax deduction methodology:</strong> Effective payment reflects estimated monthly tax savings from itemizing versus the standard deduction (2026: Single $16,100 · Joint $32,200 · HoH $24,150). Mortgage interest calculated on the first full year of ownership. SALT capped at $40,000 per the One Big Beautiful Bill Act. Tax savings use federal marginal bracket only. Oregon uses graduated brackets (4.75%–9.90%). <strong>This calculator is for educational and informational purposes only. Consult a qualified tax advisor.</strong></p></div>
+    </div>
+  </div>
+
+  <!-- BRIDGE 2→3 -->
+  <div class="bridge" id="bridge-2">
+    <div class="bridge-eyebrow">Next: your new payment</div>
+    <p class="bridge-text" id="bridge-2-text">You've seen the equity picture and the tax advantage. Now let's put a number on the new monthly payment — and show how your net proceeds from the sale can change that payment significantly.</p>
+    <button class="bridge-btn" onclick="scrollToSection(2)">See my full payment &amp; closing cost breakdown &rarr;</button>
+  </div>
+
+  <!-- ═══════════════════════════════
+       SECTION 3 — PAYMENT COMPARISON
+  ═══════════════════════════════ -->
+  <div class="calc-card" id="section-2">
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Step 3 of 3</div>
+    <h2 class="card-headline">Total Cost Analysis</h2>
+    <p class="card-sub">See the full payment breakdown — monthly costs, closing costs, prepaids, and estimated APR. <strong>Your net proceeds from the sale can be applied to reduce your loan balance.</strong></p>
+    <hr class="divider">
+
+    <div id="section-input-2">
+      <div class="input-panel buy-panel">
+        <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>New purchase</div>
+        <div class="form-cols">
+          <div class="form-group">
+            <label for="pmt-price">Purchase price<span class="required">*</span></label>
+            <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="pmt-price" class="hpfx" placeholder="650,000" step="5000" min="0"></div>
+          </div>
+          <div class="form-group">
+            <label for="pmt-down">Down payment<span class="required">*</span></label>
+            <div class="sfx"><input type="number" id="pmt-down" placeholder="20" step="0.1" min="0" max="100"><span class="sfx-sym">%</span></div>
+          </div>
+          <div class="form-group">
+            <label for="pmt-rate">Interest rate<span class="required">*</span></label>
+            <div class="sfx"><input type="number" id="pmt-rate" placeholder="6.75" step="0.01"><span class="sfx-sym">%</span></div>
+          </div>
+          <div class="form-group">
+            <label for="pmt-term">Loan term<span class="required">*</span></label>
+            <select id="pmt-term">
+              <option value="30" selected>30 years</option>
+              <option value="20">20 years</option>
+              <option value="15">15 years</option>
+              <option value="10">10 years</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="input-panel">
+        <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>Net proceeds from sale <span class="fnote" style="margin-left:.4rem">pre-filled if available</span></div>
+        <div class="form-cols">
+          <div class="form-group">
+            <label for="pmt-proceeds">Estimated net proceeds</label>
+            <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="pmt-proceeds" class="hpfx" placeholder="0" step="1000" min="0"></div>
+            <p style="font-size:.68rem;color:#aaa;margin-top:.4rem;font-weight:300;line-height:1.4">Net proceeds above your down payment can reduce your loan balance further — enter if you plan to apply them.</p>
+          </div>
+          <div class="form-group">
+            <label for="pmt-current-payment">Current monthly payment <span class="fnote">optional</span></label>
+            <div class="iwrap"><span class="pfx-sym">$</span><input type="number" id="pmt-current-payment" class="hpfx" placeholder="2,400" step="50" min="0"></div>
+            <p style="font-size:.68rem;color:#aaa;margin-top:.4rem;font-weight:300;line-height:1.4">Enter to see a side-by-side comparison.</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" onclick="pmtRun()">Show my payment, closing costs &amp; APR &rarr;</button>
+    </div>
+
+    <!-- INLINE GATE SLOT -->
+    <div id="inline-gate-2" style="display:none"></div>
+
+    <!-- PAYMENT RESULTS -->
+    <div class="results-wrap" id="pmt-results">
+      <hr class="results-rule">
+      <div style="font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;font-weight:500">Total cost analysis</div>
+      <div style="font-weight:700;font-size:1.15rem;letter-spacing:-0.01em;color:var(--charcoal);margin-bottom:1.25rem" id="pmt-results-hl">Here's your full picture.</div>
+
+      <!-- Purchase price hero -->
+      <div style="border:1px solid var(--gold-dim);border-radius:var(--radius);padding:1.25rem;text-align:center;margin-bottom:1rem;background:#fff">
+        <div style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#aaa;font-weight:600;margin-bottom:.5rem">Purchase price</div>
+        <div style="font-family:DM Mono,monospace;font-size:clamp(2rem,6vw,2.8rem);font-weight:500;letter-spacing:-0.02em;color:var(--charcoal);line-height:1;margin-bottom:.4rem" id="pmt-r-hero">—</div>
+        <div style="font-size:.76rem;color:#aaa;font-weight:300" id="pmt-r-sub">—</div>
+      </div>
+
+      <!-- Metric cards -->
+      <div class="metric-grid" style="margin-bottom:1rem">
+        <div class="metric-card highlight"><div class="metric-lbl" id="pmt-piti-lbl">Monthly payment (PITI)</div><div class="metric-val" id="pmt-r-total">—</div><div class="metric-sub">Principal, interest, taxes &amp; insurance</div></div>
+        <div class="metric-card green-card"><div class="metric-lbl">Total cash to close</div><div class="metric-val" id="pmt-r-ctc">—</div><div class="metric-sub">Down payment + closing + prepaids</div></div>
+        <div class="metric-card"><div class="metric-lbl">Loan amount</div><div class="metric-val" id="pmt-r-loan">—</div><div class="metric-sub" id="pmt-r-loan-sub">—</div></div>
+        <div class="metric-card"><div class="metric-lbl">Estimated APR</div><div class="metric-val" id="pmt-r-apr">—</div><div class="metric-sub">Includes applicable fees</div></div>
+      </div>
+
+      <!-- Narrative -->
+      <div class="reveal-block"><p id="pmt-r-narrative">—</p></div>
+
+      <!-- Compare row if current payment entered -->
+      <div id="pmt-compare-row" style="display:none;margin-top:1rem">
+        <div class="result-row">
+          <div class="rc">
+            <div class="rc-head"><span class="rhead-dot"></span>Current payment</div>
+            <div class="rc-body"><div class="rc-lbl">Your payment today</div><div class="rc-val" id="pmt-r-current">—</div><div class="rc-sub">/ month</div></div>
+          </div>
+          <div class="rc rc-highlight">
+            <div class="rc-head"><span class="rhead-dot"></span>New payment</div>
+            <div class="rc-body"><div class="rc-lbl">Estimated new PITI</div><div class="rc-val" id="pmt-r-new">—</div><div class="rc-sub">/ month</div></div>
+          </div>
+        </div>
+        <div class="reveal-block" id="pmt-compare-narrative" style="margin-top:.75rem"><p id="pmt-compare-text">—</p></div>
+      </div>
+
+      <!-- Full breakdown toggle -->
+      <button class="detail-toggle-btn" id="pmt-detail-btn" onclick="pmtToggleDetail()" style="width:100%;margin-top:1rem;padding:.65rem 1rem;background:transparent;border:1px solid rgba(74,74,74,.16);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;font-weight:600;color:var(--slate);cursor:pointer;transition:all var(--trans)">Full breakdown ▾</button>
+      <div id="pmt-detail-panel" style="display:none;margin-bottom:1rem;animation:fadeUp .3s ease both">
+        <div id="pmt-detail-body"></div>
+      </div>
+
+      <!-- WHAT HAPPENS NEXT -->
+      <div class="next-steps-card" style="margin-top:1.25rem">
+        <div class="next-steps-header">
+          <div class="next-steps-eyebrow">What happens next</div>
+          <div class="next-steps-hl">A detailed follow-up is on its way.</div>
+          <div class="next-steps-sub">A loan officer will reach out within 24–48 hours with exact rates, real fees, and a clear path from where you are to where you want to be.</div>
+        </div>
+        <div class="next-steps-body">
+          <div class="vp-list">
+            <div class="vp-item"><span class="vp-dot"></span>Exact rate and closing costs based on your credit profile and loan program</div>
+            <div class="vp-item"><span class="vp-dot"></span>Side-by-side comparison of your current payment vs. new payment</div>
+            <div class="vp-item"><span class="vp-dot"></span>How your net proceeds can be structured to maximize your position</div>
+            <div class="vp-item"><span class="vp-dot"></span>Timeline and next steps to make the move happen</div>
+          </div>
+          <div class="trust-strip">
+            <span class="trust-item">NMLS #857506</span><span class="trust-dot"></span>
+            <span class="trust-item">Equal Housing Lender</span><span class="trust-dot"></span>
+            <span class="trust-item">Licensed OR, WA, CA, ID, AZ</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-note"><p><strong>Methodology:</strong> These figures are based on a <strong>conventional loan</strong> — not FHA, VA, or USDA. Monthly payment includes estimated property taxes (1.0% of purchase price) and homeowners insurance (0.3% of loan). PMI is tiered by LTV (assumes 740 credit score — actual rates vary) and cancels at 78% LTV per the Homeowners Protection Act. Closing costs include underwriting, processing, settlement, a 1% discount point, 15 days prepaid interest, appraisal, title, and recording fees. APR reflects the cost of borrowing including applicable fees and PMI cash flows through 78% LTV. All figures are estimates. Not a commitment to lend.</p></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="fi-wrap"><img src="footer.png" alt="" onload="this.classList.add('loaded')" onerror="this.style.display='none';this.parentElement.style.display='none'"></div>
+  <div class="f-rule"></div>
+  <div class="f-disc">
+    <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+    <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; This calculator is for educational and informational purposes only. Not a commitment to lend. Tax benefit estimates are approximations — consult a qualified tax professional. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+  </div>
+</footer>
+
+<div class="alert-overlay" id="alertModal">
+  <div class="alert-box">
+    <div class="alert-icon">Input Required</div>
+    <div class="alert-msg" id="alertMsg"></div>
+    <button class="alert-btn" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+const $ = id => document.getElementById(id);
+const fmtM = n => '$' + Math.round(n).toLocaleString();
+const fmtD = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtPct = n => (n*100).toFixed(1)+'%';
+const fvn = id => parseFloat($(id).value)||0;
+const fvt = id => parseFloat($(id).value.replace(/,/g,'').replace(/[^0-9.]/g,''))||0;
+
+function showAlert(m){$('alertMsg').textContent=m;$('alertModal').classList.add('show')}
+function closeAlert(){$('alertModal').classList.remove('show')}
+
+/* ── SESSION STORAGE ── */
+const SK='calcCarryData';
+function saveCarry(d){try{const e=JSON.parse(sessionStorage.getItem(SK)||'{}');sessionStorage.setItem(SK,JSON.stringify(Object.assign(e,d)));}catch(e){}}
+function loadCarry(){try{return JSON.parse(sessionStorage.getItem(SK)||'{}');}catch(e){return{};}}
+
+/* ══════════════════════════════════════
+   SESSION SUMMARY — accumulate all step
+   data and send one consolidated email
+══════════════════════════════════════ */
+const SS = 'calcSessionData';
+function saveSession(d){
+  try{
+    const e=JSON.parse(sessionStorage.getItem(SS)||'{}');
+    sessionStorage.setItem(SS,JSON.stringify(Object.assign(e,d)));
+  }catch(e){}
+}
+function loadSession(){
+  try{return JSON.parse(sessionStorage.getItem(SS)||'{}');}catch(e){return{};}
+}
+function sendSummaryEmail(){
+  const s=loadSession();
+  const carry=loadCarry();
+  if(!carry.userEmail)return; // no identity — nothing to send
+  if(s._summarySent)return;  // already sent
+  s._summarySent=true;
+  sessionStorage.setItem(SS,JSON.stringify(s));
+  // Build flat payload — only include fields that have values
+  const data={'form-name':'eho-summary'};
+  data.fullName=carry.userName||'';
+  data.email=carry.userEmail||'';
+  data.phone=carry.userPhone||'';
+  data.page=s.page||'Existing Homeowner';
+  // Add all accumulated fields that have real values
+  const skip=new Set(['_summarySent','page']);
+  Object.entries(s).forEach(([k,v])=>{
+    if(!skip.has(k)&&v!==''&&v!==null&&v!==undefined)data[k]=v;
+  });
+  fetch('https://hooks.zapier.com/hooks/catch/27867937/43s1ofr/',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams(data).toString()
+  }).catch(()=>{});
+}
+// Send on page exit — catches users who leave mid-flow
+window.addEventListener('beforeunload',()=>{
+  const carry=loadCarry();
+  if(carry.userEmail)sendSummaryEmail();
+});
+
+/* ── STEP NAV ── */
+function scrollToSection(idx){
+  const el=$('section-'+idx);
+  if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+function markNav(idx){
+  [0,1,2].forEach(i=>{
+    const btn=$('nav-'+i);
+    btn.classList.remove('active','done');
+    if(i<idx)btn.classList.add('done');
+    else if(i===idx)btn.classList.add('active');
+  });
+}
+
+/* ── COMMA INPUTS ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('.ci').forEach(el=>{
+    el.addEventListener('blur',()=>{const n=parseFloat(el.value.replace(/,/g,'').replace(/[^0-9.]/g,''));if(!isNaN(n))el.value=n.toLocaleString('en-US',{maximumFractionDigits:0});});
+    el.addEventListener('focus',()=>{el.value=el.value.replace(/,/g,'');});
+  });
+  const carry=loadCarry();
+  if(carry.userName&&carry.userEmail)gateCleared=true;
+});
+
+/* ══════════════════════════════════════
+   GLOBAL IDENTITY GATE
+══════════════════════════════════════ */
+let gateCleared=false;
+let gatePendingCallback=null;
+let gateActiveSectionIdx=null;
+
+function buildGateHTML(opts){
+  opts = opts || {};
+  const headline = opts.headline || 'Almost There';
+  const sub = opts.sub || 'Just need a few details so we can <strong style="font-weight:600;color:var(--charcoal)">send you your personalized results.</strong>';
+  const cta = opts.cta || 'Send me my results';
+  const skipLabel = opts.skipLabel || 'I\'ll look at the next section for now';
+  return `
+<div id="inline-gate-form" style="animation:fadeUp .4s ease both">
+  <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.4rem">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+    <span style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500">Your numbers are ready</span>
+  </div>
+  <div style="font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.8rem">${headline}</div>
+  <p style="font-size:.88rem;color:var(--slate);line-height:1.65;margin-bottom:1.4rem;font-weight:300">${sub}</p>
+  <div style="width:40px;height:1px;background:var(--gold);margin-bottom:1.5rem;opacity:.7"></div>
+  <div style="margin-bottom:1rem">
+    <label for="gate-name" style="display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.38rem;font-weight:500">Full name<span style="color:#b03020;margin-left:2px;font-weight:600">*</span></label>
+    <input type="text" id="gate-name" placeholder="Jane Smith" autocomplete="name" style="width:100%;padding:.7rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:4px;background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--charcoal);outline:none;-webkit-appearance:none;margin-bottom:.85rem">
+    <label for="gate-email" style="display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.38rem;font-weight:500">Email address<span style="color:#b03020;margin-left:2px;font-weight:600">*</span></label>
+    <input type="text" id="gate-email" placeholder="jane@example.com" autocomplete="email" style="width:100%;padding:.7rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:4px;background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--charcoal);outline:none;-webkit-appearance:none;margin-bottom:.85rem">
+    <label for="gate-phone" style="display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.38rem;font-weight:500">Phone number <span style="font-size:.7rem;font-weight:300;text-transform:none;letter-spacing:0;color:#999;font-style:italic">optional</span></label>
+    <input type="text" id="gate-phone" placeholder="(503) 555-0100" autocomplete="tel" style="width:100%;padding:.7rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:4px;background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--charcoal);outline:none;-webkit-appearance:none">
+  </div>
+  <div style="font-size:.7rem;color:#888;line-height:1.7;padding:.8rem .95rem;background:var(--ivory);border:1px solid rgba(74,74,74,.1);border-radius:4px;font-weight:300;margin-bottom:1rem">By submitting this form, you consent to be contacted by email by Gavin Hamilton, NMLS #857506, Loan Officer with Mortgage Express, LLC (NMLS #40831), for the purpose of following up on your calculator results. Your information will not be shared with or sold to third parties. This is not a loan application or commitment to lend. You may opt out at any time by contacting <a href="mailto:ghamilton@mtgxps.com" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim)">ghamilton@mtgxps.com</a>.</div>
+  <div style="font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem"><span style="width:4px;height:4px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>Here's what you'll see instantly</div>
+  <div style="display:flex;gap:.75rem;align-items:center">
+    <button type="button" class="btn-back-plain" onclick="gateDismiss()">Back</button>
+    <button type="button" class="btn-primary" style="margin-top:0;flex:1;background:var(--green);padding:1.1rem 1.25rem;font-size:.82rem;letter-spacing:.12em;line-height:1.4;box-shadow:0 4px 18px rgba(26,102,64,.3)" onmouseover="this.style.background='#0f3d26';this.style.transform='translateY(-1px)'" onmouseout="this.style.background='var(--green)';this.style.transform=''" onclick="gateSubmit()">${cta}</button>
+  </div>
+  <button type="button" class="gate-continue" onclick="gateContinue()">${skipLabel}</button>
+</div>`;}
+
+function requireGate(cb,sectionIdx,gateOpts){
+  if(gateCleared){cb();return;}
+  gatePendingCallback=cb;
+  gateActiveSectionIdx=sectionIdx;
+  const slot=$('inline-gate-'+sectionIdx);
+  if(slot){slot.innerHTML=buildGateHTML(gateOpts);slot.style.display='block';}
+  const inputWrap=$('section-input-'+sectionIdx);
+  if(inputWrap)inputWrap.style.display='none';
+  else if(sectionIdx===0){$('eq-input-wrap').style.display='none';}
+  const el=$('section-'+sectionIdx);
+  if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  setTimeout(()=>{const n=$('gate-name');if(n)n.focus();},150);
+}
+function gateDismiss(){
+  const slot=$('inline-gate-'+gateActiveSectionIdx);
+  if(slot){slot.innerHTML='';slot.style.display='none';}
+  const inputWrap=$('section-input-'+gateActiveSectionIdx);
+  if(inputWrap)inputWrap.style.display='block';
+  else if(gateActiveSectionIdx===0){$('eq-input-wrap').style.display='block';}
+  gatePendingCallback=null;gateActiveSectionIdx=null;
+}
+function gateSubmit(){
+  const name=($('gate-name')||{}).value&&$('gate-name').value.trim();
+  const email=($('gate-email')||{}).value&&$('gate-email').value.trim();
+  if(!name){const n=$('gate-name');if(n){n.style.borderColor='#b03020';setTimeout(()=>n.style.borderColor='',2000);}return;}
+  if(!email||!email.includes('@')){const e=$('gate-email');if(e){e.style.borderColor='#b03020';setTimeout(()=>e.style.borderColor='',2000);}return;}
+  const phone=($('gate-phone')||{}).value?$('gate-phone').value.trim():'';
+  gateCleared=true;
+  saveCarry({userName:name,userEmail:email,userPhone:phone});
+  // Seed session with identity — single summary email fires on completion or exit
+  saveSession({page:'Existing Homeowner Landing',fullName:name,email,phone});
+  const slot=$('inline-gate-'+gateActiveSectionIdx);
+  if(slot){slot.innerHTML='';slot.style.display='none';}
+  const inputWrap=$('section-input-'+gateActiveSectionIdx);
+  if(inputWrap)inputWrap.style.display='block';
+  else if(gateActiveSectionIdx===0){$('eq-input-wrap').style.display='block';}
+  gateActiveSectionIdx=null;
+  if(gatePendingCallback){const cb=gatePendingCallback;gatePendingCallback=null;cb();}
+}
+function gateContinue(){
+  // Dismiss gate, keep inputs hidden, scroll to next section
+  const slot=$('inline-gate-'+gateActiveSectionIdx);
+  if(slot){slot.innerHTML='';slot.style.display='none';}
+  const inputWrap=$('section-input-'+gateActiveSectionIdx);
+  if(inputWrap)inputWrap.style.display='block';
+  else if(gateActiveSectionIdx===0){$('eq-input-wrap').style.display='block';}
+  const nextIdx=(gateActiveSectionIdx||0)+1;
+  gatePendingCallback=null;gateActiveSectionIdx=null;
+  setTimeout(()=>scrollToSection(Math.min(nextIdx,2)),100);
+}
+
+/* ══════════════════════════════════════
+   SECTION 1 — EQUITY CALCULATOR
+══════════════════════════════════════ */
+const SELL_COST_RATE=0.06;
+let eqNetProceeds=0;
+
+document.getElementById('eq-appreciation').addEventListener('input',function(){
+  $('eq-appr-out').textContent=this.value+'%';
+});
+
+function eqUpdatePills(n){
+  ['eq-sp-0','eq-sp-1','eq-sp-2'].forEach((id,i)=>{
+    const el=$(id);
+    el.classList.remove('active','done');
+    if(i<n)el.classList.add('done');
+    else if(i===n)el.classList.add('active');
+  });
+}
+function eqGetScenario(homeVal,nextHome){
+  if(nextHome<=homeVal)return 'downsize';
+  return((nextHome-homeVal)/homeVal)<=0.10?'similar':'moveup';
+}
+
+function eqNext(n){
+  const homeVal=fvt('eq-home-value'),mortgage=fvt('eq-mortgage'),nextHome=fvt('eq-next-home');
+  const apprPct=parseFloat($('eq-appreciation').value),apprRate=apprPct/100;
+
+  if(n>=1){
+    if(!homeVal){showAlert('Please enter your current home value.');return;}
+    if(!nextHome){showAlert('Please enter your estimated next home value.');return;}
+
+    const equity=homeVal-mortgage;
+    const equityPct=homeVal>0?(equity/homeVal)*100:0;
+    const sellCosts=homeVal*SELL_COST_RATE;
+    eqNetProceeds=equity-sellCosts;
+    const scenario=eqGetScenario(homeVal,nextHome);
+
+    $('eq-r-home-value').textContent=fmtM(homeVal);
+    $('eq-r-mortgage').textContent=fmtM(mortgage);
+    $('eq-r-equity').textContent=fmtM(equity);
+    $('eq-r-equity-pct').textContent=Math.round(equityPct)+'% equity in your current home';
+    $('eq-r-net-proceeds').textContent=fmtM(eqNetProceeds);
+    $('eq-r-net-proceeds-sub').textContent=fmtM(equity)+' equity  −  '+fmtM(sellCosts)+' selling costs';
+    $('eq-r-sell-costs-note').textContent=Math.round(SELL_COST_RATE*100)+'% of '+fmtM(homeVal)+' — covers agent commissions, title, escrow & closing costs';
+
+    if(scenario==='downsize'){
+      $('eq-equity-narrative').innerHTML='It looks like you\'re considering <span class="hl">downsizing</span>. Your estimated net proceeds of <span class="hl-green">'+fmtM(eqNetProceeds)+'</span> represent significant liquidity — and what you don\'t put back into real estate can be invested elsewhere.';
+      $('eq-step3-title').textContent='Appreciation comparison';
+      $('eq-step3-intro').textContent='Even in a downsize scenario, appreciation still works for you — you\'ll see how each home performs side by side.';
+      $('eq-step4-intro').textContent='Projected value of both homes over seven years.';
+    } else if(scenario==='similar'){
+      $('eq-equity-narrative').innerHTML='It looks like you\'re moving to a similarly priced home. Your estimated net proceeds of <span class="hl-green">'+fmtM(eqNetProceeds)+'</span> give you flexibility — any proceeds beyond your down payment needs can be invested in other assets.';
+      $('eq-step3-title').textContent='Appreciation at a similar price point';
+      $('eq-step3-intro').textContent='Moving to a similarly priced home means your appreciation rate stays roughly the same — but you\'re resetting with fresh equity.';
+      $('eq-step4-intro').textContent='Projected value of both homes over seven years.';
+    } else {
+      $('eq-equity-narrative').innerHTML='<span class="hl">'+fmtM(eqNetProceeds)+'</span> in estimated net proceeds — real, tangible value you\'ve built. It moves with you as your down payment, rate buydown, or head start on the next chapter.';
+      $('eq-step3-title').textContent='Appreciating at a higher price point';
+      $('eq-step3-intro').textContent='When you move up, your equity doesn\'t just transfer — it starts appreciating on a larger base. The same rate produces a bigger number every year.';
+      $('eq-step4-intro').textContent='Projected value of your next home over seven years — compared to staying in your current home.';
+    }
+  }
+
+  if(n>=2){
+    const currentAnnual=homeVal*apprRate,nextAnnual=nextHome*apprRate;
+    const diff=nextAnnual-currentAnnual;
+    const scenario=eqGetScenario(homeVal,nextHome);
+    $('eq-eq-current').innerHTML='<span class="eq-val">'+fmtM(homeVal)+'</span> × '+apprPct+'%';
+    $('eq-eq-current-result').textContent=fmtM(currentAnnual);
+    $('eq-eq-next').innerHTML='<span class="eq-val">'+fmtM(nextHome)+'</span> × '+apprPct+'%';
+    $('eq-eq-next-result').textContent=fmtM(nextAnnual);
+    if(scenario==='moveup'){
+      $('eq-r-annual-diff').textContent='+'+fmtM(diff)+' / yr';
+      $('eq-appr-diff-row').querySelector('.appr-diff-lbl').textContent='Additional annual gain';
+      $('eq-appreciation-narrative').innerHTML='Using the same <span class="hl">'+apprPct+'%</span> rate for illustration, your next home generates an estimated <span class="hl-green">'+fmtM(nextAnnual)+'</span> in value per year — <span class="hl-gold">+'+fmtM(diff)+' more</span> annually. The larger base means the same rate produces a bigger number. Appreciation rates vary by location and market — this is an estimate for comparison purposes only.';
+    } else {
+      $('eq-r-annual-diff').textContent=fmtM(Math.abs(diff))+' / yr';
+      $('eq-appr-diff-row').querySelector('.appr-diff-lbl').textContent='Annual appreciation difference';
+      $('eq-appreciation-narrative').innerHTML='Annual appreciation: <span class="hl-green">'+fmtM(nextAnnual)+'</span> on the next home versus <span class="hl">'+fmtM(currentAnnual)+'</span> on your current one.';
+    }
+    let rowsHTML='',totalNextGain=0,totalCurrentGain=0;
+    for(let yr=1;yr<=7;yr++){
+      const cV=homeVal*Math.pow(1+apprRate,yr),nV=nextHome*Math.pow(1+apprRate,yr);
+      totalCurrentGain=cV-homeVal;totalNextGain=nV-nextHome;
+      rowsHTML+='<div class="proj-row'+(yr===7?' final':'')+'"><span>Year '+yr+'</span><span>'+fmtM(cV)+'</span><span class="next-green">'+fmtM(nV)+'</span></div>';
+    }
+    $('eq-projection-rows').innerHTML=rowsHTML;
+    $('eq-r-7yr-gain-current').textContent=fmtM(totalCurrentGain);
+    $('eq-r-7yr-sub-current').textContent='on your '+fmtM(homeVal)+' home at '+apprPct+'% / yr';
+    $('eq-r-7yr-gain-next').textContent=fmtM(totalNextGain);
+    $('eq-r-7yr-sub-next').textContent='on your '+fmtM(nextHome)+' home at '+apprPct+'% / yr';
+    const equityGained=totalNextGain-totalCurrentGain;
+    $('eq-r-7yr-equity-gained').textContent=(equityGained>=0?'+':'−')+fmtM(Math.abs(equityGained));
+    $('eq-r-7yr-equity-sub').textContent=fmtM(totalNextGain)+' (next home)  −  '+fmtM(totalCurrentGain)+' (current home)';
+    // Gate fires after step 2 is shown, then shows bridge
+    const annualDiff = Math.abs(nextHome*apprRate - homeVal*apprRate);
+    const scenario2 = eqGetScenario(homeVal, nextHome);
+    if(scenario2==='moveup'){
+      $('eq-final-narrative').innerHTML='Over 7 years, your next home gains <span class="hl-green">'+fmtM(totalNextGain)+'</span> in appreciation — <span class="hl-gold">+'+fmtM(Math.abs(equityGained))+' more</span> than staying put. The math on moving up is more compelling than most buyers realize.';
+    } else {
+      $('eq-final-narrative').innerHTML='Over 7 years, your next home is projected to gain <span class="hl-green">'+fmtM(totalNextGain)+'</span> in value.';
+    }
+    const gateHeadline = 'Your numbers are ready.';
+    const gateSub = scenario2==='moveup'
+      ? 'Based on what you entered, your next home would generate an estimated <strong style="font-weight:600;color:var(--charcoal)">'+fmtM(annualDiff)+' more per year</strong> in appreciation than staying put — and you\'d walk away from your current home with an estimated <strong style="font-weight:600;color:var(--charcoal)">'+fmtM(eqNetProceeds)+' in net proceeds</strong>.<br><br>Enter your details and we\'ll send you the full picture — tax advantages, payment comparison, and your best path forward.'
+      : 'Based on what you entered, you\'d walk away from your current home with an estimated <strong style="font-weight:600;color:var(--charcoal)">'+fmtM(eqNetProceeds)+' in net proceeds</strong>.<br><br>Enter your details and we\'ll send you the full analysis — tax picture, new payment, and your best path forward.';
+    // Store gate opts for the CTA button — fires after user has seen the projection
+    eqPendingGateOpts = {headline: gateHeadline, sub: gateSub, cta: 'Show me my tax picture &amp; payment breakdown &rarr;', skipLabel: 'I\'ll continue to the next section'};
+  }
+
+  document.querySelectorAll('#eq-input-wrap .calc-step').forEach((s,i)=>{s.classList.toggle('active',i===n);});
+  eqUpdatePills(n);
+  if(n>0)setTimeout(()=>document.querySelector('#eq-input-wrap .calc-step.active')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+let eqPendingGateOpts = null;
+
+function eqFireGate(){
+  requireGate(()=>{
+    $('bridge-1').classList.add('show');
+    markNav(0);
+    if(fvt('eq-next-home')&&!$('tax-price').value)$('tax-price').value=fvt('eq-next-home');
+    if(fvt('eq-next-home')&&!$('pmt-price').value)$('pmt-price').value=fvt('eq-next-home');
+    if(eqNetProceeds>0&&!$('pmt-proceeds').value)$('pmt-proceeds').value=Math.round(eqNetProceeds);
+    submitCalcLead('eho-equity',{
+      homeValue:fvt('eq-home-value'),mortgageBalance:fvt('eq-mortgage'),
+      nextHomeValue:fvt('eq-next-home'),appreciationRate:$('eq-appreciation').value+'%',
+      estimatedEquity:fmtM(fvt('eq-home-value')-fvt('eq-mortgage')),
+      estimatedNetProceeds:fmtM(eqNetProceeds)
+    });
+    setTimeout(()=>$('bridge-1').scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }, 0, eqPendingGateOpts);
+}
+
+function eqReset(){
+  document.querySelectorAll('#section-0 input:not([type="range"])').forEach(i=>{i.value='';});
+  $('eq-appreciation').value=4;$('eq-appr-out').textContent='4%';
+  $('eq-projection-rows').innerHTML='';
+  $('bridge-1').classList.remove('show');
+  document.querySelectorAll('#eq-input-wrap .calc-step').forEach((s,i)=>{s.classList.toggle('active',i===0);});
+  eqUpdatePills(0);
+  eqNetProceeds=0;
+}
+
+/* ══════════════════════════════════════
+   SECTION 2 — TAX ADVANTAGES
+══════════════════════════════════════ */
+const SALT_CAP=40000;
+const STD_DED={single:16100,joint:32200,hoh:24150};
+const FED_BR={single:[[11925,.10],[48475,.12],[103350,.22],[197300,.24],[250525,.32],[626350,.35],[Infinity,.37]],joint:[[23850,.10],[96950,.12],[206700,.22],[394600,.24],[501050,.32],[751600,.35],[Infinity,.37]],hoh:[[17000,.10],[64850,.12],[103350,.22],[197300,.24],[250500,.32],[626350,.35],[Infinity,.37]]};
+const OR_BS=[[4050,.0475],[10200,.0675],[125000,.0875],[Infinity,.099]];
+const OR_BJ=[[8100,.0475],[20400,.0675],[250000,.0875],[Infinity,.099]];
+function orTax(inc,f){const br=f==='joint'?OR_BJ:OR_BS;let t=0,p=0;for(const[l,r]of br){if(inc<=p)break;t+=(Math.min(inc,l)-p)*r;p=l;if(l===Infinity)break;}return t;}
+function fedRate(inc,f){const b=FED_BR[f]||FED_BR.single;for(const[l,r]of b)if(inc<=l)return r;return .37;}
+function fedLbl(inc,f){return (fedRate(inc,f)*100).toFixed(0)+'%';}
+function taxPmt(r,n,pv){return r===0?pv/n:pv*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);}
+function computeTaxBenefit(annInt,annTax,income,filing,state){
+  const stateInc=state==='OR'?orTax(income,filing):0;
+  const saltRaw=annTax+stateInc,saltCapped=Math.min(saltRaw,SALT_CAP);
+  const tot=annInt+saltCapped,std=STD_DED[filing]||STD_DED.single,excess=tot-std,fr=fedRate(income,filing);
+  if(excess<=0)return{monthly:0,annual:0,excess:0,totalItemized:tot,std,saltCapped,saltRaw,annTax,stateInc,hasBenefit:false,fr};
+  return{monthly:excess*fr/12,annual:excess*fr,excess,totalItemized:tot,std,saltCapped,saltRaw,annTax,stateInc,hasBenefit:true,fr};
+}
+function pmiRate(ltv){if(ltv>0.95)return 0.0056;if(ltv>0.90)return 0.0043;if(ltv>0.85)return 0.0030;if(ltv>0.80)return 0.0014;return 0;}
+function taxSet(id,val,asHTML){const el=$(id);if(!el)return;asHTML?el.innerHTML=val:el.textContent=val;}
+function onFilingChange(sel){$('income-joint-note').classList.toggle('show',sel.value==='joint'||sel.value==='hoh');}
+
+let taxInsMode = 'estimate'; // default to estimate
+function setTaxInsMode(mode){
+  taxInsMode = mode;
+  const estimateBtn = $('tai-estimate-btn');
+  const customBtn   = $('tai-custom-btn');
+  const customFields = $('tai-custom-fields');
+  const estimateNote = $('tai-estimate-note');
+  if(mode === 'estimate'){
+    estimateBtn.style.background='var(--charcoal)';estimateBtn.style.color='#fff';estimateBtn.style.borderColor='var(--charcoal)';
+    customBtn.style.background='#fff';customBtn.style.color='var(--slate)';customBtn.style.borderColor='rgba(74,74,74,.2)';
+    customFields.style.display='none';
+    estimateNote.style.display='block';
+  } else {
+    customBtn.style.background='var(--charcoal)';customBtn.style.color='#fff';customBtn.style.borderColor='var(--charcoal)';
+    estimateBtn.style.background='#fff';estimateBtn.style.color='var(--slate)';estimateBtn.style.borderColor='rgba(74,74,74,.2)';
+    customFields.style.display='block';
+    estimateNote.style.display='none';
+    setTimeout(()=>$('tax-prop-tax').focus(),50);
+  }
+}
+
+function taxRun(){
+  const newPrice=fvn('tax-price'),newDown=fvn('tax-down'),newRate=fvn('tax-rate'),newTerm=parseInt($('tax-term').value);
+  const income=fvn('tax-income'),filing=$('tax-filing').value,state=$('tax-state').value;
+  if(!newPrice||!newRate){showAlert('Please enter a purchase price and interest rate.');return}
+  if(!income){showAlert('Please enter your annual household income.');return}
+  // Tax and insurance: use entered values or estimates based on mode
+  const newLoanForEst = newPrice*(1-newDown/100);
+  let newTaxAnn, newInsAnn;
+  if(taxInsMode==='custom'){
+    newTaxAnn=fvn('tax-prop-tax');newInsAnn=fvn('tax-ins');
+    if(!newTaxAnn){showAlert('Please enter annual property taxes, or switch to "Use estimate".');return}
+    if(!newInsAnn){showAlert('Please enter annual homeowners insurance, or switch to "Use estimate".');return}
+  } else {
+    newTaxAnn=newPrice*0.010;
+    newInsAnn=newLoanForEst*0.003;
+  }
+  requireGate(()=>{
+    submitCalcLead('eho-tax',{purchasePrice:newPrice,downPayment:newDown+'%',interestRate:newRate+'%',loanTerm:newTerm+' years',annualPropertyTaxes:newTaxAnn||'estimated',annualInsurance:newInsAnn||'estimated',annualIncome:income,filingStatus:filing,state});
+    const newLoan=newPrice*(1-newDown/100),newDownAmt=newPrice*(newDown/100);
+    const nr=newRate/100/12,nn=newTerm*12;
+    const newPI=taxPmt(nr,nn,newLoan);
+    const taxMo=(newTaxAnn||newPrice*0.010)/12,insMo=(newInsAnn||newLoan*0.0025)/12;
+    const newLTV=newLoan/newPrice,needsPMI=newLTV>0.80;
+    const newPMI=needsPMI?pmiRate(newLTV)*newLoan/12:0;
+    const buyPITI=newPI+taxMo+insMo+newPMI;
+    let annInt=0,tb2=newLoan;
+    for(let i=0;i<12;i++){const ic=tb2*nr;annInt+=ic;tb2=tb2*(1+nr)-newPI;}
+    const annTax=newTaxAnn||newPrice*0.010;
+    const tb=computeTaxBenefit(annInt,annTax,income,filing,state);
+    const buyEff=buyPITI-tb.monthly;
+    $('tax-b-piti-label').textContent='Total PITI'+(needsPMI?' + PMI':'')+' / month';
+    taxSet('tax-b-piti',fmtD(buyPITI));taxSet('tax-b-pi',fmtD(newPI));taxSet('tax-b-tax',fmtD(taxMo));taxSet('tax-b-ins',fmtD(insMo));
+    $('tax-b-pmi-row').style.display=needsPMI?'flex':'none';
+    if(needsPMI)taxSet('tax-b-pmi',fmtD(newPMI));
+    $('tax-pmi-notice').classList.toggle('show',needsPMI);
+    taxSet('tax-b-loan',fmtM(newLoan));taxSet('tax-b-down',fmtM(newDownAmt)+' ('+newDown.toFixed(1)+'%)');
+    taxSet('tax-b-eff',fmtD(buyEff));
+    taxSet('tax-b-note',tb.hasBenefit?'Est. monthly tax savings: '+fmtD(tb.monthly)+(needsPMI?' · PMI not tax-deductible':''):'No itemization benefit — below standard deduction');
+    let sumHTML=tb.hasBenefit
+      ?'Your estimated monthly payment is <span class="hl">'+fmtD(buyPITI)+'</span>. After estimated Year 1 tax deductions, the effective cost comes down to <span class="hl">'+fmtD(buyEff)+'</span> — a difference of <span class="hl">'+fmtD(tb.monthly)+'/mo</span> or <span class="hl">'+fmtM(tb.annual)+' per year</span>. <span style="font-weight:400;color:#888;font-size:.85em">Tax savings are realized when you file your 2027 return, not in your monthly payment.</span>'
+      :'Your estimated monthly payment is <span class="hl">'+fmtD(buyPITI)+'</span>. Based on your income and the standard deduction, itemizing does not produce a tax benefit in this scenario. <span style="font-weight:400;color:#888;font-size:.85em">Consult a tax advisor for personalized guidance.</span>';
+    taxSet('tax-summary',sumHTML,true);
+    taxSet('tax-tm-int',fmtM(annInt));taxSet('tax-tm-state',fmtM(tb.stateInc));taxSet('tax-tm-proptax',fmtM(annTax));
+    taxSet('tax-tm-salt',fmtM(tb.saltCapped)+(tb.saltRaw>SALT_CAP?' (capped from '+fmtM(tb.saltRaw)+')':''));
+    taxSet('tax-tm-total',fmtM(tb.totalItemized));taxSet('tax-tm-std',fmtM(tb.std));
+    taxSet('tax-tm-excess',tb.hasBenefit?fmtM(tb.excess):'$0');
+    taxSet('tax-tm-fed',fedLbl(income,filing));taxSet('tax-tm-combined',fmtPct(fedRate(income,filing)));
+    taxSet('tax-tm-annual',fmtM(tb.annual)+' / yr');
+    taxSet('tax-tm-monthly',tb.hasBenefit?fmtD(tb.monthly)+' / mo':'$0.00 / mo');
+    $('tax-tm-monthly').className='mtot-v'+(tb.hasBenefit?'':' zero');
+    $('tax-tm-no-benefit').style.display=tb.hasBenefit?'none':'block';
+    $('tax-results').classList.add('show');
+    if(!$('pmt-price').value)$('pmt-price').value=newPrice;
+    if(!$('pmt-down').value)$('pmt-down').value=newDown;
+    if(!$('pmt-rate').value)$('pmt-rate').value=newRate;
+    $('pmt-term').value=newTerm;
+    $('bridge-2-text').innerHTML='You\'ve seen the equity picture and the tax advantage. Your estimated effective monthly cost is <span class="hl">'+fmtD(buyEff)+'</span>. Now let\'s put the full payment on the table — and show how your net proceeds from the sale can change that number.';
+    $('bridge-2').classList.add('show');
+    markNav(1);
+    saveCarry({interestRate:newRate,loanTerm:String(newTerm),downPayment:newDown});
+    setTimeout(()=>$('tax-results').scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }, 1);
+}
+
+/* ══════════════════════════════════════
+   SECTION 3 — FULL COST ANALYSIS
+══════════════════════════════════════ */
+const PMT_TAX=0.010, PMT_INS=0.003;
+function pmiRatePmt(ltv){if(ltv>0.95)return 0.0056;if(ltv>0.90)return 0.0043;if(ltv>0.85)return 0.0030;if(ltv>0.80)return 0.0014;return 0;}
+function buildPmtCC(price,loan,annRate){
+  const rows=[
+    {l:'Underwriting Fee',a:975,apr:true},
+    {l:'Processing Fee',a:550,apr:true},
+    {l:'Settlement Fee',a:(1700+price/1000)/2,apr:true},
+    {l:'Discount Point (1%)',a:loan*0.01,apr:true},
+    {l:'Prepaid Interest (15 days)',a:loan*(annRate/100)/365*15,apr:true},
+    {l:'Appraisal Fee',a:750,apr:false},
+    {l:'Credit Report',a:350,apr:false},
+    {l:'Tax Service Fee',a:54,apr:false},
+    {l:'Flood Certification',a:10,apr:false},
+    {l:'Recording Fee',a:350,apr:false},
+    {l:'Title Endorsement',a:100,apr:false},
+    {l:'Lenders Title Insurance',a:Math.round(loan*0.0013),apr:false}
+  ];
+  return{rows,total:rows.reduce((s,r)=>s+r.a,0),aprCosts:rows.filter(r=>r.apr).reduce((s,r)=>s+r.a,0)};
+}
+function calcPmtAPR(loan,r,n,pi,moPMI,price,aprCosts){
+  if(loan<=0||r<=0)return r*12*100;
+  const financed=loan-aprCosts;if(financed<=0)return r*12*100;
+  const t78=price*0.78;let g=r;
+  if(moPMI===0){
+    for(let i=0;i<300;i++){const pw=Math.pow(1+g,n),f=pi*(1-1/pw)/g-financed,df=pi*(1/(g*g)*(1/pw-1)+n/(g*pw*(1+g)));if(Math.abs(df)<1e-20)break;const nx=g-f/df;if(Math.abs(nx-g)<1e-12){g=nx;break;}g=Math.max(nx,1e-10);}
+  } else {
+    const cf=[-financed];let bal=loan;
+    for(let m=1;m<=n;m++){const ip=bal*r,pp=pi-ip;bal=Math.max(bal-pp,0);cf.push(pi+(bal>t78?moPMI:0));if(bal===0)break;}
+    for(let i=0;i<300;i++){let npv=cf[0],dnpv=0;for(let m=1;m<cf.length;m++){const d=Math.pow(1+g,m);npv+=cf[m]/d;dnpv-=m*cf[m]/(d*(1+g));}if(Math.abs(dnpv)<1e-20)break;const nx=g-npv/dnpv;if(Math.abs(nx-g)<1e-12){g=nx;break;}g=Math.max(nx,1e-10);}
+  }
+  return g*12*100;
+}
+function pmtToggleDetail(){
+  const p=$('pmt-detail-panel'),b=$('pmt-detail-btn');if(!p||!b)return;
+  const open=p.style.display!=='none';
+  p.style.display=open?'none':'block';
+  b.textContent=open?'Full breakdown ▾':'Full breakdown ▴';
+  if(!open){b.style.background='var(--charcoal)';b.style.color='#fff';b.style.borderColor='var(--charcoal)';}
+  else{b.style.background='transparent';b.style.color='var(--slate)';b.style.borderColor='rgba(74,74,74,.16)';}
+}
+function pmtRun(){
+  const price=fvn('pmt-price'),downPct=fvn('pmt-down'),annRate=fvn('pmt-rate'),term=parseInt($('pmt-term').value);
+  const proceeds=fvn('pmt-proceeds'),currentPmt=fvn('pmt-current-payment');
+  if(!price){showAlert('Please enter a purchase price.');return}
+  if(!annRate){showAlert('Please enter an interest rate.');return}
+  requireGate(()=>{
+    submitCalcLead('eho-payment',{
+      purchasePrice:price,
+      downPayment:downPct+'%',
+      interestRate:annRate+'%',
+      loanTerm:term+' years',
+      netProceeds:proceeds||'not entered',
+      currentPayment:currentPmt||'not entered'
+    });
+    const downDollars=price*(downPct/100);
+    const extraProceeds=Math.max(0,proceeds-downDollars);
+    const loan=Math.max(0,price-downDollars-extraProceeds);
+    const r=annRate/100/12,n=term*12;
+    const pi=loan>0&&r>0?(loan*r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1):(n>0?loan/n:0);
+    const moTax=(price*PMT_TAX)/12,moIns=(loan*PMT_INS)/12;
+    const ltv=price>0?loan/price:0,needsPMI=ltv>0.80,moPMI=needsPMI?pmiRatePmt(ltv)*loan/12:0;
+    const totalMo=pi+moTax+moIns+moPMI;
+    const cc=buildPmtCC(price,loan,annRate);
+    const taxMoRes=moTax*11,insMoRes=moIns*3,annInsPrem=moIns*12,prepaid=taxMoRes+insMoRes+annInsPrem;
+    const ctc=downDollars+cc.total+prepaid;
+    const aprPct=calcPmtAPR(loan,r,n,pi,moPMI,price,cc.aprCosts);
+    let pmiDropMonth=0;
+    if(moPMI>0&&r>0){const t78=price*0.78;let bal=loan;for(let m=1;m<=n;m++){bal=Math.max(bal-(pi-bal*r),0);if(bal<=t78){pmiDropMonth=m;break;}}}
+    const carry=loadCarry();
+    const firstName=carry.userName?carry.userName.split(' ')[0]:'';
+    $('pmt-results-hl').textContent=firstName?firstName+", here's your full picture.":"Here's your full picture.";
+    $('pmt-r-hero').textContent=fmtM(price);
+    $('pmt-r-sub').textContent=term+'-year fixed · '+annRate.toFixed(3)+'% rate · '+downPct.toFixed(1)+'% down'+(extraProceeds>0?' · proceeds applied':'');
+    $('pmt-piti-lbl').textContent='Monthly payment (PITI'+(moPMI>0?' + PMI':'')+ ')';
+    $('pmt-r-total').textContent=fmtD(totalMo);
+    $('pmt-r-ctc').textContent=fmtM(ctc);
+    $('pmt-r-loan').textContent=fmtM(loan);
+    $('pmt-r-loan-sub').textContent='After '+downPct.toFixed(1)+'% down'+(extraProceeds>0?' + proceeds':'');
+    $('pmt-r-apr').textContent=aprPct.toFixed(3)+'%';
+    const narrativePMI=moPMI>0&&pmiDropMonth>0?' PMI of <span style="font-weight:600;color:var(--charcoal)">'+fmtD(moPMI)+'/mo</span> is included and automatically cancels at month <span style="font-weight:600;color:var(--charcoal)">'+pmiDropMonth+'</span> (year '+Math.ceil(pmiDropMonth/12)+') when your balance reaches 78% of the purchase price. <span style="font-size:.85em;color:#888;font-weight:400">PMI estimate assumes a 740 credit score — actual rates vary.</span>':'';
+    $('pmt-r-narrative').innerHTML='Your estimated monthly payment of <span style="font-weight:600;color:var(--charcoal)">'+fmtD(totalMo)+'</span> includes principal, interest, taxes, and insurance. <span style="font-size:.85em;color:#888;font-weight:400">These figures are based on a conventional loan.</span>'+narrativePMI;
+    if(currentPmt>0){
+      $('pmt-compare-row').style.display='block';
+      $('pmt-r-current').textContent=fmtD(currentPmt);
+      $('pmt-r-new').textContent=fmtD(totalMo);
+      const diff=totalMo-currentPmt;
+      $('pmt-compare-text').innerHTML=diff>0
+        ?'Your new estimated payment is <span style="font-weight:600;color:var(--charcoal)">'+fmtD(Math.abs(diff))+'/mo more</span> than your current payment. That reflects the move to a higher-value home — your equity is doing the heavy lifting on the down payment side.'
+        :diff<0?'Your new estimated payment is <span style="font-weight:600;color:var(--green)">'+fmtD(Math.abs(diff))+'/mo less</span> than your current payment — made possible by your equity working as a larger down payment.'
+        :'Your estimated new payment is virtually the same as your current payment. Your equity is working hard here.';
+    } else {
+      $('pmt-compare-row').style.display='none';
+    }
+    const apr_tag='<span style="font-size:.58rem;color:var(--gold);font-weight:600;margin-left:3px">(APR fee)</span>';
+    const ccRows=cc.rows.map(row=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem .9rem;border-bottom:1px solid rgba(74,74,74,.05)"><span style="font-size:.75rem;color:var(--slate)">'+row.l+(row.apr?apr_tag:'')+'</span><span style="font-family:DM Mono,monospace;font-size:.79rem;font-weight:600;color:var(--charcoal)">'+fmtD(row.a)+'</span></div>').join('');
+    const row=(lbl,val,bold,green)=>'<div style="display:flex;justify-content:space-between;align-items:center;padding:'+(bold?'.6rem':'.5rem')+' .9rem;border-bottom:1px solid rgba(74,74,74,.05)'+(green?';background:rgba(26,102,64,.05)':bold?';background:rgba(184,146,74,.04)':'')+'"><span style="font-size:'+(bold?'.78rem':'.75rem')+';font-weight:'+(bold?'700':'400')+';color:'+(green?'var(--green)':'var(--slate)')+'">'+lbl+'</span><span style="font-family:DM Mono,monospace;font-size:'+(bold?'.9rem':'.79rem')+';font-weight:'+(bold?'700':'600')+';color:'+(green?'var(--green)':'var(--charcoal)')+'">'+val+'</span></div>';
+    const hdr=lbl=>'<div style="padding:.45rem .9rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);border-top:1px solid rgba(74,74,74,.07);font-size:.57rem;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--slate)">'+lbl+'</div>';
+    $('pmt-detail-body').innerHTML='<div style="border:1px solid rgba(74,74,74,.12);border-radius:var(--radius);overflow:hidden;margin-bottom:.75rem">'
+      +hdr('Monthly payment breakdown')
+      +row('Principal &amp; Interest',fmtD(pi),false,false)
+      +row('Property Tax (est. 1%/yr)',fmtD(moTax),false,false)
+      +row('Homeowners Insurance (est. 0.3%/yr)',fmtD(moIns),false,false)
+      +(moPMI>0?row('Mortgage Insurance (PMI)','<span style="color:var(--red)">'+fmtD(moPMI)+'</span>',false,false):'')
+      +row('Total Monthly Payment',fmtD(totalMo),true,false)
+      +hdr('Down payment')
+      +row('Down Payment ('+downPct.toFixed(1)+'%)',fmtD(downDollars),true,false)
+      +hdr('Estimated closing costs')
+      +ccRows
+      +row('Total Closing Costs',fmtD(cc.total),true,false)
+      +hdr('Estimated prepaid costs')
+      +row('Tax Reserves (11 mo)',fmtD(taxMoRes),false,false)
+      +row('Insurance Reserves (3 mo)',fmtD(insMoRes),false,false)
+      +row('Annual Insurance Premium',fmtD(annInsPrem),false,false)
+      +row('Total Prepaid Costs',fmtD(prepaid),true,false)
+      +hdr('Total cash to close')
+      +row('Down Payment',fmtD(downDollars),false,false)
+      +row('Closing Costs',fmtD(cc.total),false,false)
+      +row('Prepaid Costs',fmtD(prepaid),false,false)
+      +'<div style="display:flex;justify-content:space-between;align-items:center;padding:.65rem .9rem;background:rgba(26,102,64,.06);border-top:1px solid rgba(26,102,64,.18)"><span style="font-size:.8rem;font-weight:700;color:var(--green)">Total Cash to Close</span><span style="font-family:DM Mono,monospace;font-size:.95rem;font-weight:700;color:var(--green)">'+fmtD(ctc)+'</span></div>'
+      +'</div>';
+    sendSummaryEmail(); // final step — send consolidated summary
+    $('pmt-results').classList.add('show');
+    markNav(2);
+    saveCarry({interestRate:annRate,loanTerm:String(term),downPayment:downPct});
+    setTimeout(()=>$('pmt-results').scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }, 2);
+}
+
+/* ── NETLIFY SUBMISSIONS ── */
+function submitCalcLead(formName,fields){
+  // Accumulate into session — summary email fires on completion or page exit
+  saveSession(fields);
+}
+
+/* ── PAGE INIT — carry restoration ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  const carry=loadCarry();
+  if(carry.userName&&carry.userEmail)gateCleared=true;
+  if(carry.interestRate){$('tax-rate').value=carry.interestRate;$('pmt-rate').value=carry.interestRate;}
+  if(carry.loanTerm){$('tax-term').value=carry.loanTerm;$('pmt-term').value=carry.loanTerm;}
+  if(carry.downPayment){$('tax-down').value=carry.downPayment;$('pmt-down').value=carry.downPayment;}
+});
+</script>
+</body>
+</html>
