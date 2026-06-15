@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First-Time Buyer Tools — Gavin Hamilton</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --charcoal:#1c1c1c;--slate:#4a4a4a;
+  --gold:#b8924a;--gold-lt:#d4ab6a;--gold-dim:rgba(184,146,74,.35);
+  --green:#1a6640;--green-bg:#f0faf6;
+  --blue:#185FA5;--blue-bg:#f0f5fa;
+  --red:#b03020;--red-bg:#fff5f3;
+  --ivory:#faf9f7;
+  --radius:4px;--trans:.3s cubic-bezier(.4,0,.2,1);
+  --shadow:0 4px 6px rgba(0,0,0,.04),0 20px 50px rgba(0,0,0,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background:#f9f8f5;color:var(--charcoal);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.bg-layer{position:fixed;inset:0;z-index:0;background-image:url('background.png');background-size:cover;background-position:center;opacity:.06;pointer-events:none}
+main{position:relative;z-index:10;flex:1;padding:3rem 1.5rem 5rem;max-width:860px;margin:0 auto;width:100%}
+
+/* ── HERO ── */
+.hero{text-align:center;padding:2.5rem 1rem 2rem;margin-bottom:2rem}
+.hero-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;display:flex;align-items:center;justify-content:center;gap:.5rem;font-weight:500}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--gold)}
+.hero-headline{font-weight:700;font-size:clamp(2rem,5vw,2.8rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.8rem}
+.hero-sub{font-size:.95rem;color:var(--slate);line-height:1.7;font-weight:300;max-width:520px;margin:0 auto}
+.hero-sub strong{font-weight:600;color:var(--charcoal)}
+.hero-divider{width:48px;height:1px;background:var(--gold);margin:1.5rem auto 0;opacity:.7}
+
+/* ── STEP NAV ── */
+.step-nav{display:flex;gap:0;margin-bottom:2.5rem;border:1px solid var(--gold-dim);border-radius:var(--radius);overflow:hidden;position:sticky;top:12px;z-index:100;background:#fff;box-shadow:var(--shadow)}
+.step-nav-btn{flex:1;padding:.75rem .5rem;background:transparent;border:none;border-right:1px solid var(--gold-dim);font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#aaa;cursor:pointer;transition:all var(--trans);line-height:1.4;text-align:center}
+.step-nav-btn:last-child{border-right:none}
+.step-nav-btn:hover{background:rgba(184,146,74,.05);color:var(--gold)}
+.step-nav-btn.active{background:var(--charcoal);color:#fff}
+.step-nav-btn.done{background:var(--green-bg);color:var(--green)}
+.step-num{display:block;font-size:.6rem;margin-bottom:2px;opacity:.7}
+
+/* ── CARD ── */
+.calc-card{background:#fff;border:1px solid var(--gold-dim);border-radius:2px;padding:2.5rem 3rem;box-shadow:var(--shadow);margin-bottom:1.5rem;animation:cardRise .5s cubic-bezier(.4,0,.2,1) both}
+@keyframes cardRise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.card-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.card-headline{font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.15;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.6rem}
+.card-sub{font-size:.88rem;color:var(--slate);line-height:1.65;margin-bottom:1.75rem;font-weight:300}
+.card-sub strong{font-weight:600;color:var(--charcoal)}
+.divider{width:40px;height:1px;background:var(--gold);margin-bottom:1.75rem;opacity:.7}
+
+/* ── TRANSITION BRIDGE ── */
+.bridge{padding:1.5rem 1.75rem;border-left:3px solid var(--gold);background:rgba(184,146,74,.04);border-radius:0 var(--radius) var(--radius) 0;margin-bottom:2rem;display:none}
+.bridge.show{display:block;animation:fadeUp .4s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.bridge-eyebrow{font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:600;margin-bottom:.4rem}
+.bridge-text{font-size:.9rem;color:var(--slate);line-height:1.75;font-weight:300}
+.bridge-text .hl{font-weight:600;color:var(--charcoal)}
+.bridge-text .hl-green{font-weight:600;color:var(--green)}
+.bridge-btn{margin-top:.9rem;display:inline-block;padding:.65rem 1.4rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--trans),transform var(--trans)}
+.bridge-btn:hover{background:#2e2a22;transform:translateY(-1px)}
+
+/* ── SECTION LABELS ── */
+.sec-label{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.sec-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:.5}
+
+/* ── FORM ELEMENTS ── */
+.form-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:1.25rem}
+.form-group{margin-bottom:1.2rem}
+.form-group:last-child{margin-bottom:0}
+.icol{border:1px solid rgba(74,74,74,.14);border-radius:var(--radius);padding:1.25rem;background:var(--ivory)}
+.icol.col-rent{border-color:rgba(26,95,165,.2);background:rgba(26,95,165,.02)}
+.icol.col-buy{border-color:var(--gold-dim);background:rgba(184,146,74,.02)}
+.icol.col-title{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;margin-bottom:.9rem;padding-bottom:.65rem;border-bottom:1px solid rgba(74,74,74,.1)}
+.col-rent .icol-title{color:var(--blue)}
+.col-buy .icol-title{color:var(--gold)}
+
+label{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.38rem;font-weight:500}
+.fnote{font-size:.7rem;font-weight:300;text-transform:none;letter-spacing:0;color:#999;font-style:italic;margin-left:.25rem}
+.field-hint{font-size:.72rem;color:#aaa;margin-top:.4rem;font-weight:300}
+.field-hint a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim)}
+.required{color:#b03020;margin-left:2px;font-weight:600}
+
+input[type="text"],input[type="number"],select{width:100%;padding:.65rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.9rem;color:var(--charcoal);outline:none;transition:border-color var(--trans),box-shadow var(--trans);-webkit-appearance:none;-moz-appearance:textfield}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+input.hpfx{padding-left:1.9rem}
+input:focus,select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(184,146,74,.12)}
+input::placeholder{color:#bbb}
+select{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b8924a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:2.5rem}
+.pfx{position:relative}.pfx input{padding-left:1.9rem}
+.pfx-sym{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--gold);font-weight:500;pointer-events:none}
+.sfx{position:relative}.sfx input{padding-right:2.4rem}
+.sfx-sym{position:absolute;right:1rem;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--gold);font-weight:500;pointer-events:none}
+
+/* ── DEBT TABLE ── */
+.debt-table{border:1px solid rgba(74,74,74,.12);border-radius:var(--radius);background:var(--ivory);overflow:hidden}
+.debt-row{display:grid;grid-template-columns:1fr 140px;align-items:center;gap:10px;padding:.55rem .9rem;border-bottom:1px solid rgba(74,74,74,.07)}
+.debt-row:last-child{border-bottom:none}
+.debt-row label{margin-bottom:0;font-size:.73rem;letter-spacing:.04em;text-transform:none;color:var(--charcoal);font-weight:400}
+.debt-row .pfx input{padding:.5rem 1rem .5rem 1.8rem;font-size:.87rem;background:#fff}
+.debt-total-row{display:flex;justify-content:space-between;align-items:center;padding:.5rem .9rem;background:rgba(184,146,74,.05);border-top:1px solid var(--gold-dim);font-size:.65rem;letter-spacing:.1em;text-transform:uppercase}
+.debt-total-lbl{color:var(--slate);font-weight:500}
+.debt-total-val{font-family:'DM Mono',monospace;font-weight:500;color:var(--charcoal);font-size:.88rem}
+
+/* ── BUTTONS ── */
+.btn-primary{display:block;width:100%;margin-top:.4rem;padding:.9rem 1.5rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--trans),box-shadow var(--trans),transform var(--trans);position:relative;overflow:hidden}
+.btn-primary::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(184,146,74,.18),transparent);transform:translateX(-100%);transition:transform .5s ease}
+.btn-primary:hover{background:#2e2a22;box-shadow:0 6px 20px rgba(0,0,0,.18);transform:translateY(-1px)}
+.btn-primary:hover::after{transform:translateX(100%)}
+.btn-primary:active{transform:translateY(0);box-shadow:none}
+.btn-primary:disabled{background:#888;cursor:wait;transform:none;box-shadow:none}
+.btn-back{padding:.65rem 1.2rem;background:transparent;color:var(--slate);border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all var(--trans)}
+.btn-back:hover{border-color:var(--gold);color:var(--charcoal)}
+.btn-row{display:flex;gap:.75rem;align-items:center;margin-top:1.25rem}
+.btn-green{display:block;width:100%;padding:.9rem 1.5rem;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--trans),transform var(--trans),box-shadow var(--trans);position:relative;overflow:hidden;margin-bottom:.6rem}
+.btn-green:hover{background:#0f3d26;transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,102,64,.25)}
+
+/* ── RESULTS ── */
+.results-wrap{display:none;margin-top:1.5rem;animation:fadeUp .4s ease both}
+.results-wrap.show{display:block}
+.results-rule{border:none;border-top:1px solid var(--gold-dim);margin-bottom:1.75rem}
+.results-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;font-weight:500}
+.results-hl{font-weight:700;font-size:1.15rem;letter-spacing:-0.01em;color:var(--charcoal);margin-bottom:1.25rem}
+
+/* metric cards */
+.metric-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.metric-card{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);padding:.9rem 1rem;background:var(--ivory)}
+.metric-card.highlight{border-color:var(--gold-dim);background:rgba(184,146,74,.04)}
+.metric-card.green-card{border-color:rgba(26,102,64,.25);background:var(--green-bg)}
+.metric-lbl{font-size:.6rem;letter-spacing:.11em;text-transform:uppercase;color:#aaa;margin-bottom:.3rem;font-weight:500}
+.metric-val{font-family:'DM Mono',monospace;font-size:clamp(1.15rem,2.5vw,1.55rem);font-weight:500;color:var(--charcoal);line-height:1}
+.metric-card.highlight .metric-val{color:var(--gold)}
+.metric-card.green-card .metric-val{color:var(--green)}
+.metric-sub{font-size:.68rem;color:#aaa;margin-top:.25rem;font-weight:300;line-height:1.4}
+
+/* reveal narrative */
+.reveal-block{padding:1rem 1.2rem;border-left:2px solid var(--gold);background:rgba(184,146,74,.04);border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0}
+.reveal-block p{font-size:.86rem;color:var(--slate);line-height:1.75;font-weight:300}
+.reveal-block p .hl{font-weight:600;color:var(--charcoal)}
+.reveal-block p .hl-green{font-weight:600;color:var(--green)}
+.reveal-block p .hl-gold{font-weight:600;color:var(--gold)}
+
+/* compare cols */
+.compare-cols{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.cc{border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);overflow:hidden;background:#fff}
+.cc.cc-buy{border-color:var(--gold-dim)}
+.cc.cc-rent{border-color:rgba(26,95,165,.2)}
+.cc-head{padding:.65rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);display:flex;align-items:center;gap:.4rem}
+.cc.cc-buy .cc-head{background:rgba(184,146,74,.05)}
+.cc.cc-rent .cc-head{background:rgba(26,95,165,.04)}
+.hdot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.dot-rent{background:var(--blue)}.dot-buy{background:var(--gold)}
+.hlbl{font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--slate)}
+.cc.cc-buy .hlbl{color:var(--gold)}.cc.cc-rent .hlbl{color:var(--blue)}
+.piti-block{padding:1rem 1rem .8rem;border-bottom:1px solid rgba(74,74,74,.09)}
+.piti-meta{font-size:.6rem;letter-spacing:.14em;text-transform:uppercase;color:#aaa;margin-bottom:.3rem;font-weight:500}
+.piti-amount{font-weight:700;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-0.02em;color:var(--charcoal);line-height:1}
+.piti-sub{font-size:.72rem;color:#aaa;margin-top:.2rem;font-weight:300}
+.eff-block{padding:.8rem 1rem;background:var(--green-bg);border-bottom:1px solid rgba(26,102,64,.13)}
+.eff-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:#2a6040;margin-bottom:.25rem;font-weight:500;display:flex;align-items:center;gap:.35rem;flex-wrap:wrap}
+.eff-amount{font-weight:700;font-size:clamp(1.1rem,2.3vw,1.45rem);letter-spacing:-0.01em;color:var(--green);line-height:1}
+.eff-note{font-size:.7rem;color:#3a7050;margin-top:.2rem;font-weight:300}
+.eff-cap-badge{font-size:.56rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;padding:1px 5px;border-radius:10px;border:1px solid var(--gold-dim);color:var(--gold);background:rgba(184,146,74,.06)}
+.rent-piti-block{padding:1rem 1rem .8rem}
+.rent-note-block{padding:.8rem 1rem;background:rgba(26,95,165,.04);border-bottom:1px solid rgba(26,95,165,.1)}
+.rent-note-lbl{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);margin-bottom:.25rem;font-weight:500}
+.rent-note-txt{font-size:.76rem;color:var(--blue);font-weight:300;line-height:1.6}
+.li-list{display:flex;flex-direction:column}
+.li-row{display:flex;flex-direction:column;padding:.6rem 1rem;border-bottom:1px solid rgba(74,74,74,.06)}
+.li-row:last-child{border-bottom:none}
+.li-lbl{font-size:.67rem;color:#aaa;margin-bottom:.12rem;letter-spacing:.05em}
+.li-val{font-weight:600;font-size:.9rem;color:var(--charcoal)}
+
+/* tax math */
+.math-box{border:1px solid rgba(74,74,74,.12);border-radius:var(--radius);overflow:hidden;background:#fff;margin-bottom:1rem}
+.math-box-head{padding:.6rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--slate);font-weight:600}
+.mstep{padding:.8rem 1rem;border-bottom:1px solid rgba(74,74,74,.06)}
+.mstep:last-child{border-bottom:none}
+.mstep-lbl{display:flex;align-items:center;gap:.4rem;font-size:.62rem;letter-spacing:.11em;text-transform:uppercase;color:#aaa;margin-bottom:.45rem;font-weight:500}
+.snum{display:inline-flex;align-items:center;justify-content:center;width:15px;height:15px;border-radius:50%;border:1px solid var(--gold-dim);font-size:.58rem;font-weight:700;color:var(--gold);flex-shrink:0}
+.meq{display:flex;justify-content:space-between;align-items:baseline;padding:2px 0;border-bottom:1px dotted rgba(74,74,74,.09)}
+.meq:last-child{border-bottom:none}
+.meq-l{font-size:.76rem;color:var(--slate);font-weight:300}
+.meq-v{font-size:.8rem;font-weight:600;color:var(--charcoal);font-family:'DM Mono',monospace}
+.meq-v.gld{color:var(--gold)}
+.mtot{display:flex;justify-content:space-between;align-items:baseline;padding-top:.45rem;margin-top:.3rem;border-top:1px solid var(--gold-dim)}
+.mtot-l{font-size:.76rem;font-weight:600;color:var(--slate)}
+.mtot-v{font-size:.9rem;font-weight:700;color:var(--green);font-family:'DM Mono',monospace}
+.mtot-v.zero{color:#bbb}
+.nb-note{font-size:.73rem;color:#7a5800;background:rgba(248,198,60,.1);border:1px solid rgba(200,160,0,.22);border-radius:var(--radius);padding:.45rem .7rem;margin-top:.4rem;line-height:1.55;font-weight:300}
+.salt{display:inline-block;font-size:.58rem;font-weight:600;letter-spacing:.05em;padding:1px 4px;border-radius:8px;border:1px solid rgba(0,110,160,.22);color:#0060a0;margin-left:3px;vertical-align:middle;text-transform:uppercase}
+
+/* sum callout */
+.sum-callout{padding:1rem 1.2rem;border:1px solid var(--gold-dim);border-radius:var(--radius);background:rgba(184,146,74,.04);margin-bottom:1.5rem;font-size:.86rem;color:var(--slate);line-height:1.75;font-weight:300}
+.sum-callout .hl{font-weight:600;color:var(--charcoal)}
+
+/* detail toggle */
+.detail-toggle-btn{width:100%;padding:.65rem 1rem;background:transparent;border:1px solid rgba(74,74,74,.16);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;font-weight:600;color:var(--slate);cursor:pointer;transition:all var(--trans);margin-bottom:1rem}
+.detail-toggle-btn:hover{border-color:var(--gold);color:var(--charcoal);background:rgba(184,146,74,.04)}
+.detail-toggle-btn.open{background:var(--charcoal);color:#fff;border-color:var(--charcoal)}
+.detail-panel{display:none;margin-bottom:1rem;animation:fadeUp .3s ease both}
+.detail-panel.show{display:block}
+.dt-table{border:1px solid rgba(74,74,74,.12);border-radius:var(--radius);overflow:hidden}
+.dt-head{padding:.5rem .9rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.09);font-size:.58rem;letter-spacing:.13em;text-transform:uppercase;font-weight:700;color:var(--slate)}
+.dt-row{display:flex;justify-content:space-between;align-items:center;padding:.55rem .9rem;border-bottom:1px solid rgba(74,74,74,.05)}
+.dt-row:last-child{border-bottom:none}
+.dt-row.dt-total{background:rgba(184,146,74,.04)}
+.dt-lbl{font-size:.76rem;color:var(--slate)}
+.dt-val{font-size:.8rem;font-weight:600;color:var(--charcoal);font-family:'DM Mono',monospace}
+.dt-row.dt-total .dt-lbl,.dt-row.dt-total .dt-val{font-weight:700;color:var(--charcoal)}
+.apr-tag{font-size:.58rem;color:var(--gold);font-weight:600;margin-left:.25rem}
+
+/* low down notice */
+.low-down-notice{padding:1rem 1.2rem;border-left:3px solid var(--gold);background:rgba(184,146,74,.06);border-radius:0 var(--radius) var(--radius) 0;margin-bottom:1.2rem;display:none}
+.low-down-title{font-size:.62rem;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.low-down-body{font-size:.83rem;color:var(--slate);line-height:1.75;font-weight:300}
+.low-down-body strong{font-weight:500;color:var(--charcoal)}
+
+/* pmi notice */
+.pmi-notice{display:none;padding:.7rem 1rem;background:var(--red-bg);border:1px solid rgba(176,48,32,.18);border-radius:var(--radius);margin-bottom:.75rem;font-size:.76rem;color:var(--red);line-height:1.6}
+.pmi-notice.show{display:block}
+
+/* almost there gate */
+.gate-wrap{display:none;animation:fadeUp .4s ease both}
+.gate-wrap.show{display:block}
+.step-dots{display:flex;align-items:center;gap:.55rem;margin-bottom:1.4rem}
+.step-dot{width:6px;height:6px;border-radius:50%;background:var(--gold)}
+.step-dot.muted{background:rgba(184,146,74,.3)}
+.gate-hl{font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.6rem}
+.gate-sub{font-size:.88rem;color:var(--slate);line-height:1.6;margin-bottom:1.5rem;font-weight:300}
+.gate-sub strong{font-weight:600;color:var(--charcoal)}
+.consent-block{font-size:.7rem;color:#888;line-height:1.7;padding:.8rem .95rem;background:var(--ivory);border:1px solid rgba(74,74,74,.1);border-radius:var(--radius);font-weight:300;margin-bottom:1rem}
+.consent-block a{color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim)}
+.btn-row-2{display:flex;gap:.75rem;align-items:center;margin-top:.4rem}
+.btn-back-plain{flex:0 0 auto;padding:.85rem 1.2rem;background:transparent;color:var(--slate);border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all var(--trans)}
+.btn-back-plain:hover{border-color:var(--gold);color:var(--charcoal);background:rgba(184,146,74,.04)}
+
+/* lead gate post-results */
+.lead-gate{margin-top:1.75rem;border:1px solid var(--gold-dim);border-radius:var(--radius);overflow:hidden}
+.lead-gate-header{background:var(--charcoal);padding:1.2rem 1.5rem}
+.lead-gate-eyebrow{font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-lt);font-weight:600;margin-bottom:.38rem}
+.lead-gate-hl{font-size:.98rem;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.3;margin-bottom:.3rem}
+.lead-gate-sub{font-size:.76rem;color:rgba(255,255,255,.52);font-weight:300;line-height:1.55}
+.lead-gate-body{padding:1.2rem 1.5rem;background:#fff}
+.vp-list{display:flex;flex-direction:column;gap:.42rem;margin-bottom:1rem}
+.vp-item{display:flex;align-items:flex-start;gap:.5rem;font-size:.79rem;color:var(--slate);font-weight:300;line-height:1.5}
+.vp-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:.43rem}
+.lead-trust{display:flex;align-items:center;justify-content:center;gap:.7rem;margin-top:.6rem;padding-top:.6rem;border-top:1px solid rgba(74,74,74,.08)}
+.trust-item{font-size:.6rem;color:#bbb;font-weight:300}
+.trust-dot{width:3px;height:3px;border-radius:50%;background:#ddd}
+.lead-success{display:none;padding:1.25rem;text-align:center;background:var(--green-bg);border-top:1px solid rgba(26,102,64,.14)}
+.lead-success-title{font-size:.92rem;font-weight:700;color:var(--green);margin-bottom:.3rem}
+.lead-success-sub{font-size:.78rem;color:#3a7050;font-weight:300;line-height:1.6}
+.lead-success-sub a{color:var(--green);text-decoration:none;border-bottom:1px solid rgba(26,102,64,.28)}
+
+/* tax note */
+.tax-note{padding:.9rem 1.1rem;border-left:2px solid var(--gold-dim);background:rgba(184,146,74,.03);border-radius:0 var(--radius) var(--radius) 0;margin-top:1.25rem}
+.tax-note p{font-size:.69rem;color:#999;line-height:1.75;font-weight:300}
+.tax-note p strong{font-weight:600;color:var(--slate)}
+
+/* calc note / disclaimer */
+.calc-note{padding:.85rem 1.05rem;border-left:2px solid var(--gold-dim);background:rgba(184,146,74,.03);border-radius:0 var(--radius) var(--radius) 0;margin-top:1.25rem}
+.calc-note p{font-size:.67rem;color:#999;line-height:1.75;font-weight:300}
+.calc-note p strong{font-weight:600;color:var(--slate)}
+
+/* alert */
+.alert-overlay{display:none;position:fixed;inset:0;background:rgba(28,28,28,.45);z-index:2000;align-items:center;justify-content:center;padding:1.5rem}
+.alert-overlay.show{display:flex}
+.alert-box{background:#fff;border:1px solid var(--gold-dim);border-radius:var(--radius);box-shadow:var(--shadow);padding:1.75rem 1.75rem 1.25rem;max-width:360px;width:100%}
+.alert-icon{font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.14em;color:#b03020;margin-bottom:.45rem}
+.alert-msg{font-size:.88rem;color:var(--charcoal);line-height:1.7;margin-bottom:1.2rem;font-weight:300}
+.alert-btn{display:block;width:100%;padding:.7rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.73rem;letter-spacing:.13em;text-transform:uppercase;font-weight:600;cursor:pointer}
+
+/* footer */
+footer{position:relative;z-index:10;padding:2rem 1.5rem 1.8rem;border-top:1px solid var(--gold-dim);background:rgba(255,255,255,.6);backdrop-filter:blur(4px)}
+.fi-wrap{width:100%;max-width:280px;margin:0 auto 1.4rem;text-align:center}
+.fi-wrap img{max-width:100%;height:auto;max-height:80px;object-fit:contain;opacity:0;transition:opacity .6s ease}
+.fi-wrap img.loaded{opacity:1}
+.f-rule{width:60px;height:1px;background:var(--gold-dim);margin:0 auto 1.2rem}
+.f-disc{max-width:920px;margin:0 auto;text-align:center;font-size:.63rem;line-height:1.65;color:#888;letter-spacing:.01em;font-weight:300}
+.f-disc p{margin-bottom:.7rem}
+.f-disc p:last-child{margin-bottom:0}
+.f-disc a{color:var(--gold);text-decoration:none;font-weight:500;border-bottom:1px solid var(--gold-dim)}
+
+@media(max-width:600px){
+  main{padding:2rem 1rem 4rem}
+  .calc-card{padding:1.75rem 1.5rem}
+  .form-cols,.metric-grid,.compare-cols{grid-template-columns:1fr}
+  .debt-row{grid-template-columns:1fr}
+  .step-nav-btn{font-size:.6rem;padding:.65rem .35rem}
+  .btn-row-2{flex-direction:column-reverse}
+  .btn-back-plain{width:100%;text-align:center}
+}
+</style>
+</head>
+<body><div class="bg-layer"></div>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div id="lp-header-wrap" style="display:none;margin-bottom:1.5rem">
+      <img src="calc-header.png" alt="" style="max-width:220px;height:auto;display:block;margin:0 auto"
+        onload="document.getElementById('lp-header-wrap').style.display='block'"
+        onerror="document.getElementById('lp-header-wrap').style.display='none'">
+    </div>
+    <div class="hero-eyebrow"><span class="eyebrow-dot"></span>First-time buyer tools</div>
+    <h1 class="hero-headline">The market moved.<br>So can you.</h1>
+    <p class="hero-sub">Buying might make sense. Renting strategically might make sense.</p>
+    <p class="hero-sub" style="margin-top:.75rem"><strong>The only way to know is to see your actual numbers...not someone else's estimate. Use the tools below to run your own math and see exactly where you stand.</strong></p>
+    <div class="hero-divider"></div>
+  </div>
+
+  <!-- STEP NAV -->
+  <div class="step-nav">
+    <button class="step-nav-btn active" id="nav-0" onclick="scrollToSection(0)">
+      <span class="step-num">Step 1</span>Affordability
+    </button>
+    <button class="step-nav-btn" id="nav-1" onclick="scrollToSection(1)">
+      <span class="step-num">Step 2</span>Tax Advantages
+    </button>
+    <button class="step-nav-btn" id="nav-2" onclick="scrollToSection(2)">
+      <span class="step-num">Step 3</span>Buy vs. Rent
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SECTION 1 — AFFORDABILITY
+  ═══════════════════════════════════ -->
+  <div class="calc-card" id="section-0" data-section="0">
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Step 1 of 3</div>
+    <h2 class="card-headline">What can you afford?</h2>
+    <p class="card-sub">Enter your income, debts, and loan details to see your estimated purchase price, monthly payment, and cash to close. <strong>Takes under two minutes.</strong></p>
+    <hr class="divider">
+
+    <!-- INCOME FORM (visible by default) -->
+    <div id="section-input-0">
+      <div class="sec-label"><span class="sec-dot"></span>Your income &amp; debts</div>
+      <div class="form-group">
+        <label for="aff-income">Total monthly income<span class="required">*</span></label>
+        <span style="display:block;font-size:.74rem;color:#999;font-weight:300;font-style:italic;margin-bottom:.5rem">Gross income before taxes — include all earners if buying jointly.</span>
+        <div class="pfx"><span class="pfx-sym">$</span><input type="number" id="aff-income" placeholder="7,500" step="100" min="0"></div>
+      </div>
+      <div class="form-group">
+        <label>Total monthly debt payments<span class="required">*</span></label>
+        <span style="display:block;font-size:.74rem;color:#999;font-weight:300;font-style:italic;margin-bottom:.5rem">Do not include rent, utilities, or debts you plan to pay off before closing.</span>
+        <div class="debt-table">
+          <div class="debt-row"><label for="aff-auto">Auto loans</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="aff-auto" placeholder="0" step="10" min="0"></div></div>
+          <div class="debt-row"><label for="aff-student">Student loans</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="aff-student" placeholder="0" step="10" min="0"></div></div>
+          <div class="debt-row"><label for="aff-cc">Credit card payments</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="aff-cc" placeholder="0" step="10" min="0"></div></div>
+          <div class="debt-row"><label for="aff-alimony">Alimony &amp; child support</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="aff-alimony" placeholder="0" step="10" min="0"></div></div>
+          <div class="debt-row"><label for="aff-other">Other payments</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="aff-other" placeholder="0" step="10" min="0"></div></div>
+          <div class="debt-total-row"><span class="debt-total-lbl">Total monthly debt</span><span class="debt-total-val" id="aff-debt-total">$0</span></div>
+        </div>
+      </div>
+      <div style="border:1px solid rgba(74,74,74,.1);border-radius:var(--radius);padding:1.2rem;background:var(--ivory);margin-top:1.25rem">
+        <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>Loan details</div>
+        <div class="form-cols">
+          <div class="form-group">
+            <label for="aff-rate">Interest rate<span class="required">*</span></label>
+            <div class="sfx"><input type="number" id="aff-rate" placeholder="6.75" step="0.01" min="0" max="30" style="color:#aaa" oninput="this.style.color=this.value?'var(--charcoal)':'#aaa'"><span class="sfx-sym">%</span></div>
+            <p class="field-hint">Not sure? <a href="https://housingbrief.com/mortgage-rates/645becce942e00cd9087ec76" target="_blank" rel="noopener">See today's national averages</a></p>
+          </div>
+          <div class="form-group">
+            <label for="aff-term">Loan term<span class="required">*</span></label>
+            <select id="aff-term">
+              <option value="">Select…</option>
+              <option value="15">15 years</option>
+              <option value="20">20 years</option>
+              <option value="30" selected>30 years</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="aff-down">Down payment<span class="required">*</span></label>
+            <select id="aff-down" onchange="affDownChange(this)">
+              <option value="3" selected>3% — First-time buyer minimum</option>
+              <option value="5">5% — Low down payment</option>
+              <option value="10">10% — Moderate down payment</option>
+              <option value="15">15% — Strong down payment</option>
+              <option value="20">20% — No PMI</option>
+              <option value="other">Other — enter my own</option>
+            </select>
+            <div id="aff-down-other-wrap" style="display:none;margin-top:.6rem">
+              <div class="sfx"><input type="number" id="aff-down-other" placeholder="e.g. 7" step="0.5" min="0" max="100"><span class="sfx-sym">%</span></div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="aff-state">State<span class="required">*</span></label>
+            <select id="aff-state">
+              <option value="">Select…</option>
+              <option value="OR" selected>Oregon</option>
+              <option disabled>Other states coming soon</option>
+            </select>
+            <p style="font-size:.68rem;color:#aaa;margin-top:.4rem;font-weight:300;line-height:1.4">Currently optimized for Oregon. Usable as an educational resource for other states — closing costs vary by state.</p>
+          </div>
+        </div>
+      </div>
+      <button class="btn-primary" style="margin-top:1.25rem" onclick="affNext()">Next &rarr;</button>
+    </div>
+
+    <!-- INLINE GATE (shared, moved here by JS) -->
+    <div id="inline-gate-0" style="display:none"></div>
+
+    <!-- AFFORDABILITY RESULTS -->
+    <div class="results-wrap" id="aff-results">
+      <hr class="results-rule">
+      <div class="results-eyebrow">Your results</div>
+      <div class="results-hl" id="aff-results-hl">Here's what you can afford.</div>
+      <div id="aff-low-down-notice" class="low-down-notice">
+        <div class="low-down-title">Down payment assistance may apply</div>
+        <p class="low-down-body">You entered a down payment below 3%. FHA (3.5% minimum), VA, USDA, and down payment assistance programs may be available depending on your situation and eligibility. <strong>Results below assume 3% down</strong> to give you a working estimate. A loan officer will follow up within 24–48 hours to walk through exactly what you qualify for.</p>
+      </div>
+      <div id="aff-results-body"></div>
+    </div>
+  </div>
+
+  <!-- BRIDGE 1→2 -->
+  <div class="bridge" id="bridge-1">
+    <div class="bridge-eyebrow">Next: tax advantages</div>
+    <p class="bridge-text" id="bridge-1-text">Now let's look at what ownership <em>actually</em> costs after tax deductions. Your mortgage interest and property taxes may be deductible — which changes the effective monthly number.</p>
+    <button class="bridge-btn" onclick="scrollToSection(1)">See your tax picture &rarr;</button>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SECTION 2 — TAX ADVANTAGES
+  ═══════════════════════════════════ -->
+  <div class="calc-card" id="section-1" data-section="1">
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Step 2 of 3</div>
+    <h2 class="card-headline">Tax advantages of ownership</h2>
+    <p class="card-sub">Compare your current rent to the estimated cost of buying — including the effective payment after tax deductions. <strong>Enter your purchase details and household income below.</strong></p>
+    <hr class="divider">
+
+    <div id="section-input-1">
+    <div class="sec-label"><span class="sec-dot"></span>Current rent</div>
+    <div class="form-group" style="margin-bottom:1.5rem">
+      <label for="tax-rent">Monthly rent payment<span class="required">*</span></label>
+      <div class="pfx"><span class="pfx-sym">$</span><input type="number" id="tax-rent" placeholder="2,000" step="50" min="0"></div>
+    </div>
+
+    <div style="border:1px solid var(--gold-dim);border-radius:var(--radius);padding:1.25rem;background:rgba(184,146,74,.02);margin-bottom:1.5rem">
+      <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>Purchase details</div>
+      <div class="form-cols">
+        <div class="form-group">
+          <label for="tax-price">Purchase price<span class="required">*</span></label>
+          <div class="pfx"><span class="pfx-sym">$</span><input type="number" id="tax-price" placeholder="400,000" step="5000" min="0" oninput="taxCarryOverride('tax-price','tax-price-carry')"></div>
+          <div id="tax-price-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;display:none;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-price-carry-text">Carried from affordability calculator</span>
+            <button type="button" onclick="taxPriceClear()" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tax-down">Down payment<span class="required">*</span></label>
+          <div class="sfx"><input type="number" id="tax-down" placeholder="20" step="0.1" min="0" max="100" oninput="taxCarryOverride('tax-down','tax-down-carry')"><span class="sfx-sym">%</span></div>
+          <div id="tax-down-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-down-carry-text">Carried from affordability calculator</span>
+            <button type="button" onclick="taxFieldClear('tax-down','tax-down-carry')" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tax-rate">Interest rate<span class="required">*</span></label>
+          <div class="sfx"><input type="number" id="tax-rate" placeholder="6.75" step="0.001" min="0" oninput="taxCarryOverride('tax-rate','tax-rate-carry')"><span class="sfx-sym">%</span></div>
+          <div id="tax-rate-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-rate-carry-text">Carried from affordability calculator</span>
+            <button type="button" onclick="taxFieldClear('tax-rate','tax-rate-carry')" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tax-term">Loan term<span class="required">*</span></label>
+          <select id="tax-term" oninput="taxCarryOverride('tax-term','tax-term-carry')" onchange="taxCarryOverride('tax-term','tax-term-carry')">
+            <option value="30">30 years</option>
+            <option value="20">20 years</option>
+            <option value="15">15 years</option>
+            <option value="10">10 years</option>
+          </select>
+          <div id="tax-term-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-term-carry-text">Carried from affordability calculator</span>
+            <button type="button" onclick="taxTermClear()" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tax-prop-tax">Annual property taxes</label>
+          <div class="pfx"><span class="pfx-sym">$</span><input type="number" id="tax-prop-tax" placeholder="Enter amount" step="100" min="0" oninput="taxCarryOverride('tax-prop-tax','tax-prop-tax-carry')"></div>
+          <div id="tax-prop-tax-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-prop-tax-carry-text">Estimate carried over from affordability calculator</span>
+            <button type="button" onclick="taxFieldClear('tax-prop-tax','tax-prop-tax-carry')" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tax-ins">Annual homeowners insurance</label>
+          <div class="pfx"><span class="pfx-sym">$</span><input type="number" id="tax-ins" placeholder="Enter amount" step="100" min="0" oninput="taxCarryOverride('tax-ins','tax-ins-carry')"></div>
+          <div id="tax-ins-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-ins-carry-text">Estimate carried over from affordability calculator</span>
+            <button type="button" onclick="taxFieldClear('tax-ins','tax-ins-carry')" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);padding:1.25rem;background:var(--ivory);margin-bottom:1.5rem">
+      <div class="sec-label" style="margin-bottom:.9rem"><span class="sec-dot"></span>Household &amp; tax information</div>
+      <div class="form-cols">
+        <div class="form-group">
+          <label for="tax-income">Annual household income<span class="required">*</span></label>
+          <div class="pfx"><span class="pfx-sym">$</span><input type="number" id="tax-income" placeholder="85,000" step="1000" min="0" oninput="taxCarryOverride('tax-income','tax-income-carry')"></div>
+          <div id="tax-income-carry" style="display:none;margin-top:.4rem;font-size:.72rem;color:var(--gold);font-weight:500;align-items:center;gap:.4rem">
+            <span style="width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+            <span id="tax-income-carry-text">Carried from affordability calculator</span>
+            <button type="button" onclick="taxFieldClear('tax-income','tax-income-carry')" style="margin-left:auto;background:none;border:1px solid var(--gold);border-radius:3px;font-family:'DM Sans',sans-serif;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;padding:2px 8px;transition:background var(--trans),color var(--trans)" onmouseover="this.style.background='var(--gold)';this.style.color='#fff'" onmouseout="this.style.background='none';this.style.color='var(--gold)'">Change</button>
+          </div>
+          <div id="tax-income-joint-note" style="display:none;margin-top:.5rem;padding:.65rem .85rem;background:rgba(184,146,74,.07);border:1px solid var(--gold-dim);border-radius:var(--radius);font-size:.76rem;color:var(--slate);line-height:1.6;font-weight:300">
+            <strong style="font-weight:600;color:var(--charcoal)">Please confirm:</strong> the annual household income above reflects the <strong style="font-weight:600;color:var(--charcoal)">combined total income for all tax filers</strong> on this return — not just one earner's income.
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="tax-filing">Filing status<span class="required">*</span></label>
+          <select id="tax-filing" onchange="onFilingChange(this)">
+            <option value="single">Single filer</option>
+            <option value="joint">Joint filer (MFJ)</option>
+            <option value="hoh">Head of household</option>
+          </select>
+        </div>
+        <div class="form-group" style="grid-column:1/-1">
+          <label for="tax-state">State</label>
+          <select id="tax-state">
+            <option value="OR" selected>Oregon</option>
+            <option disabled>── Other states coming soon ──</option>
+          </select>
+          <p style="font-size:.68rem;color:#aaa;margin-top:.4rem;font-weight:300;line-height:1.4">Currently optimized for Oregon. Can be used as an educational resource for other states — state and local taxes will vary.</p>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-primary" onclick="taxRun()">Calculate tax advantages &rarr;</button>
+
+    </div><!-- /section-input-1 -->
+
+    <!-- INLINE GATE (shared, moved here by JS) -->
+    <div id="inline-gate-1" style="display:none"></div>
+
+    <!-- TAX RESULTS -->
+    <div class="results-wrap" id="tax-results">
+      <hr class="results-rule">
+      <div class="results-eyebrow">Side-by-side breakdown</div>
+      <div class="results-hl">Rent vs. Buy Comparison</div>
+      <div class="compare-cols">
+        <div class="cc cc-rent">
+          <div class="cc-head"><span class="hdot dot-rent"></span><span class="hlbl">Renting</span></div>
+          <div class="rent-piti-block">
+            <div class="piti-meta">Monthly rent</div>
+            <div class="piti-amount" id="tax-r-rent">—</div>
+            <div class="piti-sub">/ month</div>
+          </div>
+          <div class="rent-note-block">
+            <div class="rent-note-lbl">What you're not building</div>
+            <div class="rent-note-txt">Rent builds no equity. Every dollar goes to your landlord.</div>
+          </div>
+          <div class="li-list">
+            <div class="li-row"><div class="li-lbl">Tax deduction benefit</div><div class="li-val" style="color:#aaa">None</div></div>
+            <div class="li-row"><div class="li-lbl">Effective monthly cost</div><div class="li-val" id="tax-r-eff">—</div></div>
+            <div class="li-row"><div class="li-lbl">Annual rent cost</div><div class="li-val" id="tax-r-annual">—</div></div>
+          </div>
+        </div>
+        <div class="cc cc-buy">
+          <div class="cc-head"><span class="hdot dot-buy"></span><span class="hlbl">Buying</span></div>
+          <div class="piti-block">
+            <div class="piti-meta" id="tax-b-piti-label">Total PITI / month</div>
+            <div class="piti-amount" id="tax-b-piti">—</div>
+            <div class="piti-sub">/ month</div>
+          </div>
+          <div class="eff-block">
+            <div class="eff-lbl">Effective payment — Year 1 estimate <span class="eff-cap-badge">SALT cap $40k</span></div>
+            <div class="eff-amount" id="tax-b-eff">—</div>
+            <div class="eff-note" id="tax-b-note">—</div>
+          </div>
+          <div style="padding:.85rem 1rem;background:rgba(184,146,74,.08);border-bottom:1px solid rgba(184,146,74,.25);border-top:1px solid rgba(184,146,74,.15)">
+            <p style="font-size:.78rem;color:var(--charcoal);line-height:1.7;font-weight:400"><strong style="font-weight:700;display:block;margin-bottom:.3rem;font-size:.82rem">&#9888;&nbsp; These tax benefits won't be realized until you file your 2027 tax return.</strong>If you purchase a home in 2026, your first full calendar year of ownership is 2026 — meaning the earliest you will see these deductions reflected is when you file your 2027 federal and state tax returns. The figure above is an estimate for that first full year only, and will decrease in subsequent years as your loan balance and interest paid decline. <strong style="font-weight:600">The figure shown is an estimate based on the first 12 months of interest paid — for educational and informational purposes only. Please consult with a qualified tax advisor before making any financial decisions based on estimated tax savings.</strong></p>
+          </div>
+          <div class="li-list">
+            <div class="li-row"><div class="li-lbl">Principal &amp; Interest</div><div class="li-val" id="tax-b-pi">—</div></div>
+            <div class="li-row"><div class="li-lbl">Monthly property tax</div><div class="li-val" id="tax-b-tax">—</div></div>
+            <div class="li-row"><div class="li-lbl">Monthly insurance</div><div class="li-val" id="tax-b-ins">—</div></div>
+            <div class="li-row" id="tax-b-pmi-row" style="display:none"><div class="li-lbl" style="color:var(--red)">Mortgage insurance (PMI)</div><div class="li-val" id="tax-b-pmi" style="color:var(--red)">—</div></div>
+            <div class="li-row"><div class="li-lbl">Loan amount</div><div class="li-val" id="tax-b-loan">—</div></div>
+            <div class="li-row"><div class="li-lbl">Down payment</div><div class="li-val" id="tax-b-down">—</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="pmi-notice" id="tax-pmi-notice">Mortgage insurance (PMI) applies — your down payment is less than 20%. PMI is not tax-deductible but is included in the total monthly payment shown above. Actual terms vary.</div>
+      <div class="sum-callout"><p id="tax-summary">—</p></div>
+      <div class="sec-label"><span class="sec-dot"></span>Tax deduction breakdown</div>
+      <div class="math-box">
+        <div class="math-box-head">Estimated purchase — tax math</div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">1</span>Itemizable deductions</div>
+          <div class="meq"><span class="meq-l">Mortgage interest (est. annual)</span><span class="meq-v" id="tax-tm-int">—</span></div>
+          <div class="meq"><span class="meq-l">State income tax (est. annual)</span><span class="meq-v" id="tax-tm-state">—</span></div>
+          <div class="meq"><span class="meq-l">Property taxes</span><span class="meq-v" id="tax-tm-proptax">—</span></div>
+          <div class="meq"><span class="meq-l">SALT subtotal <span class="salt">cap $40k</span></span><span class="meq-v" id="tax-tm-salt">—</span></div>
+          <div class="mtot"><span class="mtot-l">Total itemized</span><span class="meq-v gld" id="tax-tm-total">—</span></div>
+        </div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">2</span>vs. Standard deduction</div>
+          <div class="meq"><span class="meq-l">Standard deduction</span><span class="meq-v" id="tax-tm-std">—</span></div>
+          <div class="meq"><span class="meq-l">Excess above standard</span><span class="meq-v gld" id="tax-tm-excess">—</span></div>
+          <div id="tax-tm-no-benefit" class="nb-note" style="display:none">Itemized deductions do not exceed the standard deduction — no itemization benefit applies.</div>
+        </div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">3</span>Federal marginal rate</div>
+          <div class="meq"><span class="meq-l">Federal bracket</span><span class="meq-v" id="tax-tm-fed">—</span></div>
+          <div class="mtot"><span class="mtot-l">Rate applied to savings</span><span class="meq-v gld" id="tax-tm-combined">—</span></div>
+        </div>
+        <div class="mstep">
+          <div class="mstep-lbl"><span class="snum">4</span>Monthly savings estimate <span style="font-size:.58rem;font-weight:400;letter-spacing:.04em;text-transform:none;color:#bbb;font-style:italic">— first full year of ownership</span></div>
+          <div class="meq"><span class="meq-l">Annual savings (excess × rate)</span><span class="meq-v" id="tax-tm-annual">—</span></div>
+          <div class="mtot"><span class="mtot-l">Est. monthly savings (÷ 12)</span><span class="mtot-v" id="tax-tm-monthly">—</span></div>
+        </div>
+      </div>
+      <div class="tax-note"><p><strong>Tax deduction methodology:</strong> Effective payment reflects <strong>estimated</strong> monthly tax savings from itemizing versus taking the standard deduction (2026: Single $16,100 · Joint $32,200 · HoH $24,150). <strong>Mortgage interest is calculated based on the first full year of ownership.</strong> If you purchase a home in 2026, the earliest these deductions can be claimed is on your <strong>2027 federal and state tax returns</strong> — you will not see this benefit in your monthly cash flow. Interest paid decreases each year as the loan balance declines, so actual tax savings will be lower in subsequent years. SALT includes state income taxes and property taxes, combined and capped at $40,000 per the One Big Beautiful Bill Act. Tax savings calculated using federal marginal bracket only. Oregon uses graduated brackets (4.75%–9.90%). <strong>This calculator is for educational and informational purposes only and does not constitute tax advice. Please consult with a qualified tax advisor before making any financial decisions based on estimated tax savings.</strong></p></div>
+      <!-- Tax section lead capture -->
+      <div class="lead-gate" id="tax-lead-gate">
+        <div class="lead-gate-header">
+          <div class="lead-gate-eyebrow">What happens next</div>
+          <div class="lead-gate-hl">A detailed follow-up is on its way.</div>
+          <div class="lead-gate-sub">A loan officer will reach out within 24–48 hours with exact rates, real fees, and a complete tax picture personalized to your situation.</div>
+        </div>
+        <div class="lead-gate-body">
+          <div class="vp-list">
+            <div class="vp-item"><span class="vp-dot"></span>Exact rate and fees based on your credit profile</div>
+            <div class="vp-item"><span class="vp-dot"></span>Actual tax benefit estimate using your full financial picture</div>
+            <div class="vp-item"><span class="vp-dot"></span>Down payment assistance programs you may qualify for</div>
+          </div>
+          <div class="lead-trust">
+            <span class="trust-item">NMLS #857506</span><span class="trust-dot"></span>
+            <span class="trust-item">Equal Housing Lender</span><span class="trust-dot"></span>
+            <span class="trust-item">Licensed OR, WA, CA, ID, AZ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BRIDGE 2→3 -->
+  <div class="bridge" id="bridge-2">
+    <div class="bridge-eyebrow">Next: buy vs. rent</div>
+    <p class="bridge-text" id="bridge-2-text">You've seen the payment and the tax picture. Now let's close the loop — how does buying compare to renting over time, including what each path does to your net worth?</p>
+    <button class="bridge-btn" onclick="scrollToSection(2)">See the full comparison &rarr;</button>
+  </div>
+
+  <!-- ═══════════════════════════════════
+       SECTION 3 — BUY VS RENT
+  ═══════════════════════════════════ -->
+  <div class="calc-card" id="section-2" data-section="2">
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Step 3 of 3</div>
+    <h2 class="card-headline">How does it compare to renting?</h2>
+    <p class="card-sub">See how buying stacks up against renting over time — monthly payments, net worth, and the long-term picture. <strong>Fields may be pre-filled from your earlier entries.</strong></p>
+    <hr class="divider">
+
+    <div id="section-input-2">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:1.5rem">
+      <div class="icol col-rent">
+        <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--blue);margin-bottom:.85rem;padding-bottom:.6rem;border-bottom:1px solid rgba(74,74,74,.09)">Renting</div>
+        <div class="form-group"><label for="bvr-rent">Monthly rent</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="bvr-rent" placeholder="2,000" step="50" min="0"></div></div>
+        <div class="form-group"><label for="bvr-rent-inc">Annual rent increases<span class="required">*</span></label><div class="sfx"><input type="number" id="bvr-rent-inc" placeholder="e.g. 3" step="0.1" min="0"><span class="sfx-sym">%</span></div></div>
+        <div class="form-group">
+          <label>If you chose not to buy, would you invest your down payment?</label>
+          <div style="display:flex;gap:8px;margin-top:.3rem" id="bvr-dp-prompt-rent">
+            <button type="button" style="flex:1;padding:.55rem .5rem;background:#fff;border:1px solid rgba(74,74,74,.18);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;color:var(--slate);cursor:pointer;transition:all var(--trans);text-align:center" id="bvr-dp-yes" onclick="bvrSetDp('yes')">Yes — invest it</button>
+            <button type="button" style="flex:1;padding:.55rem .5rem;background:#fff;border:1px solid rgba(74,74,74,.18);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:500;color:var(--slate);cursor:pointer;transition:all var(--trans);text-align:center" id="bvr-dp-no" onclick="bvrSetDp('no')">No — keep as cash</button>
+          </div>
+        </div>
+        <div class="form-group"><label for="bvr-invest">Monthly amount invested<span class="required">*</span> <span class="fnote">enter 0 if not investing</span></label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="bvr-invest" placeholder="e.g. 500" step="50" min="0"></div></div>
+        <div class="form-group"><label for="bvr-inv-rate">Est. investment return<span class="required">*</span> <span class="fnote">required if investing</span></label><div class="sfx"><input type="number" id="bvr-inv-rate" placeholder="e.g. 7" step="0.1" min="0"><span class="sfx-sym">%</span></div></div>
+      </div>
+      <div class="icol col-buy">
+        <div style="font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--gold);margin-bottom:.85rem;padding-bottom:.6rem;border-bottom:1px solid rgba(74,74,74,.09)">Buying</div>
+        <div class="form-group"><label for="bvr-price">Purchase price</label><div class="pfx"><span class="pfx-sym">$</span><input type="number" id="bvr-price" placeholder="400,000" step="5000" min="0"></div></div>
+        <div class="form-group">
+          <label for="bvr-down">Down payment</label>
+          <div class="sfx"><input type="number" id="bvr-down" placeholder="20" step="0.5" min="0" max="100"><span class="sfx-sym">%</span></div>
+        </div>
+        <div class="form-group"><label for="bvr-rate">Interest rate</label><div class="sfx"><input type="number" id="bvr-rate" placeholder="6.75" step="0.01"><span class="sfx-sym">%</span></div></div>
+        <div class="form-group"><label for="bvr-term">Loan term</label><select id="bvr-term"><option value="30">30 years</option><option value="20">20 years</option><option value="15">15 years</option><option value="10">10 years</option></select></div>
+        <div class="form-group"><label for="bvr-appr">Annual home appreciation<span class="required">*</span></label><div class="sfx"><input type="number" id="bvr-appr" value="4" placeholder="4" step="0.1" min="0" style="color:#aaa" onfocus="if(!this.dataset.touched){this.value='';this.dataset.touched='1';this.style.color='var(--charcoal)'}" oninput="this.style.color=this.value?'var(--charcoal)':'#aaa'" onblur="if(!this.value){this.value='4';this.style.color='#aaa';delete this.dataset.touched}"><span class="sfx-sym">%</span></div>
+          <p style="font-size:.68rem;color:#aaa;margin-top:.35rem;font-weight:300;line-height:1.4">Defaulted to 4% — the long-term national average. Adjust if you have a specific market in mind.</p>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.5rem;flex-wrap:wrap">
+      <label style="margin-bottom:0;white-space:nowrap">Comparison timeframe</label>
+      <input type="number" id="bvr-years" placeholder="10" min="1" max="50" style="max-width:80px">
+      <span style="font-size:.82rem;color:var(--slate);font-weight:300">years</span>
+    </div>
+    <button class="btn-primary" onclick="bvrRun()">Compare buy vs. rent &rarr;</button>
+
+    </div><!-- /section-input-2 -->
+
+    <!-- INLINE GATE (shared, moved here by JS) -->
+    <div id="inline-gate-2" style="display:none"></div>
+
+    <!-- BVR RESULTS -->
+    <div class="results-wrap" id="bvr-results">
+      <hr class="results-rule">
+      <div id="bvr-low-down" class="low-down-notice">
+        <div class="low-down-title">Down payment assistance may apply</div>
+        <p class="low-down-body">You entered a down payment below 3%. FHA (3.5% minimum), VA, USDA, and down payment assistance programs may be available depending on your situation and eligibility. <strong>Results below assume 3% down</strong> to give you a working estimate. A loan officer will follow up within 24–48 hours to walk through exactly what you qualify for.</p>
+      </div>
+      <div class="results-eyebrow">At a glance</div>
+      <!-- Summary -->
+      <div style="border:1px solid rgba(74,74,74,.12);border-radius:var(--radius);padding:1.25rem 1.5rem;margin-bottom:1.25rem;background:var(--ivory)">
+        <div style="font-size:.6rem;font-weight:600;letter-spacing:.15em;text-transform:uppercase;color:#aaa;margin-bottom:.9rem">Today vs. in <span id="bvr-sum-yrs">N</span> years</div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:.5rem 0;border-bottom:1px solid rgba(74,74,74,.07)">
+          <div><div style="font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;color:#aaa;font-weight:500;margin-bottom:.3rem">Monthly rent (today)</div><div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:500;color:var(--charcoal)" id="bvr-sum-rent-now">—</div></div>
+          <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#ccc;text-align:center">vs</div>
+          <div><div style="font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;color:#aaa;font-weight:500;margin-bottom:.3rem">Mortgage PITI (today)</div><div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:500;color:var(--charcoal)" id="bvr-sum-mort-now">—</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr auto 1fr;gap:10px;align-items:center;padding:.75rem 0 .5rem">
+          <div><div style="font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;color:#aaa;font-weight:500;margin-bottom:.3rem">Est. net worth — renting</div><div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:500;color:var(--charcoal)" id="bvr-sum-nw-rent">—</div></div>
+          <div style="font-size:.62rem;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:#ccc;text-align:center">vs</div>
+          <div><div style="font-size:.63rem;letter-spacing:.09em;text-transform:uppercase;color:#aaa;font-weight:500;margin-bottom:.3rem">Est. net worth — buying</div><div style="font-family:'DM Mono',monospace;font-size:1.2rem;font-weight:500;color:var(--charcoal)" id="bvr-sum-nw-buy">—</div></div>
+        </div>
+      </div>
+      <div class="pmi-notice" id="bvr-pmi-notice">Mortgage insurance applies — your down payment is less than 20%. PMI is an estimate; actual terms vary.</div>
+      <div style="text-align:center;padding:.75rem;font-size:.65rem;font-weight:600;letter-spacing:.13em;text-transform:uppercase;color:var(--gold);border-top:1px dashed var(--gold-dim);border-bottom:1px dashed var(--gold-dim);margin:1rem 0;background:rgba(184,146,74,.03)" id="bvr-yrs-divider">— N years from now —</div>
+      <div class="metric-grid">
+        <div class="metric-card"><div class="metric-lbl">Est. rent in <span id="bvr-yrs-lbl">N</span> yrs</div><div class="metric-val" id="bvr-fut-rent">—</div></div>
+        <div class="metric-card"><div class="metric-lbl">Mortgage payment in <span id="bvr-yrs-lbl2">N</span> yrs</div><div class="metric-val" id="bvr-fut-mort">—</div></div>
+        <div class="metric-card"><div class="metric-lbl">Net worth — renting</div><div class="metric-val" id="bvr-nw-rent">—</div></div>
+        <div class="metric-card green-card"><div class="metric-lbl">Net worth — buying (home equity)</div><div class="metric-val" id="bvr-nw-buy">—</div></div>
+      </div>
+      <div class="reveal-block" id="bvr-verdict-block">
+        <p id="bvr-verdict">—</p>
+      </div>
+      <div class="reveal-block" id="bvr-narrative-block" style="display:none">
+        <p id="bvr-narrative">—</p>
+      </div>
+      <div class="calc-note"><p><strong>Methodology:</strong> Monthly mortgage includes estimated property taxes (1.0%), homeowners insurance (0.3%), and PMI where LTV exceeds 80%. APR estimated using origination fees, settlement, 1% discount point, and 15 days prepaid interest. Future taxes and insurance increase at the home appreciation rate. All figures are estimates. Not a commitment to lend.</p></div>
+
+      <!-- Final lead gate -->
+      <div class="lead-gate" id="bvr-lead-gate" style="margin-top:1.75rem">
+        <div class="lead-gate-header">
+          <div class="lead-gate-eyebrow">You've seen the full picture</div>
+          <div class="lead-gate-hl">Ready to talk through your next steps?</div>
+          <div class="lead-gate-sub">A loan officer will follow up with a complete personalized analysis — exact rates, real fees, and a clear path to closing.</div>
+        </div>
+        <div class="lead-gate-body">
+          <div class="vp-list">
+            <div class="vp-item"><span class="vp-dot"></span>Exact rate and closing costs for your situation</div>
+            <div class="vp-item"><span class="vp-dot"></span>Down payment assistance programs available in your area</div>
+            <div class="vp-item"><span class="vp-dot"></span>A clear plan — no pressure, no obligation</div>
+          </div>
+          <div class="lead-trust">
+            <span class="trust-item">NMLS #857506</span><span class="trust-dot"></span>
+            <span class="trust-item">Equal Housing Lender</span><span class="trust-dot"></span>
+            <span class="trust-item">Licensed OR, WA, CA, ID, AZ</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="fi-wrap"><img src="footer.png" alt="" onload="this.classList.add('loaded')" onerror="this.style.display='none';this.parentElement.style.display='none'"></div>
+  <div class="f-rule"></div>
+  <div class="f-disc">
+    <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+    <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; This calculator is for educational and informational purposes only. Not a commitment to lend. Tax benefit estimates are approximations — consult a qualified tax professional. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+  </div>
+</footer>
+
+<div class="alert-overlay" id="alertModal">
+  <div class="alert-box">
+    <div class="alert-icon">Input Required</div>
+    <div class="alert-msg" id="alertMsg"></div>
+    <button class="alert-btn" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+'use strict';
+document.getElementById('yr').textContent = new Date().getFullYear();
+
+/* ── GLOBAL HELPERS ── */
+const $ = id => document.getElementById(id);
+const fmtM = n => '$' + Math.round(n).toLocaleString();
+const fmtD = n => '$' + n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtPct = n => (n*100).toFixed(1)+'%';
+const fv = id => parseFloat(($(id).value||'').replace(/,/g,'')) || 0;
+const fvn = id => parseFloat($(id).value) || 0;
+
+function showAlert(msg){$('alertMsg').textContent=msg;$('alertModal').classList.add('show')}
+function closeAlert(){$('alertModal').classList.remove('show')}
+
+/* ── SESSION STORAGE ── */
+const SK = 'calcCarryData';
+function saveCarry(d){const e=JSON.parse(sessionStorage.getItem(SK)||'{}');sessionStorage.setItem(SK,JSON.stringify(Object.assign(e,d)))}
+function loadCarry(){return JSON.parse(sessionStorage.getItem(SK)||'{}')}
+
+/* ══════════════════════════════════════
+   SESSION SUMMARY — accumulate all step
+   data and send one consolidated email
+══════════════════════════════════════ */
+const SS = 'calcSessionData';
+function saveSession(d){
+  try{
+    const e=JSON.parse(sessionStorage.getItem(SS)||'{}');
+    sessionStorage.setItem(SS,JSON.stringify(Object.assign(e,d)));
+  }catch(e){}
+}
+function loadSession(){
+  try{return JSON.parse(sessionStorage.getItem(SS)||'{}');}catch(e){return{};}
+}
+function sendSummaryEmail(){
+  const s=loadSession();
+  const carry=loadCarry();
+  if(!carry.userEmail)return; // no identity — nothing to send
+  if(s._summarySent)return;  // already sent
+  s._summarySent=true;
+  sessionStorage.setItem(SS,JSON.stringify(s));
+  // Build flat payload — only include fields that have values
+  const data={'form-name':'ftb-summary'};
+  data.fullName=carry.userName||'';
+  data.email=carry.userEmail||'';
+  data.phone=carry.userPhone||'';
+  data.page=s.page||'First-Time Buyer';
+  // Add all accumulated fields that have real values
+  const skip=new Set(['_summarySent','page']);
+  Object.entries(s).forEach(([k,v])=>{
+    if(!skip.has(k)&&v!==''&&v!==null&&v!==undefined)data[k]=v;
+  });
+  fetch('https://hooks.zapier.com/hooks/catch/27867937/43s1ofr/',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams(data).toString()
+  }).catch(()=>{});
+}
+// Send on page exit — catches users who leave mid-flow
+window.addEventListener('beforeunload',()=>{
+  const carry=loadCarry();
+  if(carry.userEmail)sendSummaryEmail();
+});
+
+/* ── STEP NAV ── */
+function scrollToSection(idx){
+  const el=$('section-'+idx);
+  if(el) setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+}
+function markNav(idx){
+  [0,1,2].forEach(i=>{
+    const btn=$('nav-'+i);
+    btn.classList.remove('active','done');
+    if(i<idx) btn.classList.add('done');
+    else if(i===idx) btn.classList.add('active');
+  });
+}
+
+/* ══════════════════════════════════════
+   SECTION 1 — AFFORDABILITY
+══════════════════════════════════════ */
+const AFF_DTI=0.45, AFF_TAX=0.010, AFF_INS=0.003;
+
+// Live debt total
+['aff-auto','aff-student','aff-cc','aff-alimony','aff-other'].forEach(id=>{
+  $(id).addEventListener('input',()=>{
+    const t=fvn('aff-auto')+fvn('aff-student')+fvn('aff-cc')+fvn('aff-alimony')+fvn('aff-other');
+    $('aff-debt-total').textContent=fmtM(t);
+  });
+});
+
+function pmiRateAff(ltv){if(ltv>0.95)return 0.0056;if(ltv>0.90)return 0.0043;if(ltv>0.85)return 0.0030;if(ltv>0.80)return 0.0014;return 0}
+
+function affMoPayAt(price,loan,r,n){
+  if(!price||!loan||!n)return 0;
+  const mTax=(price*AFF_TAX)/12, mIns=(loan*AFF_INS)/12;
+  const mPMI=pmiRateAff(loan/price)*loan/12;
+  let pi=0;if(r>0){const pw=Math.pow(1+r,n);pi=loan*r*pw/(pw-1);}else pi=loan/n;
+  return pi+mTax+mIns+mPMI;
+}
+function affCalcMax(inc,debt,rate,termYrs,downPct){
+  const r=rate/100/12,n=termYrs*12,df=downPct/100;
+  const maxH=Math.max(0,inc*AFF_DTI-debt);
+  if(maxH<=0||df>=1)return 0;
+  let upper=0;
+  if(r>0){const pw=Math.pow(1+r,n);upper=(maxH*(pw-1)/(r*pw))/(1-df);}
+  else upper=(maxH*n)/(1-df);
+  upper=Math.ceil(upper/1000)*1000;
+  let best=0,c=upper,g=0;
+  while(c>0&&g<12000){if(affMoPayAt(c,c*(1-df),r,n)<=maxH){best=c;break;}c-=1000;g++;}
+  return best;
+}
+function buildAffCC(purchasePrice,loan,rate){
+  const uw=975,pr=550,set=(1700+purchasePrice/1000)/2,dp=loan*0.01,pi15=loan*(rate/100)/365*15;
+  const rows=[
+    {l:'Underwriting Fee',a:uw,apr:true},{l:'Processing Fee',a:pr,apr:true},
+    {l:'Settlement Fee',a:set,apr:true},{l:'Discount Point (1%)',a:dp,apr:true},
+    {l:'Prepaid Interest (15 days)',a:pi15,apr:true},
+    {l:'Appraisal Fee',a:750},{l:'Credit Report',a:350},{l:'Tax Service Fee',a:54},
+    {l:'Flood Certification',a:10},{l:'Recording Fee',a:350},{l:'Title Endorsement',a:100},
+    {l:'Lenders Title Insurance',a:Math.round(loan*0.0013)}
+  ];
+  const aprCosts=rows.filter(r=>r.apr).reduce((s,r)=>s+r.a,0);
+  return{rows,total:rows.reduce((s,r)=>s+r.a,0),aprCosts};
+}
+function calcAffAPR(loan,annRate,termYears,price,pmiMo){
+  const r=annRate/100/12,n=termYears*12;
+  const pi=loan*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  const costs=975+550+(1700+price/1000)/2+loan*0.01+loan*annRate/100/365*15;
+  const fin=loan-costs;if(fin<=0)return annRate;
+  const t78=price*0.78;let g=r;
+  if(pmiMo===0){for(let i=0;i<300;i++){const pw=Math.pow(1+g,n),f=pi*(1-1/pw)/g-fin,df=pi*(1/(g*g)*(1/pw-1)+n/(g*pw*(1+g)));if(Math.abs(df)<1e-20)break;const nx=g-f/df;if(Math.abs(nx-g)<1e-12){g=nx;break;}g=Math.max(nx,1e-10);}}
+  else{const cf=[-fin];let bal=loan;for(let m=1;m<=n;m++){bal=Math.max(bal-(pi-bal*r),0);cf.push(pi+(bal>t78?pmiMo:0));}for(let i=0;i<300;i++){let npv=cf[0],dnpv=0;for(let m=1;m<cf.length;m++){const d=Math.pow(1+g,m);npv+=cf[m]/d;dnpv-=m*cf[m]/(d*(1+g));}if(Math.abs(dnpv)<1e-20)break;const nx=g-npv/dnpv;if(Math.abs(nx-g)<1e-12){g=nx;break;}g=Math.max(nx,1e-10);}}
+  return g*12*100;
+}
+
+/* ── CALCULATOR LEAD SUBMISSIONS ── */
+function submitCalcLead(formName, fields) {
+  // Accumulate into session — summary email fires on completion or page exit
+  saveSession(fields);
+}
+
+/* ══════════════════════════════════════
+   GLOBAL IDENTITY GATE — inline reveal
+══════════════════════════════════════ */
+let gateCleared=false;
+let gatePendingCallback=null;
+let gateActiveSectionIdx=null;
+
+const GATE_HTML=`
+<div id="inline-gate-form" style="animation:fadeUp .4s ease both">
+  <div style="display:flex;align-items:center;gap:.55rem;margin-bottom:1.4rem">
+    <span style="width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0"></span>
+    <span style="font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);font-weight:500">Almost there</span>
+  </div>
+  <div style="font-weight:700;font-size:clamp(1.5rem,3.5vw,2rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.6rem">Almost There</div>
+  <p style="font-size:.88rem;color:var(--slate);line-height:1.6;margin-bottom:1.5rem;font-weight:300">Just need a few details so we can <strong style="font-weight:600;color:var(--charcoal)">send you your personalized results.</strong></p>
+  <div style="width:40px;height:1px;background:var(--gold);margin-bottom:1.5rem;opacity:.7"></div>
+  <div class="form-group"><label for="gate-name">Full name<span class="required">*</span></label><input type="text" id="gate-name" placeholder="Jane Smith" autocomplete="name"></div>
+  <div class="form-group"><label for="gate-email">Email address<span class="required">*</span></label><input type="text" id="gate-email" placeholder="jane@example.com" autocomplete="email"></div>
+  <div class="form-group" style="margin-bottom:1rem"><label for="gate-phone">Phone number <span class="fnote">optional</span></label><input type="text" id="gate-phone" placeholder="(503) 555-0100" autocomplete="tel"></div>
+  <div class="consent-block" style="margin-bottom:1.25rem">By submitting this form, you consent to be contacted by email by Gavin Hamilton, NMLS #857506, Loan Officer with Mortgage Express, LLC (NMLS #40831), for the purpose of following up on your calculator results. Your information will not be shared with or sold to third parties. This is not a loan application or commitment to lend. You may opt out at any time by contacting <a href="mailto:ghamilton@mtgxps.com">ghamilton@mtgxps.com</a>.</div>
+  <div style="display:flex;gap:.75rem;align-items:center">
+    <button class="btn-back-plain" onclick="gateDismiss()">Back</button>
+    <button class="btn-primary" style="margin-top:0;flex:1" onclick="gateSubmit()">Show my results</button>
+  </div>
+</div>`;
+
+function requireGate(cb,sectionIdx){
+  if(gateCleared){cb();return;}
+  gatePendingCallback=cb;
+  gateActiveSectionIdx=sectionIdx;
+  // Hide the input wrapper for this section, show inline gate
+  const slot=$('inline-gate-'+sectionIdx);
+  if(slot){slot.innerHTML=GATE_HTML;slot.style.display='block';}
+  const inputWrap=$('section-input-'+sectionIdx);
+  if(inputWrap)inputWrap.style.display='none';
+  const el=$('section-'+sectionIdx);
+  if(el)setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'start'}),50);
+  setTimeout(()=>{const n=$('gate-name');if(n)n.focus();},150);
+}
+function gateDismiss(){
+  const slot=$('inline-gate-'+gateActiveSectionIdx);
+  if(slot){slot.innerHTML='';slot.style.display='none';}
+  const inputWrap=$('section-input-'+gateActiveSectionIdx);
+  if(inputWrap)inputWrap.style.display='block';
+  gatePendingCallback=null;gateActiveSectionIdx=null;
+}
+function gateSubmit(){
+  const name=($('gate-name')||{}).value&&$('gate-name').value.trim();
+  const email=($('gate-email')||{}).value&&$('gate-email').value.trim();
+  if(!name){const n=$('gate-name');if(n){n.style.borderColor='#b03020';setTimeout(()=>n.style.borderColor='',2000);}return;}
+  if(!email||!email.includes('@')){const e=$('gate-email');if(e){e.style.borderColor='#b03020';setTimeout(()=>e.style.borderColor='',2000);}return;}
+  const phone=($('gate-phone')||{}).value?$('gate-phone').value.trim():'';
+  gateCleared=true;
+  saveCarry({userName:name,userEmail:email,userPhone:phone});
+  // Seed session with identity — single summary email fires on completion or exit
+  saveSession({page:'First-Time Buyer Landing',fullName:name,email,phone});
+  // Hide gate slot, restore input wrap
+  const slot=$('inline-gate-'+gateActiveSectionIdx);
+  if(slot){slot.innerHTML='';slot.style.display='none';}
+  const inputWrap=$('section-input-'+gateActiveSectionIdx);
+  if(inputWrap)inputWrap.style.display='block';
+  gateActiveSectionIdx=null;
+  if(gatePendingCallback){const cb=gatePendingCallback;gatePendingCallback=null;cb();}
+}
+
+function affDownChange(sel){
+  const wrap=$('aff-down-other-wrap');
+  wrap.style.display=sel.value==='other'?'block':'none';
+  if(sel.value==='other')setTimeout(()=>$('aff-down-other').focus(),50);
+}
+
+let affPendingData=null;
+
+function affNext(){
+  const income=fvn('aff-income'),rate=fvn('aff-rate'),term=$('aff-term').value||'30',state=$('aff-state').value||'OR';
+  const downSel=$('aff-down').value;
+  const down=downSel==='other'?(parseFloat($('aff-down-other').value)||0):parseFloat(downSel)||3;
+  if(!income){showAlert('Please enter your monthly income.');return}
+  if(!rate){showAlert('Please enter an interest rate.');return}
+  if(downSel==='other'&&!$('aff-down-other').value.trim()){showAlert('Please enter a down payment percentage.');return}
+  const totalDebt=fvn('aff-auto')+fvn('aff-student')+fvn('aff-cc')+fvn('aff-alimony')+fvn('aff-other');
+  affPendingData={income,totalDebt,rate,termYears:parseInt(term),downPct:down,state};
+  saveCarry({interestRate:rate,loanTerm:term,downPayment:down});
+  requireGate(()=>{
+    submitCalcLead('ftb-affordability',{
+      monthlyIncome:       income,
+      monthlyDebtTotal:    fvn('aff-auto')+fvn('aff-student')+fvn('aff-cc')+fvn('aff-alimony')+fvn('aff-other'),
+      autoLoans:           fvn('aff-auto'),
+      studentLoans:        fvn('aff-student'),
+      creditCards:         fvn('aff-cc'),
+      alimony:             fvn('aff-alimony'),
+      otherDebt:           fvn('aff-other'),
+      interestRate:        rate+'%',
+      loanTerm:            term+' years',
+      downPayment:         down+'%',
+      state:               state
+    });
+    affShowResults();
+  }, 0);
+}
+function affShowResults(){
+  if(!affPendingData)return;
+  const{income,totalDebt,rate,termYears,downPct,state}=affPendingData;
+  const r=rate/100/12,n=termYears*12;
+  const userLow=downPct<3, effDown=userLow?3:downPct, effFrac=effDown/100;
+  const maxPrice=affCalcMax(income,totalDebt,rate,termYears,effDown);
+  const loan=Math.max(0,maxPrice*(1-effFrac)),down=maxPrice*effFrac;
+  const ltv=maxPrice>0?loan/maxPrice:0;
+  let pi=0;if(r>0&&n>0&&loan>0){const pw=Math.pow(1+r,n);pi=loan*r*pw/(pw-1);}else if(n>0&&loan>0)pi=loan/n;
+  const moTax=(maxPrice*AFF_TAX)/12,moIns=(loan*AFF_INS)/12;
+  const moPMI=pmiRateAff(ltv)*loan/12,totalMo=pi+moTax+moIns+moPMI;
+
+  // Calculate month PMI drops off at 78% LTV
+  let pmiDropMonth=0;
+  if(moPMI>0&&r>0){
+    const target78=maxPrice*0.78;let bal=loan;
+    for(let m=1;m<=n;m++){bal=Math.max(bal-(pi-bal*r),0);if(bal<=target78){pmiDropMonth=m;break;}}
+  }
+  const cc=buildAffCC(maxPrice,loan,rate);
+  const taxMoR=moTax*11,insMoR=moIns*3,annInsPrem=moIns*12,prepaid=taxMoR+insMoR+annInsPrem;
+  const ctc=down+cc.total+prepaid;
+  const aprPct=calcAffAPR(loan,rate,termYears,maxPrice,moPMI);
+  const LOW=200000;
+  const carry=loadCarry();
+  const firstName=carry.userName?carry.userName.split(' ')[0]:'';
+  $('aff-results-hl').textContent=firstName?`${firstName}, here's what you can afford.`:"Here's what you can afford.";
+  $('aff-low-down-notice').style.display=userLow?'block':'none';
+  let html='';
+  if(maxPrice<LOW){
+    const existDTI=income>0?(totalDebt/income)*100:0;
+    html=`<div class="reveal-block"><p>Based on the information provided, a quick calculator can't give a reliable estimate. Your existing debts represent <span class="hl">${existDTI.toFixed(0)}%</span> of your income, which leaves limited room for a mortgage payment under standard guidelines. A loan officer will follow up to explore options — including co-borrower strategies, debt reduction, and down payment assistance programs.</p></div>`;
+  } else {
+    const ccRowsHTML=cc.rows.map(row=>`<div class="dt-row${row.apr?' dt-total':''}"><span class="dt-lbl">${row.l}${row.apr?'<span class="apr-tag">(APR fee)</span>':''}</span><span class="dt-val">${fmtD(row.a)}</span></div>`).join('');
+    html=`
+    <div style="border:1px solid rgba(74,74,74,.13);border-radius:var(--radius);padding:1.25rem;text-align:center;margin-bottom:1rem;background:#fff">
+      <div style="font-size:.6rem;letter-spacing:.16em;text-transform:uppercase;color:#aaa;font-weight:600;margin-bottom:.5rem">Estimated purchase price</div>
+      <div style="font-family:'DM Mono',monospace;font-size:clamp(2rem,6vw,2.8rem);font-weight:500;letter-spacing:-0.02em;color:var(--charcoal);line-height:1;margin-bottom:.4rem">${fmtM(maxPrice)}</div>
+      <div style="font-size:.76rem;color:#aaa;font-weight:300">${termYears}-year fixed · ${rate.toFixed(3)}% rate · ${effDown.toFixed(1)}% down · ${state}</div>
+    </div>
+    <div class="metric-grid">
+      <div class="metric-card highlight"><div class="metric-lbl">Monthly payment (PITI${moPMI>0?' + PMI':''})</div><div class="metric-val">${fmtD(totalMo)}</div><div class="metric-sub">Principal, interest, taxes &amp; insurance</div></div>
+      <div class="metric-card green-card"><div class="metric-lbl">Total cash to close</div><div class="metric-val">${fmtM(ctc)}</div><div class="metric-sub">Down payment + closing + prepaids</div></div>
+      <div class="metric-card"><div class="metric-lbl">Loan amount</div><div class="metric-val">${fmtM(loan)}</div><div class="metric-sub">After ${effDown.toFixed(1)}% down</div></div>
+      <div class="metric-card"><div class="metric-lbl">Estimated APR</div><div class="metric-val">${aprPct.toFixed(3)}%</div><div class="metric-sub">Includes applicable fees</div></div>
+    </div>
+    <div class="reveal-block"><p>Based on your income of <span class="hl">${fmtM(income)}/mo</span> and <span class="hl">${fmtM(totalDebt)}/mo</span> in existing debts, your estimated purchasing power is <span class="hl">${fmtM(maxPrice)}</span>. Your total monthly payment of <span class="hl">${fmtD(totalMo)}</span> represents ${((totalMo/income)*100).toFixed(0)}% of your gross monthly income. <span style="font-size:.85em;color:#888;font-weight:400">These figures are based on a conventional loan.</span>${moPMI>0&&pmiDropMonth>0?` PMI of <span class="hl">${fmtD(moPMI)}/mo</span> is included and automatically cancels at month <span class="hl">${pmiDropMonth}</span> (year ${Math.ceil(pmiDropMonth/12)}) when your balance reaches 78% of the purchase price. <span style="font-size:.85em;color:#888;font-weight:400">PMI estimate assumes a 740 credit score — actual rates vary.</span>`:''}</p></div>
+    <button class="detail-toggle-btn" id="aff-detail-btn" onclick="affToggleDetail()">Full breakdown ▾</button>
+    <div class="detail-panel" id="aff-detail-panel">
+      <div class="dt-table">
+        <div class="dt-head">Monthly payment breakdown</div>
+        <div class="dt-row"><span class="dt-lbl">Principal &amp; Interest</span><span class="dt-val">${fmtD(pi)}</span></div>
+        <div class="dt-row"><span class="dt-lbl">Property Tax (est.)</span><span class="dt-val">${fmtD(moTax)}</span></div>
+        <div class="dt-row"><span class="dt-lbl">Homeowners Insurance (est.)</span><span class="dt-val">${fmtD(moIns)}</span></div>
+        ${moPMI>0?`<div class="dt-row"><span class="dt-lbl">Mortgage Insurance (PMI)</span><span class="dt-val">${fmtD(moPMI)}</span></div>`:''}
+        <div class="dt-row dt-total"><span class="dt-lbl">Total Monthly Payment</span><span class="dt-val">${fmtD(totalMo)}</span></div>
+        <div class="dt-head">Down payment</div>
+        <div class="dt-row dt-total"><span class="dt-lbl">Down Payment (${effDown.toFixed(1)}%)</span><span class="dt-val">${fmtD(down)}</span></div>
+        <div class="dt-head">Estimated closing costs</div>
+        ${ccRowsHTML}
+        <div class="dt-row dt-total"><span class="dt-lbl">Total Closing Costs</span><span class="dt-val">${fmtD(cc.total)}</span></div>
+        <div class="dt-head">Estimated prepaid costs</div>
+        <div class="dt-row"><span class="dt-lbl">Tax Reserves (11 mo × ${fmtD(moTax)}/mo)</span><span class="dt-val">${fmtD(taxMoR)}</span></div>
+        <div class="dt-row"><span class="dt-lbl">Insurance Reserves (3 mo × ${fmtD(moIns)}/mo)</span><span class="dt-val">${fmtD(insMoR)}</span></div>
+        <div class="dt-row"><span class="dt-lbl">Annual Insurance Premium (12 mo)</span><span class="dt-val">${fmtD(annInsPrem)}</span></div>
+        <div class="dt-row dt-total"><span class="dt-lbl">Total Prepaid Costs</span><span class="dt-val">${fmtD(prepaid)}</span></div>
+        <div class="dt-head">Total cash to close</div>
+        <div class="dt-row"><span class="dt-lbl">Down Payment</span><span class="dt-val">${fmtD(down)}</span></div>
+        <div class="dt-row"><span class="dt-lbl">Closing Costs</span><span class="dt-val">${fmtD(cc.total)}</span></div>
+        <div class="dt-row"><span class="dt-lbl">Prepaid Costs</span><span class="dt-val">${fmtD(prepaid)}</span></div>
+        <div class="dt-row dt-total"><span class="dt-lbl">Total Cash to Close</span><span class="dt-val">${fmtD(ctc)}</span></div>
+      </div>
+    </div>
+    <div class="calc-note"><p><strong>Methodology:</strong> These figures are based on a <strong>conventional loan</strong> — not FHA, VA, or USDA. Purchase price is calculated using a 45% total DTI cap, compound interest, estimated property taxes (1.0%), homeowners insurance (0.3%), and PMI (tiered by LTV, assumes a qualified borrower with a 740 credit score — actual PMI rates vary based on credit score, loan program, lender, and other qualification factors). PMI automatically cancels when the loan balance reaches 78% of the original purchase price per the Homeowners Protection Act. APR reflects the cost of borrowing including applicable fees and PMI cash flows through the 78% LTV drop-off point. <strong>All figures are estimates. Not a commitment to lend.</strong></p></div>`;
+  }
+  $('aff-results-body').innerHTML=html;
+  $('aff-results').classList.add('show');
+  // Carry over to tax and BVR sections
+  const estPropTax=maxPrice>0?Math.round(maxPrice*0.010):0;
+  const estIns=loan>0?Math.round(loan*0.003):0;
+  autoFillFromAff(rate,String(termYears),downPct,income,estPropTax||'',estIns||'',maxPrice);
+  // Show bridge to tax section
+  const bridge=$('bridge-1');
+  if(maxPrice>=LOW){
+    $('bridge-1-text').innerHTML=`You can afford an estimated <span class="hl">${fmtM(maxPrice)}</span> home at <span class="hl">${fmtD(totalMo)}/mo</span>. Now let's look at what that payment actually costs after tax deductions — which could change the number meaningfully.`;
+  }
+  bridge.classList.add('show');
+  markNav(0);
+  setTimeout(()=>$('aff-results').scrollIntoView({behavior:'smooth',block:'start'}),120);
+}
+function affToggleDetail(){
+  const p=$('aff-detail-panel'),b=$('aff-detail-btn');
+  if(!p||!b)return;
+  const open=p.classList.contains('show');
+  p.classList.toggle('show',!open);
+  b.textContent=open?'Full breakdown ▾':'Full breakdown ▴';
+  b.classList.toggle('open',!open);
+}
+function autoFillFromAff(rate,term,down,income,propTax,ins,purchasePrice){
+  // Helper: apply gold read-only styling and show badge
+  function setCarry(inputId,badgeId,textId,label,val,isSelect){
+    const inp=$(inputId);
+    if(!inp)return;
+    // For selects, always apply (they have defaults); for inputs, skip if user already typed something
+    if(!isSelect&&inp.value&&!inp.readOnly)return;
+    inp.value=val;
+    if(!isSelect){inp.readOnly=true;inp.style.color='var(--gold)';inp.style.background='rgba(184,146,74,.05)';}
+    else{inp.style.color='var(--gold)';}
+    $(textId).textContent=label;
+    $(badgeId).style.display='flex';
+  }
+  if(rate) setCarry('tax-rate','tax-rate-carry','tax-rate-carry-text','Carried from affordability — '+rate+'%',rate,false);
+  if(term) setCarry('tax-term','tax-term-carry','tax-term-carry-text','Carried from affordability — '+term+' years',term,true);
+  if(down) setCarry('tax-down','tax-down-carry','tax-down-carry-text','Carried from affordability — '+down+'%',down,false);
+  if(income&&!$('tax-income').value){
+    const annIncome=Math.round(income*12);
+    setCarry('tax-income','tax-income-carry','tax-income-carry-text','Carried from affordability — $'+annIncome.toLocaleString(),annIncome,false);
+  }
+  // Purchase price with gold treatment
+  if(purchasePrice&&purchasePrice>0){
+    const inp=$('tax-price');
+    if(inp&&!inp.value){
+      inp.value=purchasePrice; inp.readOnly=true;
+      inp.style.color='var(--gold)'; inp.style.background='rgba(184,146,74,.05)';
+      $('tax-price-carry-text').textContent='Carried from affordability — '+fmtM(purchasePrice);
+      $('tax-price-carry').style.display='flex';
+    }
+  }
+  // Property taxes with gold treatment
+  if(propTax&&!$('tax-prop-tax').value){
+    const inp=$('tax-prop-tax');
+    inp.value=propTax; inp.readOnly=true;
+    inp.style.color='var(--gold)'; inp.style.background='rgba(184,146,74,.05)';
+    $('tax-prop-tax-carry-text').textContent='Estimate carried over from affordability calculator — $'+Math.round(propTax).toLocaleString();
+    $('tax-prop-tax-carry').style.display='flex';
+  }
+  // Insurance with gold treatment
+  if(ins&&!$('tax-ins').value){
+    const inp=$('tax-ins');
+    inp.value=ins; inp.readOnly=true;
+    inp.style.color='var(--gold)'; inp.style.background='rgba(184,146,74,.05)';
+    $('tax-ins-carry-text').textContent='Estimate carried over from affordability calculator — $'+Math.round(ins).toLocaleString();
+    $('tax-ins-carry').style.display='flex';
+  }
+  // BVR carry (no badge needed)
+  if(rate&&!$('bvr-rate').value)$('bvr-rate').value=rate;
+  if(term)$('bvr-term').value=term;
+  if(down&&!$('bvr-down').value)$('bvr-down').value=down;
+}
+function autoFillFromTax(rent){
+  if(rent&&!$('bvr-rent').value)$('bvr-rent').value=rent;
+}
+function taxPriceClear(){
+  const inp=$('tax-price');
+  if(inp){inp.value='';inp.readOnly=false;inp.style.color='';inp.style.background='';inp.focus();}
+  const badge=$('tax-price-carry');
+  if(badge)badge.style.display='none';
+}
+function taxFieldClear(inputId,badgeId){
+  const inp=$(inputId);
+  if(inp){inp.value='';inp.readOnly=false;inp.style.color='';inp.style.background='';inp.focus();}
+  const badge=$(badgeId);
+  if(badge)badge.style.display='none';
+}
+function taxTermClear(){
+  const sel=$('tax-term');
+  if(sel){sel.style.color='';sel.value='30';}
+  $('tax-term-carry').style.display='none';
+}
+function onFilingChange(sel){
+  const note=$('tax-income-joint-note');
+  if(!note)return;
+  // Show confirmation note for any non-single filing status
+  note.style.display=(sel.value==='joint'||sel.value==='hoh')?'block':'none';
+}
+function taxCarryOverride(inputId,badgeId){
+  // Once the user types, drop the read-only carry styling
+  const inp=$(inputId);
+  if(inp){inp.readOnly=false;inp.style.color='';inp.style.background='';}
+  const badge=$(badgeId);
+  if(badge)badge.style.display='none';
+}
+
+/* ══════════════════════════════════════
+   SECTION 2 — TAX ADVANTAGES
+══════════════════════════════════════ */
+const SALT_CAP=40000;
+const STD_DED={single:16100,joint:32200,hoh:24150};
+const FED_BR={single:[[11925,.10],[48475,.12],[103350,.22],[197300,.24],[250525,.32],[626350,.35],[Infinity,.37]],joint:[[23850,.10],[96950,.12],[206700,.22],[394600,.24],[501050,.32],[751600,.35],[Infinity,.37]],hoh:[[17000,.10],[64850,.12],[103350,.22],[197300,.24],[250500,.32],[626350,.35],[Infinity,.37]]};
+const OR_BS=[[4050,.0475],[10200,.0675],[125000,.0875],[Infinity,.099]];
+const OR_BJ=[[8100,.0475],[20400,.0675],[250000,.0875],[Infinity,.099]];
+function orTax(inc,f){const br=f==='joint'?OR_BJ:OR_BS;let t=0,p=0;for(const[l,r]of br){if(inc<=p)break;t+=(Math.min(inc,l)-p)*r;p=l;if(l===Infinity)break;}return t;}
+function fedRate(inc,f){const b=FED_BR[f]||FED_BR.single;for(const[l,r]of b)if(inc<=l)return r;return .37;}
+function fedLbl(inc,f){return (fedRate(inc,f)*100).toFixed(0)+'%';}
+function taxPmt(r,n,pv){return r===0?pv/n:pv*(r*Math.pow(1+r,n))/(Math.pow(1+r,n)-1);}
+function computeTaxBenefit(annInt,annTax,income,filing,state){
+  const stateInc=state==='OR'?orTax(income,filing):state==='WA'?0:income*.05;
+  const saltRaw=annTax+stateInc,saltCapped=Math.min(saltRaw,SALT_CAP);
+  const tot=annInt+saltCapped,std=STD_DED[filing]||STD_DED.single,excess=tot-std;
+  const fr=fedRate(income,filing);
+  if(excess<=0)return{monthly:0,annual:0,excess:0,totalItemized:tot,std,saltCapped,saltRaw,annTax,stateInc,hasBenefit:false,fr};
+  return{monthly:excess*fr/12,annual:excess*fr,excess,totalItemized:tot,std,saltCapped,saltRaw,annTax,stateInc,hasBenefit:true,fr};
+}
+function taxSet(id,val,asHTML){const el=$(id);if(!el)return;asHTML?el.innerHTML=val:el.textContent=val;}
+
+function taxRun(){
+  const rentAmt=fvn('tax-rent'),newPrice=fvn('tax-price'),newDown=fvn('tax-down'),newRate=fvn('tax-rate'),newTerm=parseInt($('tax-term').value);
+  const newTaxAnn=fvn('tax-prop-tax'),newInsAnn=fvn('tax-ins'),income=fvn('tax-income'),filing=$('tax-filing').value,state=$('tax-state').value;
+  if(!rentAmt){showAlert('Please enter your current monthly rent.');return}
+  if(!newPrice||!newRate){showAlert('Please enter a purchase price and interest rate.');return}
+  if(!income){showAlert('Please enter your annual household income.');return}
+  requireGate(()=>{
+  // Submit tax calculator lead to Netlify
+  submitCalcLead('ftb-tax-advantages',{
+    monthlyRent:          rentAmt,
+    purchasePrice:        newPrice,
+    downPayment:          newDown+'%',
+    interestRate:         newRate+'%',
+    loanTerm:             newTerm+' years',
+    annualPropertyTaxes:  newTaxAnn||'(estimated at 1%)',
+    annualInsurance:      newInsAnn||'(estimated at 0.3%)',
+    annualIncome:         income,
+    filingStatus:         filing,
+    state:                state
+  });
+  const newLoan=newPrice*(1-newDown/100),newDownAmt=newPrice*(newDown/100);
+  const nr=newRate/100/12,nn=newTerm*12;
+  const newPI=taxPmt(nr,nn,newLoan);
+  const taxMo=(newTaxAnn||newPrice*0.010)/12,insMo=(newInsAnn||newLoan*0.0025)/12;
+  // PMI — tiered by LTV, not tax-deductible, included in total payment only
+  const newLTV=newLoan/newPrice,needsPMI=newLTV>0.80;
+  const newPMI=needsPMI?pmiRateAff(newLTV)*newLoan/12:0;
+  const buyPITI=newPI+taxMo+insMo+newPMI;
+  let annInt=0,tb2=newLoan;
+  for(let i=0;i<12;i++){const ic=tb2*nr;annInt+=ic;tb2=tb2*(1+nr)-newPI;}
+  const annTax=newTaxAnn||newPrice*0.010;
+  const tb=computeTaxBenefit(annInt,annTax,income,filing,state);
+  // Effective payment uses PITI+PMI minus tax savings — PMI has no tax impact
+  const buyEff=buyPITI-tb.monthly;
+  taxSet('tax-r-rent',fmtD(rentAmt));taxSet('tax-r-eff',fmtD(rentAmt));taxSet('tax-r-annual',fmtM(rentAmt*12)+' / year');
+  taxSet('tax-b-piti',fmtD(buyPITI));taxSet('tax-b-pi',fmtD(newPI));taxSet('tax-b-tax',fmtD(taxMo));taxSet('tax-b-ins',fmtD(insMo));
+  // PMI row
+  $('tax-b-piti-label').textContent='Total PITI'+(needsPMI?' + PMI':'')+' / month';
+  $('tax-b-pmi-row').style.display=needsPMI?'flex':'none';
+  if(needsPMI)taxSet('tax-b-pmi',fmtD(newPMI));
+  $('tax-pmi-notice').classList.toggle('show',needsPMI);
+  taxSet('tax-b-loan',fmtM(newLoan));taxSet('tax-b-down',fmtM(newDownAmt)+' ('+newDown.toFixed(1)+'%)');
+  taxSet('tax-b-eff',fmtD(buyEff));
+  taxSet('tax-b-note',tb.hasBenefit?'Est. monthly tax savings: '+fmtD(tb.monthly)+(needsPMI?' · PMI not tax-deductible':''):'No itemization benefit — below standard deduction');
+  const diff=buyEff-rentAmt,cheaper=diff<0?'buying':'renting',moreExp=diff<0?'renting':'buying';
+  let sumHTML=Math.abs(diff)<1
+    ?'After estimated Year 1 tax deductions, the effective monthly cost of buying (<span class="hl">'+fmtD(buyEff)+'</span>) and renting (<span class="hl">'+fmtD(rentAmt)+'</span>) are virtually identical — but buying builds equity while renting does not. <span style="font-weight:400;color:#888;font-size:.85em">Tax savings are realized at filing, not monthly.</span>'
+    :'After estimated Year 1 tax deductions, <span class="hl">'+cheaper+'</span> is <span class="hl">'+fmtD(Math.abs(diff))+'/mo less</span> than '+moreExp+' — a difference of <span class="hl">'+fmtM(Math.abs(diff)*12)+' per year</span>.'+(cheaper==='buying'?' Your mortgage payment builds equity with every payment.':' However, buying builds equity while rent does not.')+' <span style="font-weight:400;color:#888;font-size:.85em">Tax savings are realized when you file your return, not in your monthly payment.</span>';
+  taxSet('tax-summary',sumHTML,true);
+  taxSet('tax-tm-int',fmtM(annInt));taxSet('tax-tm-state',fmtM(tb.stateInc));taxSet('tax-tm-proptax',fmtM(annTax));
+  taxSet('tax-tm-salt',fmtM(tb.saltCapped)+(tb.saltRaw>SALT_CAP?' (capped from '+fmtM(tb.saltRaw)+')':''));
+  taxSet('tax-tm-total',fmtM(tb.totalItemized));taxSet('tax-tm-std',fmtM(tb.std));
+  taxSet('tax-tm-excess',tb.hasBenefit?fmtM(tb.excess):'$0');
+  taxSet('tax-tm-fed',fedLbl(income,filing));taxSet('tax-tm-combined',fmtPct(fedRate(income,filing)));
+  taxSet('tax-tm-annual',fmtM(tb.annual)+' / yr');
+  taxSet('tax-tm-monthly',tb.hasBenefit?fmtD(tb.monthly)+' / mo':'$0.00 / mo');
+  $('tax-tm-monthly').className='mtot-v'+(tb.hasBenefit?'':' zero');
+  $('tax-tm-no-benefit').style.display=tb.hasBenefit?'none':'block';
+  $('tax-results').classList.add('show');
+  autoFillFromTax(rentAmt);
+  if(newPrice&&!$('bvr-price').value)$('bvr-price').value=newPrice;
+  if(newDown&&!$('bvr-down').value)$('bvr-down').value=newDown;
+  if(newRate&&!$('bvr-rate').value)$('bvr-rate').value=newRate;
+  // Pre-fill BVR and show bridge
+  if(newPrice&&!$('bvr-price').value)$('bvr-price').value=newPrice;
+  if(newDown&&!$('bvr-down').value)$('bvr-down').value=newDown;
+  if(newRate&&!$('bvr-rate').value)$('bvr-rate').value=newRate;
+  $('bridge-2-text').innerHTML=`You've seen the payment and the tax picture. Now let's close the loop — how does that <span class="hl">${fmtD(buyEff)}/mo effective cost</span> compare to renting over time, and what does each path do to your net worth?`;
+  $('bridge-2').classList.add('show');
+  markNav(1);
+  saveCarry({interestRate:newRate,loanTerm:String(newTerm),downPayment:newDown});
+  setTimeout(()=>$('tax-results').scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }, 1); // end requireGate — tax section
+}
+
+/* ══════════════════════════════════════
+   SECTION 3 — BUY VS RENT
+══════════════════════════════════════ */
+let bvrDpChoice=null;
+function bvrOnDownInput(el){const v=parseFloat(el.value)||0;if(!v){bvrDpChoice=null;bvrResetDpBtns();}}
+function bvrSetDp(c){
+  bvrDpChoice=c;
+  $('bvr-dp-yes').style.background=c==='yes'?'var(--charcoal)':'#fff';
+  $('bvr-dp-yes').style.color=c==='yes'?'#fff':'var(--slate)';
+  $('bvr-dp-yes').style.borderColor=c==='yes'?'var(--charcoal)':'rgba(74,74,74,.18)';
+  $('bvr-dp-no').style.background=c==='no'?'var(--charcoal)':'#fff';
+  $('bvr-dp-no').style.color=c==='no'?'#fff':'var(--slate)';
+  $('bvr-dp-no').style.borderColor=c==='no'?'var(--charcoal)':'rgba(74,74,74,.18)';
+}
+function bvrResetDpBtns(){
+  ['bvr-dp-yes','bvr-dp-no'].forEach(id=>{
+    $(id).style.background='#fff';$(id).style.color='var(--slate)';$(id).style.borderColor='rgba(74,74,74,.18)';
+  });
+}
+
+function bvrCalcAPR(loan,annRate,term,price,pmiMo){return calcAffAPR(loan,annRate,term,price,pmiMo);}
+
+function bvrRun(){
+  const rent=fvn('bvr-rent'),invest=fvn('bvr-invest'),invRate=(parseFloat($('bvr-inv-rate').value)||0)/100;
+  const price=fvn('bvr-price'),downPct=fvn('bvr-down'),annRate=fvn('bvr-rate'),term=parseInt($('bvr-term').value);
+  const appr=(parseFloat($('bvr-appr').value)||4)/100,years=parseInt($('bvr-years').value)||10;
+  const rentIncField=$('bvr-rent-inc').value.trim();
+  const rentInc=(parseFloat(rentIncField)||0)/100;
+
+  if(!rent){showAlert('Please enter an estimated monthly rent.');return}
+  if(!price){showAlert('Please enter a purchase price.');return}
+  if(!downPct){showAlert('Please enter a down payment percentage.');return}
+  if(!annRate){showAlert('Please enter an interest rate.');return}
+  if(rentIncField===''){showAlert('Please enter an annual rent increase percentage.\n\nEnter 0 if you expect rent to stay flat.');return}
+  if($('bvr-invest').value.trim()===''){showAlert('Please enter a monthly investment amount.\n\nEnter 0 if you will not invest monthly while renting.');return}
+  // Investment return required if investing monthly or investing the down payment
+  const investingAny = invest>0 || bvrDpChoice==='yes';
+  if(investingAny && $('bvr-inv-rate').value.trim()===''){showAlert('Please enter an estimated investment return rate.\n\nThis is required because you have investments included in the calculation.');return}
+  requireGate(()=>{
+  // Submit BVR calculator lead to Netlify
+  submitCalcLead('ftb-buy-vs-rent',{
+    monthlyRent:           rent,
+    annualRentIncrease:    (fvn('bvr-rent-inc')||0)+'%',
+    monthlyInvested:       fvn('bvr-invest'),
+    investmentReturn:      (fvn('bvr-inv-rate')||0)+'%',
+    purchasePrice:         price,
+    downPayment:           downPct+'%',
+    interestRate:          annRate+'%',
+    loanTerm:              term+' years',
+    annualAppreciation:    (fvn('bvr-appr')||0)+'%',
+    comparisonYears:       fvn('bvr-years')||10,
+    downPaymentInvest:     bvrDpChoice||'not answered'
+  });
+  const userLow=downPct<3,effDown=userLow?price*.03:price*(downPct/100),effLoan=price-effDown;
+  if(effLoan<=0){showAlert('Down payment equals or exceeds the purchase price.');return}
+  const r=annRate/100/12,n=term*12;
+  const pi=effLoan*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+  // Pull annual tax and insurance from carried values, falling back to 1% / 0.3%
+  const carriedTax=fvn('tax-prop-tax')||fvn('bvr-price')*0;
+  const carriedIns=fvn('tax-ins')||0;
+  const annTax0=carriedTax>0?carriedTax:price*0.010;
+  const annIns0=carriedIns>0?carriedIns:effLoan*0.003;
+  const curTax=annTax0/12,curIns=annIns0/12;
+  // Use tiered PMI matching affordability calculator
+  const ltv=effLoan/price,needsPMI=ltv>0.80,curPMI=needsPMI?pmiRateAff(ltv)*effLoan/12:0;
+  const curMort=pi+curTax+curIns+curPMI;
+  const futTax=(annTax0*Math.pow(1+appr,years))/12,futIns=(annIns0*Math.pow(1+appr,years))/12;
+  const futHome=price*Math.pow(1+appr,years);
+  const mp=Math.min(years*12,n);
+  const remBal=Math.max(effLoan*Math.pow(1+r,mp)-pi*(Math.pow(1+r,mp)-1)/r,0);
+  const equity=futHome-remBal,futLTV=remBal/price,futPMI=(needsPMI&&futLTV>0.80)?pmiRateAff(futLTV)*effLoan/12:0;
+  const futMort=pi+futTax+futIns+futPMI,futRent=rent*Math.pow(1+rentInc,years);
+  const invR=invRate/12,invM=years*12;
+  let dpFV=0,dpLump=0;
+  if(bvrDpChoice==='yes')dpFV=invR>0?effDown*Math.pow(1+invR,invM):effDown;
+  else if(bvrDpChoice==='no')dpLump=effDown;
+  const mPortfolio=invR>0?invest*(Math.pow(1+invR,invM)-1)/invR:invest*invM;
+  const totalPortfolio=mPortfolio+dpFV+dpLump;
+  $('bvr-low-down').style.display=userLow?'block':'none';
+  $('bvr-pmi-notice').classList.toggle('show',needsPMI);
+  const yLbl=years===1?'1 year':`${years} years`;
+  $('bvr-sum-yrs').textContent=yLbl;
+  $('bvr-sum-rent-now').textContent=fmtD(rent);
+  $('bvr-sum-mort-now').textContent=fmtD(curMort);
+  $('bvr-sum-nw-rent').textContent=fmtM(totalPortfolio);
+  $('bvr-sum-nw-buy').textContent=fmtM(equity);
+  $('bvr-yrs-divider').textContent=`— ${yLbl} from now —`;
+  ['bvr-yrs-lbl','bvr-yrs-lbl2'].forEach(id=>$(id).textContent=yLbl);
+  $('bvr-fut-rent').textContent=fmtD(futRent);
+  $('bvr-fut-mort').textContent=fmtD(futMort);
+  $('bvr-nw-rent').textContent=fmtM(totalPortfolio);
+  $('bvr-nw-buy').textContent=fmtM(equity);
+  const diff=equity-totalPortfolio;
+  const winner=diff>0?'buying':'renting and investing';
+  $('bvr-verdict').innerHTML=diff>0
+    ?`After ${yLbl}, <span class="hl">buying</span> leaves you with an estimated <span class="hl-green">${fmtM(Math.abs(diff))} more</span> in net worth than renting — home equity vs. investment portfolio.`
+    :diff<0?`After ${yLbl}, <span class="hl">renting and investing</span> leaves you with an estimated <span class="hl-gold">${fmtM(Math.abs(diff))} more</span> in net worth than buying.`
+    :`After ${yLbl}, buying and renting result in approximately the same estimated net worth.`;
+  const rentPaid=(()=>{let t=0,rv=rent;for(let y=0;y<years;y++){t+=rv*12;rv*=(1+rentInc);}return t;})();
+  $('bvr-narrative').innerHTML=`Over ${yLbl}, you'd pay an estimated <span class="hl">${fmtM(rentPaid)}</span> in total rent — none of which builds equity. Buying at <span class="hl">${fmtM(price)}</span> would give you an estimated <span class="hl-green">${fmtM(equity)}</span> in home equity over the same period.`;
+  $('bvr-narrative-block').style.display='block';
+  sendSummaryEmail(); // final step — send consolidated summary
+  $('bvr-results').classList.add('show');
+  markNav(2);
+  saveCarry({interestRate:annRate,loanTerm:String(term),downPayment:downPct});
+  setTimeout(()=>$('bvr-results').scrollIntoView({behavior:'smooth',block:'start'}),120);
+  }, 2); // end requireGate — bvr section
+}
+
+/* ── PAGE INIT — carry restoration ── */
+document.addEventListener('DOMContentLoaded',()=>{
+  // Restore gate state from sessionStorage
+  const carry=loadCarry();
+  if(carry.userName&&carry.userEmail){gateCleared=true;}
+  // Pre-fill loan fields from previous session
+  if(carry.interestRate){
+    $('aff-rate').value=carry.interestRate;
+    $('aff-rate').style.color='var(--charcoal)';
+    $('tax-rate').value=carry.interestRate;
+    $('bvr-rate').value=carry.interestRate;
+  }
+  if(carry.loanTerm){if($('aff-term').querySelector(`option[value="${carry.loanTerm}"]`))$('aff-term').value=carry.loanTerm;$('tax-term').value=carry.loanTerm;$('bvr-term').value=carry.loanTerm;}
+  if(carry.downPayment){
+    const presets=['3','5','10','15','20'];
+    const val=String(carry.downPayment);
+    const sel=$('aff-down');
+    if(sel){
+      if(presets.includes(val)){
+        sel.value=val;
+      } else {
+        sel.value='other';
+        const wrap=$('aff-down-other-wrap'),inp=$('aff-down-other');
+        if(wrap)wrap.style.display='block';
+        if(inp)inp.value=val;
+      }
+    }
+    $('tax-down').value=carry.downPayment;
+    $('bvr-down').value=carry.downPayment;
+  }
+});
+</script>
+</body>
+</html>
