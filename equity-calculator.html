@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home Equity Access Calculator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --cream:#ffffff;--ivory:#faf9f7;--charcoal:#1c1c1c;--slate:#4a4a4a;
+  --gold:#b8924a;--gold-lt:#d4ab6a;--gold-dim:rgba(184,146,74,.35);
+  --green:#1a6640;--green-bg:#f0faf6;
+  --radius:4px;--transition:.3s cubic-bezier(.4,0,.2,1);
+  --shadow:0 4px 6px rgba(0,0,0,.04),0 20px 50px rgba(0,0,0,.08);
+}
+html{scroll-behavior:smooth}
+body{font-family:'DM Sans',sans-serif;background-color:#f9f8f5;color:var(--charcoal);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+.bg-layer{position:fixed;inset:0;z-index:0;background-image:url('background.png');background-size:cover;background-position:center;opacity:.06;pointer-events:none}
+main{position:relative;z-index:10;flex:1;display:flex;align-items:flex-start;justify-content:center;padding:4rem 1.5rem 5rem}
+.card{background:#fff;border:1px solid var(--gold-dim);border-radius:2px;width:100%;max-width:820px;padding:3rem 3.5rem;box-shadow:var(--shadow);animation:cardRise .7s cubic-bezier(.4,0,.2,1) both}
+@keyframes cardRise{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.card-eyebrow{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.eyebrow-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);flex-shrink:0}
+.card-headline{font-weight:700;font-size:clamp(1.8rem,4vw,2.4rem);line-height:1.1;letter-spacing:-0.02em;color:var(--charcoal);margin-bottom:.75rem}
+.card-sub{font-size:.92rem;color:var(--slate);line-height:1.65;margin-bottom:2rem;font-weight:300;max-width:540px}
+.card-sub strong{font-weight:600;color:var(--charcoal)}
+.divider{width:48px;height:1px;background:var(--gold);margin-bottom:2rem;opacity:.7;border:none}
+
+.steps-wrap{display:flex;align-items:center;gap:0;margin-bottom:2.5rem}
+.step-pill{display:flex;align-items:center;gap:.5rem;padding:.5rem .9rem;border:1px solid rgba(74,74,74,.15);border-radius:20px;background:var(--ivory);font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;color:#bbb;transition:all var(--transition);cursor:default}
+.step-pill.active{border-color:var(--gold-dim);background:rgba(184,146,74,.06);color:var(--gold)}
+.step-pill.done{border-color:rgba(26,102,64,.25);background:var(--green-bg);color:var(--green)}
+.step-num{width:18px;height:18px;border-radius:50%;border:1px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;flex-shrink:0}
+.step-pill.done .step-num{background:var(--green);border-color:var(--green);color:#fff}
+.step-connector{flex:1;height:1px;background:rgba(74,74,74,.12);margin:0 .5rem}
+
+.sec-title{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-bottom:1.2rem;display:flex;align-items:center;gap:.5rem;font-weight:500}
+.sec-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);opacity:.5}
+
+.input-panel{border:1px solid rgba(74,74,74,.15);border-radius:var(--radius);padding:1.5rem;background:var(--ivory);margin-bottom:1.5rem}
+.input-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:0}
+@media(max-width:580px){.input-cols{grid-template-columns:1fr}}
+.field{margin-bottom:1.3rem}
+.field:last-child{margin-bottom:0}
+label{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--slate);margin-bottom:.4rem;font-weight:500}
+.fnote{font-size:.72rem;font-weight:300;text-transform:none;letter-spacing:0;color:#999;font-style:italic}
+.iwrap{position:relative}
+.pfx{position:absolute;left:.9rem;top:50%;transform:translateY(-50%);font-size:.9rem;color:var(--gold);font-weight:500;pointer-events:none;user-select:none}
+input[type="text"],input[type="number"],select{width:100%;padding:.7rem 1rem;border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);background:rgba(255,255,255,.85);font-family:'DM Sans',sans-serif;font-size:.92rem;color:var(--charcoal);outline:none;transition:border-color var(--transition),box-shadow var(--transition),background var(--transition);-webkit-appearance:none;-moz-appearance:textfield}
+input[type="number"]::-webkit-inner-spin-button,input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none}
+input.hpfx{padding-left:1.9rem}
+input:focus,select:focus{border-color:var(--gold);background:#fff;box-shadow:0 0 0 3px rgba(184,146,74,.12)}
+input::placeholder{color:#bbb}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23b8924a'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:28px}
+
+.btn-submit{display:block;width:100%;margin-top:.4rem;padding:.9rem 1.5rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--transition),box-shadow var(--transition),transform var(--transition);position:relative;overflow:hidden}
+.btn-submit::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(184,146,74,.18) 50%,transparent 100%);transform:translateX(-100%);transition:transform .5s ease}
+.btn-submit:hover{background:#2e2a22;box-shadow:0 6px 20px rgba(0,0,0,.18);transform:translateY(-1px)}
+.btn-submit:hover::after{transform:translateX(100%)}
+.btn-submit:active{transform:translateY(0);box-shadow:none}
+.btn-back{display:inline-block;padding:.65rem 1.2rem;background:transparent;color:var(--slate);border:1px solid rgba(74,74,74,.22);border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:all var(--transition)}
+.btn-back:hover{border-color:var(--gold);color:var(--gold)}
+.reset-link{display:block;text-align:center;margin-top:1rem;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:#aaa;cursor:pointer;transition:color var(--transition);background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;padding:.25rem}
+.reset-link:hover{color:var(--gold)}
+.btn-row{display:flex;gap:.75rem;align-items:center;margin-top:1.5rem}
+
+.calc-step{display:none}
+.calc-step.active{display:block;animation:fadeUp .4s cubic-bezier(.4,0,.2,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+.result-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+@media(max-width:520px){.result-row{grid-template-columns:1fr}}
+.rc{border:1px solid rgba(74,74,74,.15);border-radius:var(--radius);overflow:hidden;background:#fff}
+.rc.rc-highlight{border-color:var(--gold-dim)}
+.rc.rc-green{border-color:rgba(26,102,64,.3)}
+.rc-head{padding:.65rem 1rem;background:var(--ivory);border-bottom:1px solid rgba(74,74,74,.1);font-size:.65rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--slate);display:flex;align-items:center;gap:.4rem}
+.rc.rc-highlight .rc-head{background:rgba(184,146,74,.05);color:var(--gold)}
+.rc.rc-green .rc-head{background:var(--green-bg);color:var(--green)}
+.rhead-dot{width:6px;height:6px;border-radius:50%;background:#aaa;flex-shrink:0}
+.rc.rc-highlight .rhead-dot{background:var(--gold)}
+.rc.rc-green .rhead-dot{background:var(--green)}
+.rc-body{padding:1rem 1.2rem}
+.rc-lbl{font-size:.65rem;letter-spacing:.12em;text-transform:uppercase;color:#aaa;margin-bottom:.3rem;font-weight:500}
+.rc-val{font-weight:700;font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-0.02em;color:var(--charcoal);line-height:1;font-family:'DM Mono',monospace}
+.rc.rc-highlight .rc-val{color:var(--gold)}
+.rc.rc-green .rc-val{color:var(--green)}
+/* Secondary tier (e.g. 90% CLTV): gold accents in header/label, but a strong charcoal number so it reads as a clear, legible secondary option rather than a washed-out one */
+.rc.rc-secondary{border-color:var(--gold-dim)}
+.rc.rc-secondary .rc-head{background:rgba(184,146,74,.05);color:var(--gold)}
+.rc.rc-secondary .rhead-dot{background:var(--gold)}
+.rc.rc-secondary .rc-val{color:var(--charcoal)}
+.rc-sub{font-size:.72rem;color:#aaa;margin-top:.3rem;font-weight:300;line-height:1.5}
+.rc-note{font-size:.68rem;color:#999;font-style:italic;margin-top:.3rem;font-weight:300;line-height:1.5}
+
+.reveal-block{padding:1.2rem 1.5rem;border-left:2px solid var(--gold);background:rgba(184,146,74,.04);border-radius:0 var(--radius) var(--radius) 0;margin:1.2rem 0}
+.reveal-block p{font-size:.88rem;color:var(--slate);line-height:1.75;font-weight:300}
+.reveal-block p .hl{font-weight:600;color:var(--charcoal)}
+.reveal-block p .hl-green{font-weight:600;color:var(--green)}
+.reveal-block p .hl-gold{font-weight:600;color:var(--gold)}
+
+.cltv-math{font-size:.72rem;color:#999;font-family:'DM Mono',monospace;font-weight:400;margin-top:.4rem;line-height:1.6}
+.cltv-math .mv{color:var(--slate);font-weight:500}
+
+/* Lead capture */
+.lead-gate{margin-top:2rem;border:1px solid var(--gold-dim);border-radius:var(--radius);overflow:hidden}
+.lead-gate-header{background:var(--charcoal);padding:1.5rem 1.75rem}
+.lead-gate-eyebrow{font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-lt);font-weight:600;margin-bottom:.5rem}
+.lead-gate-headline{font-size:1.15rem;font-weight:700;color:#fff;letter-spacing:-0.01em;line-height:1.3;margin-bottom:.4rem}
+.lead-gate-sub{font-size:.82rem;color:rgba(255,255,255,.6);font-weight:300;line-height:1.6}
+.lead-gate-body{padding:1.5rem 1.75rem;background:#fff}
+.lead-gate-value-props{display:flex;flex-direction:column;gap:.5rem;margin-bottom:1.25rem}
+.vp-item{display:flex;align-items:flex-start;gap:.6rem;font-size:.82rem;color:var(--slate);font-weight:300;line-height:1.5}
+.vp-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:.45rem}
+.lead-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1rem}
+@media(max-width:480px){.lead-fields{grid-template-columns:1fr}}
+.lead-field-full{grid-column:1/-1}
+.lead-cta-btn{display:block;width:100%;padding:1rem 1.5rem;background:var(--green);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--transition),box-shadow var(--transition),transform var(--transition);position:relative;overflow:hidden;margin-bottom:.75rem}
+.lead-cta-btn::after{content:'';position:absolute;inset:0;background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.1) 50%,transparent 100%);transform:translateX(-100%);transition:transform .5s ease}
+.lead-cta-btn:hover{background:#0f3d26;box-shadow:0 6px 20px rgba(26,102,64,.25);transform:translateY(-1px)}
+.lead-cta-btn:hover::after{transform:translateX(100%)}
+.lead-skip{display:block;text-align:center;font-size:.7rem;color:#aaa;font-weight:300;cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;width:100%;padding:.3rem;transition:color var(--transition)}
+.lead-skip:hover{color:var(--gold)}
+.lead-trust{display:flex;align-items:center;justify-content:center;gap:1rem;margin-top:.75rem;padding-top:.75rem;border-top:1px solid rgba(74,74,74,.08)}
+.trust-item{font-size:.63rem;color:#bbb;font-weight:300;display:flex;align-items:center;gap:.3rem}
+.trust-dot{width:3px;height:3px;border-radius:50%;background:#ddd}
+.lead-success{padding:2rem;text-align:center;background:var(--green-bg);border-top:1px solid rgba(26,102,64,.15);display:none}
+.lead-success-icon{font-size:1.5rem;margin-bottom:.75rem}
+.lead-success-title{font-size:1rem;font-weight:700;color:var(--green);margin-bottom:.4rem}
+.lead-success-sub{font-size:.82rem;color:#3a7050;font-weight:300;line-height:1.6}
+
+.calc-note{padding:1rem 1.25rem;border-left:2px solid var(--gold-dim);background:rgba(184,146,74,.03);border-radius:0 var(--radius) var(--radius) 0;margin-top:1.5rem}
+.calc-note p{font-size:.72rem;color:#888;line-height:1.75;font-weight:300}
+.calc-note p strong{font-weight:600;color:var(--slate)}
+
+.alert-overlay{display:none;position:fixed;inset:0;background:rgba(28,28,28,.45);z-index:1000;align-items:center;justify-content:center;padding:1.5rem}
+.alert-overlay.show{display:flex}
+.alert-box{background:#fff;border:1px solid var(--gold-dim);border-radius:var(--radius);box-shadow:var(--shadow);padding:2rem 2rem 1.5rem;max-width:400px;width:100%}
+.alert-icon{font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.15em;color:#b03020;margin-bottom:.6rem}
+.alert-msg{font-size:.9rem;color:var(--charcoal);line-height:1.7;margin-bottom:1.5rem;font-weight:300}
+.alert-btn{display:block;width:100%;padding:.75rem;background:var(--charcoal);color:#fff;border:none;border-radius:var(--radius);font-family:'DM Sans',sans-serif;font-size:.78rem;letter-spacing:.15em;text-transform:uppercase;font-weight:600;cursor:pointer;transition:background var(--transition)}
+.alert-btn:hover{background:#2e2a22}
+
+footer{position:relative;z-index:10;padding:2rem 1.5rem 1.8rem;border-top:1px solid var(--gold-dim);background:rgba(255,255,255,.6);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.fi-wrap{width:100%;max-width:280px;margin:0 auto 1.4rem;text-align:center}
+.fi-wrap img{max-width:100%;height:auto;max-height:80px;object-fit:contain;opacity:0;transition:opacity .6s ease}
+.fi-wrap img.loaded{opacity:1}
+.f-rule{width:60px;height:1px;background:var(--gold-dim);margin:0 auto 1.2rem}
+.f-disc{max-width:920px;margin:0 auto;text-align:center;font-size:.63rem;line-height:1.65;color:#888;letter-spacing:.01em;font-weight:300}
+.f-disc p{margin-bottom:.7rem}
+.f-disc p:last-child{margin-bottom:0}
+.f-disc a{color:var(--gold);text-decoration:none;font-weight:500;border-bottom:1px solid var(--gold-dim);transition:border-color var(--transition),color var(--transition)}
+.f-disc a:hover{color:var(--gold-lt);border-bottom-color:var(--gold)}
+@media(max-width:600px){.card{padding:2rem 1.5rem}}
+</style>
+</head>
+<body>
+
+<!-- Netlify form detection — do not remove. Empty stub so Netlify's build-time bot registers the form and its field names. Actual submission happens via fetch() below. -->
+<div style="display:none" aria-hidden="true">
+  <form name="equity-access-lead" data-netlify="true" netlify-honeypot="bot-field">
+    <input type="hidden" name="form-name" value="equity-access-lead">
+    <input name="bot-field">
+    <input name="firstName"><input name="lastName"><input name="email">
+    <input name="useOfFunds">
+    <input name="homeValue"><input name="loanBalance">
+    <input name="equityAt80"><input name="equityAt90"><input name="equityScenario">
+  </form>
+</div>
+
+<div class="bg-layer"></div>
+
+<main>
+  <div class="card">
+
+    <div id="calc-header-wrap" style="display:none;margin-bottom:2rem">
+      <img src="calc-header.png" alt=""
+        onload="document.getElementById('calc-header-wrap').style.display='block'"
+        onerror="document.getElementById('calc-header-wrap').style.display='none'">
+    </div>
+
+    <div class="card-eyebrow"><span class="eyebrow-dot"></span>Home Equity Tool</div>
+    <h1 class="card-headline">Home Equity<br>Access Calculator</h1>
+    <p class="card-sub">See how much of your home's equity you may be able to tap into — for renovations, debt consolidation, or other goals. <strong>Enter two numbers to get started.</strong></p>
+    <hr class="divider">
+
+    <div class="steps-wrap">
+      <div class="step-pill active" id="sp-0"><span class="step-num">1</span>Your home</div>
+      <div class="step-connector"></div>
+      <div class="step-pill" id="sp-1"><span class="step-num">2</span>Available equity</div>
+    </div>
+
+    <!-- STEP 0: Inputs -->
+    <div class="calc-step active" id="step-0">
+      <div class="sec-title"><span class="sec-dot"></span>Step 1 — Your current home</div>
+      <div class="input-panel">
+        <div class="input-cols">
+          <div class="field">
+            <label>Estimated home value</label>
+            <div class="iwrap"><span class="pfx">$</span><input type="text" id="home-value" class="ci hpfx" inputmode="numeric" placeholder="450,000"></div>
+          </div>
+          <div class="field">
+            <label>Approximate loan balance</label>
+            <div class="iwrap"><span class="pfx">$</span><input type="text" id="mortgage-balance" class="ci hpfx" inputmode="numeric" placeholder="220,000"></div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-submit" onclick="goStep(1)">See available equity &rarr;</button>
+    </div>
+
+    <!-- STEP 1: Equity available at 80% / 90% CLTV -->
+    <div class="calc-step" id="step-1">
+      <div class="sec-title"><span class="sec-dot"></span>Step 2 — What you may be able to access</div>
+
+      <div class="result-row">
+        <div class="rc">
+          <div class="rc-head"><span class="rhead-dot"></span>Estimated home value</div>
+          <div class="rc-body">
+            <div class="rc-lbl">Market value</div>
+            <div class="rc-val" id="r-home-value">—</div>
+          </div>
+        </div>
+        <div class="rc">
+          <div class="rc-head"><span class="rhead-dot"></span>Loan balance</div>
+          <div class="rc-body">
+            <div class="rc-lbl">Approximate balance</div>
+            <div class="rc-val" id="r-mortgage">—</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dynamic equity cards injected here -->
+      <div id="equity-cards"></div>
+
+      <div class="reveal-block">
+        <p id="equity-narrative">—</p>
+      </div>
+
+      <!-- LEAD CAPTURE -->
+      <div class="lead-gate" id="lead-gate">
+        <div class="lead-gate-header">
+          <div class="lead-gate-eyebrow">Your next step</div>
+          <div class="lead-gate-headline" id="lead-headline">Your numbers are ready. Let's talk through them.</div>
+          <div class="lead-gate-sub" id="lead-subhead">Enter your details and a licensed loan officer will put together a personalized review — rate options, payment estimates, and the full math on accessing your equity.</div>
+        </div>
+        <div class="lead-gate-body">
+          <div class="lead-gate-value-props" id="lead-value-props">
+            <div class="vp-item"><span class="vp-dot"></span>A clear breakdown of your borrowing options and likely rates</div>
+            <div class="vp-item"><span class="vp-dot"></span>Estimated monthly payment for the amount you want to access</div>
+            <div class="vp-item"><span class="vp-dot"></span>Renovation loan options if you want to fund improvements</div>
+          </div>
+          <div id="lead-form-wrap">
+            <!-- Honeypot: hidden from humans, bots tend to fill it. Matches netlify-honeypot="bot-field". -->
+            <input type="text" id="lead-bot-field" name="bot-field" tabindex="-1" autocomplete="off" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0" aria-hidden="true">
+            <div class="lead-fields">
+              <div class="field" style="margin-bottom:0">
+                <label>First name</label>
+                <input type="text" id="lead-name" placeholder="Jane">
+              </div>
+              <div class="field" style="margin-bottom:0">
+                <label>Last name</label>
+                <input type="text" id="lead-last" placeholder="Smith">
+              </div>
+              <div class="field lead-field-full" style="margin-bottom:0">
+                <label>Email address</label>
+                <input type="text" id="lead-email" placeholder="jane@email.com">
+              </div>
+              <div class="field lead-field-full" style="margin-bottom:0">
+                <label>What would you use the funds for?</label>
+                <select id="lead-interest">
+                  <option value="">Select one...</option>
+                  <option>Home renovation or repairs</option>
+                  <option>Debt consolidation</option>
+                  <option>Major purchase or expense</option>
+                  <option>Investment or other property</option>
+                  <option>Just exploring my options</option>
+                </select>
+              </div>
+            </div>
+            <div style="font-size:.7rem;color:#888;line-height:1.7;margin-bottom:1rem;padding:.85rem 1rem;background:var(--ivory);border:1px solid rgba(74,74,74,.1);border-radius:var(--radius);font-weight:300">
+              By submitting this form, you consent to be contacted by email by Gavin Hamilton, NMLS #857506, Loan Officer with Mortgage Express, LLC (NMLS #40831), for the purpose of following up on your calculator results. Your information will not be shared with or sold to third parties. This is not a loan application or commitment to lend. You may opt out at any time by replying to any email or contacting <a href="mailto:ghamilton@mtgxps.com" style="color:var(--gold);text-decoration:none;border-bottom:1px solid var(--gold-dim)">ghamilton@mtgxps.com</a>.
+            </div>
+            <button class="lead-cta-btn" onclick="submitLead()">Send me my personalized review &rarr;</button>
+            <button class="lead-skip" onclick="skipLead()">I'll explore on my own for now</button>
+            <div class="lead-trust">
+              <span class="trust-item">NMLS #857506</span>
+              <span class="trust-dot"></span>
+              <span class="trust-item">Equal Housing Lender</span>
+              <span class="trust-dot"></span>
+              <span class="trust-item">Licensed in OR, WA, CA, ID, AZ</span>
+            </div>
+          </div>
+          <div class="lead-success" id="lead-success">
+            <div class="lead-success-icon">✓</div>
+            <div class="lead-success-title">We'll be in touch shortly.</div>
+            <div class="lead-success-sub">Your personalized review is on its way. A licensed loan officer will follow up to walk through your options. To opt out of future contact at any time, email <a href="mailto:ghamilton@mtgxps.com" style="color:var(--green);text-decoration:none">ghamilton@mtgxps.com</a>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-note" style="margin-top:1.5rem">
+        <p><strong>Methodology:</strong> Available equity is estimated using combined loan-to-value (CLTV). Equity at 80% CLTV is calculated as your home value × 80% minus your loan balance; equity at 90% CLTV uses 90%. Many lenders limit cash-out borrowing to 80% CLTV, though some products allow higher. These figures are illustrative estimates only and are not guaranteed or a commitment to lend. Actual borrowing limits depend on the loan program, your credit, income, property type, an appraised value, and other factors. This is not financial or legal advice — consult a licensed loan officer for personalized guidance.</p>
+      </div>
+
+      <div class="btn-row" style="margin-top:1.5rem">
+        <button class="btn-back" onclick="goStep(0)">&larr; Back</button>
+        <button class="reset-link" style="text-align:left;width:auto" onclick="resetAll()">&#8635; Start over</button>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <div class="fi-wrap">
+    <img id="footerImg" src="footer.png" alt=""
+      onload="this.classList.add('loaded')"
+      onerror="this.style.display='none';this.parentElement.style.display='none'">
+  </div>
+  <div class="f-rule"></div>
+  <div class="f-disc">
+    <p>&copy; <span id="yr"></span> &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp; Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.</p>
+    <p>Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; This calculator is for educational and informational purposes only and is not a commitment to lend. Projections are estimates only — consult a qualified professional. Check licensing at <a href="https://www.nmlsconsumeraccess.org/" target="_blank" rel="noopener">nmlsconsumeraccess.org</a></p>
+  </div>
+</footer>
+
+<div class="alert-overlay" id="alert-modal">
+  <div class="alert-box">
+    <div class="alert-icon">Input Required</div>
+    <div class="alert-msg" id="alert-msg"></div>
+    <button class="alert-btn" onclick="closeAlert()">OK</button>
+  </div>
+</div>
+
+<script>
+document.getElementById('yr').textContent = new Date().getFullYear();
+const fmt = n => '$' + Math.round(n).toLocaleString();
+
+// Holds the latest calculated results so they can be submitted with the lead
+let lastResults = { equity80: 0, equity90: 0, scenario: '' };
+
+function pv(id) {
+  return parseFloat(document.getElementById(id).value.replace(/,/g,'').replace(/[^0-9.]/g,'')) || 0;
+}
+function showAlert(msg) {
+  document.getElementById('alert-msg').textContent = msg;
+  document.getElementById('alert-modal').classList.add('show');
+}
+function closeAlert() { document.getElementById('alert-modal').classList.remove('show'); }
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('.ci').forEach(el => {
+    el.addEventListener('blur', () => {
+      const n = parseFloat(el.value.replace(/,/g,'').replace(/[^0-9.]/g,''));
+      if (!isNaN(n)) el.value = n.toLocaleString('en-US', { maximumFractionDigits: 0 });
+    });
+    el.addEventListener('focus', () => { el.value = el.value.replace(/,/g,''); });
+  });
+});
+
+function updateStepPills(n) {
+  ['sp-0','sp-1'].forEach((id, i) => {
+    const el = document.getElementById(id);
+    el.classList.remove('active','done');
+    if (i < n) el.classList.add('done');
+    else if (i === n) el.classList.add('active');
+  });
+}
+
+function equityCard(label, headLabel, cltvLabel, homeVal, pct, equity, variant) {
+  // variant: 'green' = primary success number, 'secondary' = charcoal number w/ gold accents
+  const cls = variant === 'green' ? 'rc rc-green' : 'rc rc-secondary';
+  return '<div class="' + cls + '" style="margin-bottom:16px">' +
+    '<div class="rc-head"><span class="rhead-dot"></span>' + headLabel + '</div>' +
+    '<div class="rc-body">' +
+      '<div class="rc-lbl">' + cltvLabel + '</div>' +
+      '<div class="rc-val">' + fmt(equity) + '</div>' +
+      '<div class="cltv-math">(<span class="mv">' + fmt(homeVal) + '</span> × ' + pct + '%) − <span class="mv">' + fmt(pv('mortgage-balance')) + '</span> loan balance</div>' +
+    '</div>' +
+  '</div>';
+}
+
+function goStep(n) {
+  const homeVal = pv('home-value');
+  const mortgage = pv('mortgage-balance');
+
+  if (n >= 1) {
+    if (!homeVal) { showAlert('Please enter your estimated home value.'); return; }
+
+    document.getElementById('r-home-value').textContent = fmt(homeVal);
+    document.getElementById('r-mortgage').textContent = fmt(mortgage);
+
+    const equity80 = homeVal * 0.80 - mortgage;
+    const equity90 = homeVal * 0.90 - mortgage;
+
+    lastResults.equity80 = equity80;
+    lastResults.equity90 = equity90;
+    lastResults.scenario = equity80 > 0 ? 'equity-at-80' : (equity90 > 0 ? 'equity-at-90-only' : 'limited-renovation');
+
+    const cardsWrap = document.getElementById('equity-cards');
+    const narrative = document.getElementById('equity-narrative');
+    const leadHeadline = document.getElementById('lead-headline');
+    const leadSubhead = document.getElementById('lead-subhead');
+    const leadProps = document.getElementById('lead-value-props');
+
+    let cardsHTML = '';
+
+    if (equity80 > 0) {
+      // Both 80% and 90% available — show both, 80% as the primary/highlighted figure
+      cardsHTML += equityCard('80', 'Available at 80% combined loan-to-value', 'Estimated accessible equity — most common limit', homeVal, 80, equity80, 'green');
+      cardsHTML += equityCard('90', 'Available at 90% combined loan-to-value', 'Estimated accessible equity — with higher-LTV programs', homeVal, 90, equity90, 'secondary');
+
+      narrative.innerHTML =
+        'Based on your numbers, you may be able to access roughly <span class="hl-green">' + fmt(equity80) + '</span> at 80% combined loan-to-value — the limit most lenders use for cash-out borrowing — or up to <span class="hl">' + fmt(equity90) + '</span> with certain higher-LTV programs. The right amount depends on your goals, your rate, and the loan program. A loan officer can show you the real monthly payment and options for each.';
+
+      leadHeadline.textContent = 'You have equity to work with. Let\'s map it out.';
+      leadSubhead.textContent = 'Enter your details and a licensed loan officer will put together a personalized review — rate options, payment estimates, and the full math on accessing your equity.';
+
+    } else if (equity90 > 0) {
+      // Only 90% available
+      cardsHTML += equityCard('90', 'Available at 90% combined loan-to-value', 'Estimated accessible equity — with higher-LTV programs', homeVal, 90, equity90, 'green');
+
+      narrative.innerHTML =
+        'At the standard 80% combined loan-to-value limit, there isn\'t accessible equity yet — but with certain <span class="hl">higher-LTV programs</span> (up to 90%), you may be able to access roughly <span class="hl-green">' + fmt(equity90) + '</span>. These programs have specific qualifying requirements, so it\'s worth a quick conversation to see what you\'d actually qualify for and what the payment would look like.';
+
+      leadHeadline.textContent = 'There may be equity available with the right program.';
+      leadSubhead.textContent = 'Higher-LTV options have specific requirements. A licensed loan officer can confirm what you qualify for and what it would cost.';
+
+    } else {
+      // No equity available even at 90% — point toward renovation loans
+      cardsHTML += '<div class="rc rc-highlight" style="margin-bottom:16px">' +
+        '<div class="rc-head"><span class="rhead-dot"></span>Available equity</div>' +
+        '<div class="rc-body">' +
+          '<div class="rc-lbl">Estimated accessible equity at this time</div>' +
+          '<div class="rc-val" style="color:var(--slate)">Limited</div>' +
+          '<div class="rc-sub">Based on your current value and loan balance, there may not be enough equity to tap into through a standard cash-out or equity loan right now.</div>' +
+        '</div>' +
+      '</div>';
+
+      narrative.innerHTML =
+        'Based on your numbers, there may not be sufficient equity to tap into through a standard cash-out or home equity loan right now — but that\'s not the end of the road. <span class="hl">Renovation loan options</span> (such as FHA 203(k) and other renovation programs) can let you finance improvements based on your home\'s value <span class="hl">after</span> the work is done, rather than its value today. That can open up possibilities even when traditional equity is limited.';
+
+      leadHeadline.textContent = 'Limited equity today — but renovation options may still fit.';
+      leadSubhead.textContent = 'Renovation loans work differently from standard equity borrowing. A licensed loan officer can walk you through programs that may still help you reach your goals.';
+      leadProps.innerHTML =
+        '<div class="vp-item"><span class="vp-dot"></span>Renovation loan options that finance future, not current, value</div>' +
+        '<div class="vp-item"><span class="vp-dot"></span>A clear look at what you\'d qualify for today</div>' +
+        '<div class="vp-item"><span class="vp-dot"></span>A plan to build accessible equity over time</div>';
+    }
+
+    cardsWrap.innerHTML = cardsHTML;
+  }
+
+  document.querySelectorAll('.calc-step').forEach((s, i) => {
+    s.classList.toggle('active', i === n);
+  });
+  updateStepPills(n);
+
+  if (n > 0) {
+    setTimeout(() => {
+      document.querySelector('.calc-step.active').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  }
+}
+
+function submitLead() {
+  const name = document.getElementById('lead-name').value.trim();
+  const last = document.getElementById('lead-last').value.trim();
+  const email = document.getElementById('lead-email').value.trim();
+  const useOfFunds = document.getElementById('lead-interest').value;
+  if (!name) { showAlert('Please enter your first name.'); return; }
+  if (!email || !email.includes('@')) { showAlert('Please enter a valid email address.'); return; }
+
+  // Honeypot — if a bot filled the hidden field, the stub form catches it on Netlify's side.
+  const botField = document.getElementById('lead-bot-field');
+
+  const data = {
+    'form-name': 'equity-access-lead',
+    'bot-field': botField ? botField.value : '',
+    firstName: name,
+    lastName: last,
+    email: email,
+    useOfFunds: useOfFunds || 'Not specified',
+    homeValue: fmt(pv('home-value')),
+    loanBalance: fmt(pv('mortgage-balance')),
+    equityAt80: lastResults.equity80 > 0 ? fmt(lastResults.equity80) : 'None at 80% CLTV',
+    equityAt90: lastResults.equity90 > 0 ? fmt(lastResults.equity90) : 'None at 90% CLTV',
+    equityScenario: lastResults.scenario
+  };
+
+  fetch('/', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams(data).toString()
+  }).catch(() => {}); // fire-and-forget; UX proceeds regardless
+
+  document.getElementById('lead-form-wrap').style.display = 'none';
+  const success = document.getElementById('lead-success');
+  success.style.display = 'block';
+  setTimeout(() => success.scrollIntoView({ behavior: 'smooth', block: 'center' }), 100);
+}
+
+function skipLead() {
+  const gate = document.getElementById('lead-gate');
+  gate.style.opacity = '0.4';
+  gate.style.pointerEvents = 'none';
+  setTimeout(() => {
+    document.querySelector('.calc-note').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 100);
+}
+
+function resetAll() {
+  document.querySelectorAll('input:not([type="range"])').forEach(i => { i.value = ''; i.disabled = false; });
+  const sel = document.getElementById('lead-interest');
+  if (sel) { sel.value = ''; sel.disabled = false; }
+  const gate = document.getElementById('lead-gate');
+  gate.style.opacity = '';
+  gate.style.pointerEvents = '';
+  document.getElementById('lead-form-wrap').style.display = '';
+  document.getElementById('lead-success').style.display = 'none';
+  // restore default value props
+  document.getElementById('lead-value-props').innerHTML =
+    '<div class="vp-item"><span class="vp-dot"></span>A clear breakdown of your borrowing options and likely rates</div>' +
+    '<div class="vp-item"><span class="vp-dot"></span>Estimated monthly payment for the amount you want to access</div>' +
+    '<div class="vp-item"><span class="vp-dot"></span>Renovation loan options if you want to fund improvements</div>';
+  goStep(0);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
