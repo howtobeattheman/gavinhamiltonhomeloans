@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Insider — Gavin Hamilton Home Loans</title>
+
+  <!-- Private, link-only page: keep it out of search results -->
+  <meta name="robots" content="noindex, nofollow" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --blue:       #5bc8f5;
+      --blue-deep:  #2a7fd4;
+      --pink:       #f55a8f;
+      --pink-deep:  #d4246e;
+      --purple:     #c060d8;
+      --gold:       #e8960a;
+      --gold-deep:  #b86e00;
+      --gold-glow:  rgba(232,150,10,0.45);
+      --navy:       #0b1e35;
+      --navy-mid:   #112844;
+      --white:      #ffffff;
+      --off-white:  #f7f8fc;
+      --text-dark:  #1a1a2e;
+      --blue-glow:  rgba(91,200,245,0.55);
+      --pink-glow:  rgba(245,90,143,0.55);
+      --purp-glow:  rgba(192,96,216,0.50);
+      --transition: 0.22s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #e8edf2;
+      overflow-x: hidden;
+    }
+
+    /* BACKGROUND — cool light gray with subtle grid */
+    .bg-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background: url('background.png') center center / cover no-repeat, #e8edf2;
+    }
+    .bg-layer::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(232,237,242,0.88);
+    }
+    .bg-layer::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background-image:
+        linear-gradient(rgba(91,200,245,0.07) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(91,200,245,0.07) 1px, transparent 1px);
+      background-size: 52px 52px;
+      animation: gridDrift 28s linear infinite;
+    }
+    @keyframes gridDrift {
+      from { background-position: 0 0; }
+      to   { background-position: 52px 52px; }
+    }
+
+    .site-wrapper {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* HEADER IMAGE */
+    .site-header {
+      width: 100%;
+      background: #ffffff;
+      text-align: center;
+      padding: 16px 0 8px;
+    }
+    .site-header img {
+      width: auto;
+      max-width: 65%;
+      height: auto;
+      max-height: 220px;
+      object-fit: contain;
+      display: block;
+      margin: 0 auto;
+    }
+
+    /* INSIDER INTRO ZONE */
+    .insider-intro {
+      text-align: center;
+      padding: 30px 24px 4px;
+    }
+    .insider-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.74rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--gold-deep);
+      background: rgba(232,150,10,0.10);
+      border: 1px solid rgba(232,150,10,0.35);
+      border-radius: 40px;
+      padding: 6px 16px;
+      margin-bottom: 18px;
+    }
+    .insider-eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+    }
+    .insider-headline {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: clamp(1.6rem, 4.5vw, 2.35rem);
+      letter-spacing: 0.02em;
+      line-height: 1.12;
+      color: var(--text-dark);
+      margin-bottom: 12px;
+    }
+    .insider-sub {
+      font-size: 0.95rem;
+      color: #3a3a5a;
+      line-height: 1.65;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+    .insider-trust {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 18px;
+      font-size: 0.7rem;
+      letter-spacing: 0.05em;
+      color: rgba(26,26,46,0.55);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .insider-trust .t-dot { width: 3px; height: 3px; border-radius: 50%; background: rgba(26,26,46,0.30); }
+
+    /* MAIN BUTTON AREA */
+    main {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 28px 24px 40px;
+    }
+
+    .btn-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 22px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    /* GAMIFIED BUTTON BASE */
+    .game-btn {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      text-decoration: none;
+      padding: 32px 20px 28px;
+      border-radius: 10px;
+      border: 2px solid var(--btn-border);
+      background: transparent;
+      overflow: visible;
+      cursor: pointer;
+      box-shadow: 0 2px 18px var(--btn-glow);
+      transition:
+        transform var(--transition),
+        box-shadow var(--transition),
+        border-color var(--transition),
+        background var(--transition);
+      opacity: 0;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards;
+    }
+
+    .game-btn:nth-child(1) { animation-delay: 0.05s; }
+    .game-btn:nth-child(2) { animation-delay: 0.15s; }
+    .game-btn:nth-child(3) { animation-delay: 0.25s; }
+    .game-btn:nth-child(4) { animation-delay: 0.35s; }
+    .game-btn:nth-child(5) { animation-delay: 0.45s; }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.88) translateY(14px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* corner notch top-left */
+    .game-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: 22px 22px 0 0;
+      border-color: var(--btn-accent) transparent transparent transparent;
+      transition: border-width var(--transition);
+    }
+
+    /* bottom sweep bar */
+    .game-btn::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--btn-accent), var(--btn-accent2, var(--btn-accent)));
+      transform: scaleX(0.25);
+      transform-origin: left;
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .game-btn:hover {
+      transform: translateY(-5px) scale(1.025);
+      border-color: var(--btn-accent);
+      background: var(--btn-bg-hover);
+      box-shadow:
+        0 0 0 1px var(--btn-accent),
+        0 10px 36px var(--btn-glow);
+    }
+    .game-btn:hover::after {
+      transform: scaleX(1);
+      box-shadow: 0 0 10px var(--btn-glow);
+    }
+    .game-btn:hover::before { border-width: 28px 28px 0 0; }
+    .game-btn:active { transform: translateY(-2px) scale(1.01); }
+
+    /* ICON */
+    .btn-icon {
+      font-size: 2rem;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--btn-accent), var(--btn-accent2, var(--btn-accent)));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 5px var(--btn-glow));
+      transition: transform var(--transition), filter var(--transition);
+    }
+    .game-btn:hover .btn-icon {
+      transform: scale(1.18);
+      filter: drop-shadow(0 0 10px var(--btn-glow));
+    }
+
+    /* LABEL */
+    .btn-label {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-dark);
+      text-align: center;
+      line-height: 1.25;
+      transition: color var(--transition);
+    }
+    .game-btn:hover .btn-label {
+      background: linear-gradient(135deg, var(--btn-accent), var(--btn-accent2, var(--btn-accent)));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* DESCRIPTOR — one-line context under the label */
+    .btn-desc {
+      font-family: 'Lato', sans-serif;
+      font-weight: 400;
+      font-size: 0.78rem;
+      letter-spacing: 0.01em;
+      text-transform: none;
+      color: rgba(26,26,46,0.60);
+      text-align: center;
+      line-height: 1.45;
+      max-width: 260px;
+    }
+
+    /* ARROW */
+    .btn-arrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.18em;
+      background: linear-gradient(90deg, var(--btn-accent), var(--btn-accent2, var(--btn-accent)));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      opacity: 0;
+      transform: translateX(-6px);
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .game-btn:hover .btn-arrow { opacity: 1; transform: translateX(0); }
+
+    /* ── COLOR THEMES ── */
+    .btn-calc, .btn-blog {
+      --btn-accent:    var(--blue);
+      --btn-accent2:   var(--blue-deep);
+      --btn-border:    rgba(91,200,245,0.50);
+      --btn-glow:      var(--blue-glow);
+      --btn-bg-hover:  rgba(91,200,245,0.10);
+      background: rgba(91,200,245,0.07);
+    }
+
+    /* GOLD (primary) buttons */
+    .btn-apply, .btn-refi {
+      --btn-accent:    var(--gold);
+      --btn-accent2:   var(--gold-deep);
+      --btn-border:    rgba(232,150,10,0.85);
+      --btn-glow:      var(--gold-glow);
+      --btn-bg-hover:  rgba(232,150,10,0.10);
+      flex-direction: column;
+      gap: 10px;
+      padding: 26px 20px;
+      background: #ffffff;
+      border-width: 2px;
+      box-shadow: 0 6px 24px rgba(232,150,10,0.18), 0 2px 8px rgba(0,0,0,0.06);
+      transform: translateY(-2px);
+    }
+    .btn-apply .btn-label,
+    .btn-refi .btn-label { font-size: 1rem; }
+    .btn-apply .btn-icon,
+    .btn-refi .btn-icon  { font-size: 1.8rem; }
+
+    /* top row wrapper for the two primary buttons */
+    .btn-top-row {
+      grid-column: 1 / -1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    /* CALL / TEXT BANNER */
+    .contact-banner {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 8px 18px;
+      text-decoration: none;
+      margin-top: 4px;
+      padding: 18px 24px;
+      border-radius: 10px;
+      border: 2px solid rgba(11,30,53,0.14);
+      background: linear-gradient(135deg, #0b1e35, #112844);
+      box-shadow: 0 6px 24px rgba(11,30,53,0.20);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      opacity: 0;
+      animation: popIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.4s forwards;
+    }
+    .contact-banner:hover {
+      transform: translateY(-3px);
+      border-color: var(--blue);
+      box-shadow: 0 10px 34px rgba(91,200,245,0.30);
+    }
+    .contact-banner .cb-text {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 0.95rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #fff;
+    }
+    .contact-banner .cb-number {
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      font-size: 1.35rem;
+      letter-spacing: 0.04em;
+      background: linear-gradient(135deg, var(--blue), var(--blue-deep));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .contact-banner .cb-sub {
+      flex-basis: 100%;
+      text-align: center;
+      font-size: 0.74rem;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* REASSURANCE LINE */
+    .reassurance {
+      grid-column: 1 / -1;
+      text-align: center;
+      font-size: 0.8rem;
+      color: rgba(26,26,46,0.55);
+      line-height: 1.6;
+      margin-top: 2px;
+      padding: 0 8px;
+    }
+
+    /* FOOTER IMAGE */
+    .site-footer { width: 100%; background: #dde3ea; }
+    .site-footer img {
+      width: 100%;
+      max-height: 160px;
+      object-fit: cover;
+      display: block;
+    }
+    .footer-legal {
+      background: #dde3ea;
+      color: rgba(26,26,46,0.45);
+      font-size: 0.72rem;
+      text-align: center;
+      padding: 12px 24px 4px;
+      letter-spacing: 0.04em;
+      border-top: 1px solid rgba(91,200,245,0.25);
+    }
+    .footer-disclaimer {
+      background: #dde3ea;
+      padding: 6px 24px 16px;
+      text-align: center;
+    }
+    .footer-disclaimer-text {
+      font-size: 0.72rem;
+      color: rgba(26,26,46,0.45);
+      letter-spacing: 0.04em;
+      line-height: 1.6;
+    }
+    .footer-disclaimer-text a {
+      color: inherit;
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 520px) {
+      .btn-grid { grid-template-columns: 1fr; }
+      .btn-apply { grid-column: 1; flex-direction: column; }
+      .btn-refi  { grid-column: 1; flex-direction: column; }
+      .btn-top-row { grid-template-columns: 1fr; }
+      .game-btn { padding: 26px 18px 22px; }
+      .btn-label { font-size: 0.95rem; }
+      .contact-banner .cb-number { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-layer" aria-hidden="true"></div>
+
+  <div class="site-wrapper">
+
+    <!-- Upload header.png to your repo root -->
+    <header class="site-header">
+      <img src="header.png" alt="Gavin Hamilton Home Loans" onerror="this.style.display='none'" />
+    </header>
+
+    <!-- INSIDER INTRO -->
+    <section class="insider-intro">
+      <span class="insider-eyebrow"><span class="dot"></span>Existing Client Insider Access</span>
+      <h1 class="insider-headline">You already own.<br>Let's see what it's worth.</h1>
+      <p class="insider-sub">A private set of tools and insights I put together just for you — run your numbers, cut through the market noise, and reach out any time.</p>
+      <div class="insider-trust">
+        <span>NMLS #857506</span><span class="t-dot"></span>
+        <span>Equal Housing Lender</span><span class="t-dot"></span>
+        <span>Licensed OR · WA · CA · ID · AZ</span>
+      </div>
+    </section>
+
+    <main>
+      <div class="btn-grid" role="navigation" aria-label="Insider tools">
+
+        <!-- TOP ROW: two GOLD primary calculator buttons -->
+        <div class="btn-top-row">
+          <a href="https://gavinhamiltonhomeloans.com/equity-calculator" class="game-btn btn-apply">
+            <span class="btn-icon">★</span>
+            <span class="btn-label">How Much Equity<br>Can I Access?</span>
+            <span class="btn-desc">See what you may be able to tap for renovations, debt consolidation, or other goals.</span>
+            <span class="btn-arrow">▶ ▶ ▶</span>
+          </a>
+
+          <a href="https://gavinhamiltonhomeloans.com/existing-homeowner-landing" class="game-btn btn-refi">
+            <span class="btn-icon">⤴</span>
+            <span class="btn-label">The Math Behind<br>Moving Up</span>
+            <span class="btn-desc">See your equity, appreciation, tax picture, and what a move actually costs.</span>
+            <span class="btn-arrow">▶ ▶ ▶</span>
+          </a>
+        </div>
+
+        <!-- BLUE content buttons: the two blog posts (placeholders for now) -->
+        <a href="#blog-market-myths" class="game-btn btn-blog">
+          <span class="btn-icon">◎</span>
+          <span class="btn-label">Is The Market<br>Actually Scary?</span>
+          <span class="btn-desc">Cutting through the fear-driven headlines — what's real and what's just clicks.</span>
+          <span class="btn-arrow">▶ ▶ ▶</span>
+        </a>
+
+        <a href="#blog-forgotten-equity" class="game-btn btn-blog">
+          <span class="btn-icon">◈</span>
+          <span class="btn-label">The Equity You<br>Forgot You Had</span>
+          <span class="btn-desc">Why so many owners are sitting on more than they realize — and what to do with it.</span>
+          <span class="btn-arrow">▶ ▶ ▶</span>
+        </a>
+
+        <!-- CALL / TEXT BANNER -->
+        <a href="tel:3104224731" class="contact-banner">
+          <span class="cb-text">Have a question? Call or text me</span>
+          <span class="cb-number">310.422.4731</span>
+          <span class="cb-sub">You should know: this is my real phone number. I'm here to answer your questions, not spam you.</span>
+        </a>
+
+        <!-- REASSURANCE -->
+        <p class="reassurance">These tools are for education and estimates only — the real numbers get worked out together, one conversation at a time.</p>
+
+      </div>
+    </main>
+
+    <!-- Upload footer.png to your repo root -->
+    <footer class="site-footer">
+      <img src="footer.png" alt="Footer" onerror="this.style.display='none'" />
+      <p class="footer-legal">
+        &copy; <script>document.write(new Date().getFullYear())</script>
+        &nbsp;|&nbsp; Equal Housing Lender &nbsp;|&nbsp; NMLS #857506 &nbsp;|&nbsp;
+        Licensed in OR, WA, CA, ID, AZ &nbsp;|&nbsp; All rights reserved.
+      </p>
+      <div class="footer-disclaimer">
+        <p class="footer-disclaimer-text">
+          Mortgage Express, LLC &nbsp;|&nbsp; NMLS 40831 &nbsp;|&nbsp; 15115 SW Sequoia Parkway, Ste 100, Portland, OR 97224 &nbsp;|&nbsp; Licensed by the California Department of Financial Protection and Innovation under the Residential Mortgage Lending Act &nbsp;|&nbsp; AZBK-1027601 &nbsp;|&nbsp; Licensed in OR, ID, WA, UT, CA, CO &amp; AZ &nbsp;|&nbsp; Not all Loan Officers are licensed in all states &nbsp;|&nbsp; This is not a commitment to lend &nbsp;|&nbsp; Program terms, rates, and conditions are subject to change without notice &nbsp;|&nbsp; All loans are subject to credit and property approval &nbsp;|&nbsp; Loan products and availability may vary by state. Some loan products may be offered through approved lending partners. &nbsp;|&nbsp; Mortgage Express, LLC is an Equal Housing Opportunity. Check licensing at <a href="https://www.nmlsconsumeraccess.org" target="_blank">nmlsconsumeraccess.org</a>
+        </p>
+      </div>
+    </footer>
+
+  </div>
+
+</body>
+</html>
